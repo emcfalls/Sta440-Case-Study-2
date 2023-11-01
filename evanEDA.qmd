@@ -70,5 +70,68 @@ simone_data <- data2023 %>%
 
 # View the extracted data
 print(simone_data)
+
+```
+
+
+
+
+## Note: NA in Score column probably means no attempt (aka zero)
+```{r}
+allNAs <- data2023[is.na(data2023$Score), ]
+#allNAs
+
+rankIsNA <- data2023[is.na(data2023$Rank), ]
+rankIsNA
+```
+
+```{r}
+numZeros <- sum(data2023$Score == 0)
+numZeros
+```
+
+## Separating data2023 into Male and Female
+```{r}
+data2023Male <- data2023[data2023$Gender == "m", ]
+data2023Male
+```
+
+```{r}
+data2023Female <- data2023[data2023$Gender == "w", ]
+data2023Female
+```
+
+
+
+
+## "data2023" > looking at only 2023 52nd FIG Artistic Gymnastics World Championships
+```{r}
+worlds2023DF <- data2023[data2023$Competition == "2023 52nd FIG Artistic Gymnastics World Championships", ]
+
+worlds2023DF
+```
+
+
+
+
+
+
+```{r}
+worlds2023ApparatusAndRounds <- unique(data.frame(Apparatus = data2023$Apparatus, Date = data2023$Round))
+
+worlds2023ApparatusAndRounds <- worlds2023ApparatusAndRounds %>% arrange(Apparatus)
+
+worlds2023ApparatusAndRounds
+```
+
+
+
+
+## "data2023" sorted by competition date, then in 
+
+
+## US PLAYERS THAT NEVER PLACED ONCE 2022~2023
+```{r}
+
 ```
 
