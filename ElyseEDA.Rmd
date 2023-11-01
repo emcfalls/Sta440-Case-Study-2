@@ -1,0 +1,78 @@
+---
+title: "Elyse EDA"
+author: "Elyse McFalls and Holly Cui"
+date: "2023-11-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+## Loading Data
+
+```{r}
+df <- read.csv("cleaned data/data_2022_2023_cleaned.csv")
+```
+
+## Filtering USA Data
+
+```{r}
+df_usa <- df[df['Country'] == 'USA',]
+df_usa <- df_usa %>%
+  mutate(LastName = toupper(LastName), FirstName = toupper(FirstName), FullName = paste(LastName, ' ', FirstName))
+```
+
+```{r}
+# competitions 
+df_usa %>%
+  select(Competition) %>%
+  distinct()
+```
+
+```{r}
+# athletes represented 
+df_usa %>%
+  filter(Competition == "2023 52nd FIG Artistic Gymnastics World Championships") %>%
+  select(FullName) %>%
+  distinct()
+```
+
+
+## Scoring Trends for Femal US Athletes 
+
+```{r}
+# making data frame
+df_usa_women <- df_usa[df_usa['Gender'] == 'w',]
+```
+
+```{r}
+df_usa_women %>%
+  select(FullName) %>%
+  distinct()
+```
+
+
+```{r}
+df_usaw_vt <- df_usa_women %>%
+  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5)
+```
+
+
+```{r}
+ggplot(df_usaw_vt, mapping = aes(x = as.Date(Date, ), y = Score, color = FullName)) +
+  geom_point()
+```
+
+
+
+
+
+
+
+
+
