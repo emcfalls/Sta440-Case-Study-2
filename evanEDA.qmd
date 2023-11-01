@@ -1,0 +1,74 @@
+---
+title: "evanEDA"
+subtitle: "no subtitle"
+author: "Evan Kim"
+format: 
+  html:
+    self-contained: true
+---
+
+## Setup
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(purrr)
+library(dplyr)
+```
+
+
+
+## Data Importing_from Elyse and Young's cleaned version
+```{r message=FALSE, warning=FALSE}
+library(readr)
+
+data2023 <- read_csv("cleaned data/data_2022_2023_cleaned.csv")
+
+nrow(data2023)
+```
+
+
+## Competitions & Dates
+```{r}
+# Group by Competition and Date and calculate number of data points for each combination
+count_data <- data2023 %>%
+  group_by(Competition, Date) %>%
+  summarise(Count = n())
+
+# creating competitionAndDates data frame
+competitionAndDates <- unique(data.frame(Competition = data2023$Competition, Date = data2023$Date))
+competitionAndDates <- left_join(competitionAndDates, count_data, by = c("Competition", "Date"))
+
+
+# wrangling: Date column
+competitionAndDates$Date <- gsub("Sept", "Sep", competitionAndDates$Date)
+competitionAndDates$Date <- as.Date(competitionAndDates$Date, format = "%d-%b-%Y")
+
+
+# Sort by Date
+competitionAndDates <- competitionAndDates %>% arrange(Date)
+
+
+
+print(competitionAndDates)
+      
+# sanity check
+#sum(competitionAndDates$Count) == nrow(data2023)
+
+```
+
+
+
+## Simone Biles Only
+```{r}
+library(dplyr)
+library(stringr)
+
+simone_data <- data2023 %>%
+  filter(str_detect(tolower(FirstName), "^simone$") & 
+         str_detect(tolower(LastName), "^biles$"))
+
+# View the extracted data
+print(simone_data)
+```
+
