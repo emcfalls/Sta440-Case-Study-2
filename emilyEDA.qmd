@@ -1,0 +1,93 @@
+---
+title: "emilyEDA"
+subtitle: "no subtitle"
+author: "Emily Zhao"
+format: 
+  html:
+    self-contained: true
+---
+
+## Setup
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(purrr)
+library(dplyr)
+```
+
+## Data Importing_from Elyse and Young's cleaned version
+```{r message=FALSE, warning=FALSE}
+library(readr)
+
+data2023 <- read_csv("cleaned data/data_2022_2023_cleaned.csv")
+data2023 <- data2023 %>% 
+  mutate(LastName = toupper(LastName), FirstName = toupper(FirstName), FullName = paste(LastName, ' ', FirstName))
+
+nrow(data2023)
+```
+
+
+
+```{r}
+data2023_w <- data2023 %>% 
+  filter(Gender == "w")
+
+data2023_m <- data2023 %>% 
+  filter(Gender == "m")
+
+
+```
+
+```{r}
+data2023_w_worlds <- data2023 %>% 
+  filter(Gender == "w") %>% 
+  filter(Competition == "2022 51st FIG Artistic Gymnastics World Championships") %>% 
+  filter(Score != "NA")
+
+
+```
+
+```{r}
+data2023_worlds_andrade_vt <- data2023 %>% 
+  filter(Gender == "w") %>% 
+  filter(Competition == "2022 51st FIG Artistic Gymnastics World Championships") %>% 
+  filter(Score != "NA") %>% 
+  filter(LastName == "ANDRADE")
+
+
+```
+
+```{r}
+data2023_worlds_andrade_vt <- data2023 %>% 
+  filter(Gender == "w") %>% 
+  filter(Competition == "2022 51st FIG Artistic Gymnastics World Championships") %>% 
+  filter(Country == "BRA") %>% 
+  filter(Round == "TeamFinal")
+
+```
+
+```{r}
+
+
+data2023 %>% 
+  filter(Gender == "w") %>% 
+  filter(Country == "USA") %>% 
+  filter(Rank <= 5) %>% 
+  select(FirstName, LastName) %>% 
+  distinct()
+```
+
+```{r}
+
+
+data2023 %>% 
+  filter(Gender == "m") %>% 
+  filter(Country == "USA") %>% 
+  filter(Rank <= 5) %>% 
+  select(FirstName, LastName) %>% 
+  distinct()
+
+```
+
+
