@@ -13,19 +13,43 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-## Loading Data
+## Loading Data and Data Cleaning 
 
 ```{r}
 df <- read.csv("cleaned data/data_2022_2023_cleaned.csv")
 ```
 
+
+```{r}
+# date split df
+df_date <- data.frame(stringr::str_split_fixed(df$Date, '-', n = 3))
+colnames(df_date) <- c('Date_day', 'Date_month', 'Date_year')
+
+# add to df column
+df <- cbind(df, df_date)
+```
+
+```{r}
+df <- df %>%
+  # formatting the date column
+  mutate(Date = case_when(.default = paste0(Date_day, '-',  Date_month, '-', Date_year),
+                          Date_month == 'Sept' ~ paste0(Date_day, '-Sep-', Date_year))) %>%
+  mutate(Date = as.Date(Date, format = "%d-%b-%Y"), Year = Date_year) %>%
+  # standardizing names and making a full name column
+  mutate(LastName = toupper(LastName), FirstName = toupper(FirstName), 
+         FullName = paste0(LastName, ' ', FirstName), 
+         Date = as.Date(Date, format = "%d-%b-%Y")) %>%
+  select(-Date_year, -Date_month, -Date_day, -LastName, -FirstName)
+```
+
+
 ## Filtering USA Data
 
 ```{r}
-df_usa <- df[df['Country'] == 'USA',]
-df_usa <- df_usa %>%
-  mutate(LastName = toupper(LastName), FirstName = toupper(FirstName), FullName = paste(LastName, ' ', FirstName))
+df_usa <- df %>%
+  filter(Country == 'USA')
 ```
+
 
 ```{r}
 # competitions 
@@ -37,41 +61,133 @@ df_usa %>%
 ```{r}
 # athletes represented 
 df_usa %>%
-  filter(Competition == "2023 52nd FIG Artistic Gymnastics World Championships") %>%
   select(FullName) %>%
   distinct()
 ```
 
 
-## Scoring Trends for Femal US Athletes 
+## Scoring Trends for Female US Athletes
 
 ```{r}
 # making data frame
-df_usa_women <- df_usa[df_usa['Gender'] == 'w',]
+df_usaw <- df_usa[df_usa['Gender'] == 'w',]
 ```
 
 ```{r}
-df_usa_women %>%
+df_usaw %>%
   select(FullName) %>%
   distinct()
 ```
 
+### Relationship among apparatuses by athlete
 
 ```{r}
-df_usaw_vt <- df_usa_women %>%
-  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5)
+# checking best scores across all comps
+df_usaw_scores <- df_usaw[,c('FullName', 'Apparatus', 'Score')] %>%
+  arrange(desc(Score)) %>%
+  distinct(FullName, Apparatus, .keep_all = TRUE) %>%
+  pivot_wider(names_from = Apparatus, values_from = Score)
+
+head(df_usaw_scores)
 ```
 
 
 ```{r}
-ggplot(df_usaw_vt, mapping = aes(x = as.Date(Date, ), y = Score, color = FullName)) +
+# some high correlations, especially for vault, balance beam, and floor exercises (all positive)
+# uneven bars are the exception 
+cor(df_usaw_scores[,c('VT', 'VT1', 'VT2', 'UB', 'BB', 'FX')], use = "complete.obs")
+```
+
+```{r}
+# outlier in UB
+ggplot(df_usaw_scores, aes(x = VT, y = UB)) +
   geom_point()
 ```
 
+### Are All-Around Scores correlated?
+Idk how to check
+```{r}
+ df_usaw %>%
+  select('FullName', 'Competition', 'Round', 'Score') %>%
+  filter(Round == 'AAfinal') %>%
+  arrange(Competition)
+```
 
 
+### Vault
+
+```{r}
+# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
+df_usaw_vt <- df_usaw %>%
+  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5) %>%
+  arrange(desc(Score)) %>%
+  distinct(FullName, Round, .keep_all = TRUE)
+```
 
 
+```{r fig.width = 10}
+ggplot(df_usaw_vt, mapping = aes(x = Score, y = FullName, fill = Year)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=Score), size = 3.5,  hjust = 1.1) +
+  facet_wrap(~Round)
+```
+
+
+### Balance Beam
+
+```{r}
+# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
+df_usaw_bb <- df_usaw %>%
+  filter(stringr::str_like(Apparatus,'BB%') & Rank <= 5) %>%
+  arrange(desc(Score)) %>%
+  distinct(FullName, Round, .keep_all = TRUE)
+```
+
+
+```{r fig.width = 10}
+ggplot(df_usaw_bb, mapping = aes(x = Score, y = FullName, fill = Year)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=Score), size = 3.5,  hjust = 1.1) +
+  facet_wrap(~Round)
+```
+
+
+### Uneven Bars
+
+```{r}
+# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
+df_usaw_ub <- df_usaw %>%
+  filter(stringr::str_like(Apparatus,'UB%') & Rank <= 5) %>%
+  arrange(desc(Score)) %>%
+  distinct(FullName, Round, .keep_all = TRUE)
+```
+
+
+```{r fig.width = 10}
+ggplot(df_usaw_ub, mapping = aes(x = Score, y = FullName, fill = Year)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=Score), size = 3.5, hjust = 1.1) +
+  facet_wrap(~Round)
+```
+
+
+### Floor Exercise
+
+```{r}
+# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
+df_usaw_fx <- df_usaw %>%
+  filter(stringr::str_like(Apparatus,'FX%') & Rank <= 5) %>%
+  arrange(desc(Score)) %>%
+  distinct(FullName, Round, .keep_all = TRUE)
+```
+
+
+```{r fig.width = 10}
+ggplot(df_usaw_fx, mapping = aes(x = Score, y = FullName, fill = Year)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=Score), size = 3.5, hjust = 1.1) +
+  facet_wrap(~Round)
+```
 
 
 
