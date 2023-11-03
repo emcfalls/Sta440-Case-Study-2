@@ -13,12 +13,69 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+## Questions/Comments
+1. How can we tell what apparatus each all-around score relates to?
+2. How will we create a model to predict the past competitions? The data we have from the newest set only contains 2022-2023 data and the older dataset only has data from the 2021 Olympics for women (only 4 have played/placed in top 5 in 2022/2023)
+  a. Will need to get data for the current athletes 
+3. Looks like we're dealing with sparse functional data 
+4. Could predict a player's potential by comparing them to another player (i.e., we would find historically successful Olympic teams and see which current USA players are more similar to them) [link](https://onlinelibrary.wiley.com/doi/full/10.1002/sam.11436)
+4. Instead of testing our model on these players, we should test it on other players that we can get a lot of data on (this paper tests their NBA points model by using players that retired  [link](https://docplayer.net/39444957-Forecasting-nba-player-performance-using-a-weibull-gamma-statistical-timing-model-abstract.html)) 
+  a. paper also mentioned a Weibull-Gamma model to take into account time and used the covariate of if the player was having and off year or not (off being that they were injured)
+5. Could use sparse functional data algorithms (i.e., ROPES and PACE)
+  a. may be better since 1) gymnasts' careers aren't that long and 2) the point system changes every olympic season (or could add a covariate due to what cycle it is?)
+  b. requires using the data from every observation to make the functions for player which may pull their predictions towards the mean -> the paper overcame this by finding players similar to the player of interest and use that data for predictions, "method of analogues." Found related players using ADA
+
+### Assumptions
+1. An athlete won't change their difficulty score since their last competition 
+2. An athlete won't get tired (so they can partake in any competition they are eligible for)
+3. 
+
 ## Loading Data and Data Cleaning 
 
 ```{r}
 df <- read.csv("cleaned data/data_2022_2023_cleaned.csv")
+df_old <- read.csv("data/data_2017_2021.csv")
 ```
 
+### Old Data
+```{r}
+# all of this data is from the 2021 Olympics
+df_old %>%
+  filter(Competition != "Olympic Games")
+```
+
+```{r}
+# only has women
+df_old %>%
+  filter(Gender != 'w')
+```
+
+
+```{r}
+df_old <- df_old %>%
+  # removing day of the week and the Julys
+  mutate(Date = case_when(is.na(as.numeric(substr(Date, 1, 1))) ~ substr(Date, 4, 15),
+                          .default = substr(Date, 1, 15)),
+         Date = toupper(Date),
+         Date = case_when(.default = substr(Date, 1, 15),
+                          substr(substr(Date, 4, 8), 4,4) == 'Y' ~ paste(substr(Date, 1,2), 'JUL', substr(Date, 8, 15))))
+         
+```
+
+```{r}
+# no NAs
+sum(is.na(df_old$Date))
+```
+
+
+```{r}
+# changing to date format 
+df_old <- df_old %>%
+  mutate(Date = as.Date(Date, format = "%d %b %Y"))
+```
+
+
+### Most Recent Data
 
 ```{r}
 # date split df
@@ -48,6 +105,9 @@ df <- df %>%
 ```{r}
 df_usa <- df %>%
   filter(Country == 'USA')
+
+df_old_usa <- df_old %>%
+  filter(Country == 'USA')
 ```
 
 
@@ -65,6 +125,13 @@ df_usa %>%
   distinct()
 ```
 
+```{r}
+# athletes in the 2021 olympics
+df_old_usa %>%
+  select(LastName) %>%
+  distinct()
+```
+
 
 ## Scoring Trends for Female US Athletes
 
@@ -78,6 +145,16 @@ df_usaw %>%
   select(FullName) %>%
   distinct()
 ```
+
+### Relationship among AA scores
+
+```{r}
+df_usaw %>%
+  select(FullName, Competition, Round, Score) %>%
+  filter(Round == 'AAfinal')
+```
+
+
 
 ### Relationship among apparatuses by athlete
 
@@ -119,19 +196,36 @@ Idk how to check
 ```{r}
 # selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
 df_usaw_vt <- df_usaw %>%
-  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5) %>%
+  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5)
+
+df_usaw_vt_bestscore <- df_usaw_vt %>%
   arrange(desc(Score)) %>%
   distinct(FullName, Round, .keep_all = TRUE)
 ```
 
 
 ```{r fig.width = 10}
-ggplot(df_usaw_vt, mapping = aes(x = Score, y = FullName, fill = Year)) +
+ggplot(df_usaw_vt_bestscore, mapping = aes(x = Score, y = FullName, fill = Year)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label=Score), size = 3.5,  hjust = 1.1) +
   facet_wrap(~Round)
 ```
 
+Looking at difficulty trends
+```{r}
+df_usaw_vt_scores <- df_usaw_vt %>%
+  select(FullName, Date, D_Score, E_Score, Score)
+```
+
+```{r}
+ggplot(df_usaw_vt_scores, aes(x = Date, y = D_Score, color = FullName)) + 
+  geom_point(alpha = 0.5, size = 3)
+```
+
+```{r}
+ggplot(df_usaw_vt_scores, aes(x = Date, y = E_Score, color = FullName)) + 
+  geom_point(alpha = 0.5, size = 3)
+```
 
 ### Balance Beam
 
