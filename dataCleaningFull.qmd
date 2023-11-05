@@ -1,0 +1,220 @@
+---
+title: "11.05.2023 data cleaning (all)"
+subtitle: "no subtitle"
+author: "Team 3"
+format: 
+  html:
+    self-contained: true
+---
+
+## Setup
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(purrr)
+library(dplyr)
+
+library(lubridate)
+```
+
+
+
+## Reading in original data from competition org
+```{r message=FALSE, warning=FALSE}
+library(readr)
+
+rawData2021 <- read_csv("data/data_2017_2021.csv")
+rawData2022_2023 <- read_csv("data/data_2022_2023.csv")
+
+```
+
+## rawData2021: making all names bigger-case letters (for convenience down the line when we have to filter out an individual athlete)
+```{r}
+rawData2021$LastName <- toupper(rawData2021$LastName)
+rawData2021$FirstName <- toupper(rawData2021$FirstName)
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
+# uniqueCombinationsOfFirstAndLastNameInRawData2021
+# was length 107
+```
+
+
+## rawData2021: Correcting for duplicates when they are the same athlete
+```{r}
+# D'AMATO, ALICE and D'AMATO, ASIA
+
+# If the LastName is "D AMATO", change it to "D'AMATO"
+rawData2021$LastName[rawData2021$LastName == "D AMATO"] <- "D'AMATO"
+
+
+# JESUS SANTOS, MELANIE
+
+# If LastName is 'JESUS SANT' or 'JESUS SANTOS' and FirstName is NA
+# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
+rawData2021$LastName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "JESUS SANTOS"
+rawData2021$FirstName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "MELANIE"
+rawData2021$FirstName[rawData2021$LastName == "JESUS SANTOS" & is.na(rawData2021$FirstName)] <- "MELANIE"
+
+# If LastName is 'DE' and FirstName is 'JESUS'
+# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
+rawData2021$LastName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "JESUS SANTOS"
+rawData2021$FirstName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "MELANIE"
+
+
+
+# SCHAEFER BETZ, PAULINE
+
+# If the LastName is "SCHAEFER-BETZ", change it to "SCHAEFER BETZ"
+rawData2021$LastName[rawData2021$LastName == "SCHAEFER-BETZ"] <- "SCHAEFER BETZ"
+
+
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
+#uniqueCombinationsOfFirstAndLastNameInRawData2021
+#now is length 103
+```
+
+## rawData2021: Dates
+```{r}
+# function removing prefixes like SUN
+removeDatePrefix <- function(date_string) {
+  cleaned_string <- gsub("^[A-Z]{3} ", "", date_string)
+}
+
+rawData2021$Date <- sapply(rawData2021$Date, removeDatePrefix)
+
+
+
+rawData2021$Date <- gsub(" JUL ", "-07-", rawData2021$Date)
+rawData2021$Date <- gsub(" July ", "-07-", rawData2021$Date)
+rawData2021$Date <- gsub(" Aug ", "-08-", rawData2021$Date)
+
+
+
+
+# Making sure all of the Dates column is "dd-mm-yyyy"
+format_dates <- function(date_str) {
+  if (grepl("^\\d-\\d{2}-\\d{4}$", date_str)) {  # Check if the format is "d-mm-yyyy"
+    parts <- unlist(strsplit(date_str, "-"))
+    return(paste0(sprintf("%02d", as.numeric(parts[1])),
+                  "-",
+                  sprintf("%02d", as.numeric(parts[2])),
+                  "-",
+                  parts[3]))
+  } else {
+    return(date_str)
+  }
+}
+
+rawData2021$Date <- sapply(rawData2021$Date, format_dates)
+
+
+#class(rawData2021$Date)
+```
+
+
+
+## rawData2021: Penalty
+```{r}
+# Change any NA's in the Penalty column to zero
+rawData2021$Penalty[is.na(rawData2021$Penalty)] <- 0
+```
+
+
+
+
+
+## rawData2021: NA's
+```{r}
+NAsInrawData2021 <- rawData2021 %>%
+  filter(is.na(Rank) | is.na(D_Score) | is.na(E_Score))
+
+# To view the filtered dataframe
+print(NAsInrawData2021)
+```
+NOTE: now, the NA's in rawData2021 just mean no attempt
+NOTE: there are two rows that say Apparatus is UE, which is not an event for women... it should be UB...?
+
+
+## rawData2021 cleaning done -> NOW CALLED data2021Female
+```{r}
+data2021Female <- rawData2021
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## rawData2022_2023: making all names bigger-case letters (for convenience down the line when we have to filter out an individual athlete)
+```{r}
+rawData2022_2023$LastName <- toupper(rawData2022_2023$LastName)
+rawData2022_2023$FirstName <- toupper(rawData2022_2023$FirstName)
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
+# uniqueCombinationsOfFirstAndLastNameInRawData2022_2023
+# was length 1824
+```
+
+## rawData2022_2023: Correcting for duplicates when they are the same athlete
+```{r}
+# AAS, FREDRIK BJORNEVIK
+
+# If the FirstName is "FREDRIK BJORNEVIK", change it to "FREDRIK"
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FREDRIK BJORNEVIK"] <- "FREDRIK"
+
+
+# Athlete ABIYURAFI (Last Name) just does not have a first name in any competition, so change his first name to simply ""
+rawData2022_2023$FirstName[rawData2022_2023$LastName == "ABIYURAFI" & is.na(rawData2022_2023$FirstName)] <- ""
+
+
+
+# MISELLA ANTILA
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MISELLA ALLI HELENA" & rawData2022_2023$LastName == "ANTILA"] <- "MISELLA"
+
+
+# ANTON YEFFERSON
+rawData2022_2023$FirstName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON GREGORIO"] <- "YEFFERSON"
+rawData2022_2023$LastName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON GREGORIO"] <- "ANTON"
+rawData2022_2023$LastName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON"] <- "ANTON"
+
+uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
+uniqueCombinationsOfFirstAndLastNameInRawData2022_2023
+```
+
+
+```{r}
+# JESUS SANTOS, MELANIE
+
+# If LastName is 'JESUS SANT' or 'JESUS SANTOS' and FirstName is NA
+# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
+rawData2021$LastName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "JESUS SANTOS"
+rawData2021$FirstName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "MELANIE"
+rawData2021$FirstName[rawData2021$LastName == "JESUS SANTOS" & is.na(rawData2021$FirstName)] <- "MELANIE"
+
+# If LastName is 'DE' and FirstName is 'JESUS'
+# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
+rawData2021$LastName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "JESUS SANTOS"
+rawData2021$FirstName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "MELANIE"
+
+
+
+# SCHAEFER BETZ, PAULINE
+
+# If the LastName is "SCHAEFER-BETZ", change it to "SCHAEFER BETZ"
+rawData2021$LastName[rawData2021$LastName == "SCHAEFER-BETZ"] <- "SCHAEFER BETZ"
+
+
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
+#uniqueCombinationsOfFirstAndLastNameInRawData2021
+#now is length 103
+```
