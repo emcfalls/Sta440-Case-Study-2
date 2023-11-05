@@ -186,6 +186,86 @@ rawData2022_2023$FirstName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData
 rawData2022_2023$LastName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON GREGORIO"] <- "ANTON"
 rawData2022_2023$LastName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON"] <- "ANTON"
 
+
+# MIGUEL AQUINO III
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MIGUEL ANGEL" & rawData2022_2023$LastName == "AQUINO III"] <- "MIGUEL"
+
+# SYDNEY TATIANA BARROS FROM PUR IS DIFFERENT FROM SYDNEY TATIANA FROM USA
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SYDNEY" & 
+                           rawData2022_2023$LastName == "BARROS" & 
+                           rawData2022_2023$Country == "PUR"] <- "SYDNEY TATIANA"
+
+
+
+
+# CAMERON-LIE BERNARD
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "CAMERON LIE" & rawData2022_2023$LastName == "BERNARD"] <- "CAMERON-LIE"
+
+
+
+# JUANCHO BESANA
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JUANCHO MIGUEL" & rawData2022_2023$LastName == "BESANA"] <- "JUANCHO"
+
+
+# VICTOR BETANCOURT
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "VICTOR MANUEL" & rawData2022_2023$LastName == "BETANCOURT QUINTANA"] <- "VICTOR"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VICTOR MANUEL" & rawData2022_2023$LastName == "BETANCOURT QUINTANA"] <- "BETANCOURT"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VICTOR" & rawData2022_2023$LastName == "BETANCOURT QUINTANA"] <- "BETANCOURT"
+
+
+
+# KRISTOPHER BOHORQUEZ
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "KRISTOPHER STEVEN" & rawData2022_2023$LastName == "BOHORQUEZ CANTOR"] <- "KRISTOPHER"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KRISTOPHER STEVEN" & rawData2022_2023$LastName == "BOHORQUEZ CANTOR"] <- "BOHORQUEZ"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KRISTOPHER" & rawData2022_2023$LastName == "BOHORQUEZ CANTOR"] <- "BOHORQUEZ"
+
+
+# VALENTINA BROSTELLA
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VALENTINA" & rawData2022_2023$LastName == "BROSTELLA ARIAS"] <- "BROSTELLA"
+
+
+# non-alphabetic
+rawData2022_2023$LastName[rawData2022_2023$LastName == "BÖCZÖGÖ"] <- "BOCZOGO"
+
+
+# JOSSIMAR ORLANDO   CALVO MORENO
+rawData2022_2023$LastName[is.na(rawData2022_2023$FirstName) & rawData2022_2023$LastName == "CALVO MORENO JO"] <- "CALVO MORENO"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SABRINA ALESSANDRA" & 
+                           rawData2022_2023$LastName == "CARDERO"] <- "SABRINA"
+
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JAN" & 
+                          rawData2022_2023$LastName == "CARRERES MACIA"] <- "CARRERES"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JOSEPH" & 
+                           rawData2022_2023$LastName == "CEMLYN JONES"] <- "JOE"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "CARMINA ISABELLA" & 
+                           rawData2022_2023$LastName == "CHAVEZ MARTINEZ"] <- "CARMINA"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "CARMINA" & 
+                          rawData2022_2023$LastName == "CHAVEZ MARTINEZ"] <- "CHAVEZ"
+
+
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "ZACHARY NATHANIEL" & 
+                           rawData2022_2023$LastName == "CLAY"] <- "ZACHARY"
+
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "WILFRY MANUEL" & 
+                           rawData2022_2023$LastName == "CONTRERAS"] <- "WILFRY"
+
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023
 ```
