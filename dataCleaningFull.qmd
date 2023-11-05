@@ -164,7 +164,7 @@ rawData2022_2023$FirstName <- toupper(rawData2022_2023$FirstName)
 # was length 1824
 ```
 
-## rawData2022_2023: Correcting for duplicates when they are the same athlete
+## rawData2022_2023: Correcting for duplicates when they are the same athlete (did until last name G!)
 ```{r}
 # AAS, FREDRIK BJORNEVIK
 
@@ -266,35 +266,92 @@ rawData2022_2023$FirstName[rawData2022_2023$FirstName == "ZACHARY NATHANIEL" &
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "WILFRY MANUEL" & 
                            rawData2022_2023$LastName == "CONTRERAS"] <- "WILFRY"
 
+
+
+
+rawData2022_2023 <- rawData2022_2023 %>%
+  mutate(
+    FirstName = ifelse(FirstName == 'JHOSSUA ARIEL' & LastName == 'CORRALES CASTRO', 'JHOSSUA', FirstName),
+    LastName = ifelse(FirstName == 'JHOSSUA ARIEL' & LastName == 'CORRALES CASTRO', 'CORRALES', LastName)
+  )
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MATTHEW" & 
+                           rawData2022_2023$LastName == "CORMIER"] <- "MATT"
+
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "ALEJANDRO" & 
+                          rawData2022_2023$LastName == "DE LA CRUZ GATO"] <- "DE LA CRUZ"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FABIÁN"] <- "FABIAN"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "FABIAN" & 
+                          rawData2022_2023$LastName == "DE LUNA HERNÁNDEZ"] <- "DE LUNA"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "NATALIA GABRIELA" & 
+                           rawData2022_2023$LastName == "DELGADO LOPEZ"] <- "NATALIA"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "NATALIA" & 
+                           rawData2022_2023$LastName == "DELGADO LOPEZ"] <- "DELGADO"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "STELLA LOREN" & 
+                           rawData2022_2023$LastName == "DIAZ"] <- "STELLA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KARELYS" & 
+                          rawData2022_2023$LastName == "DIAZ DAVILA"] <- "DIAZ"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JACOB GUEST" & 
+                           rawData2022_2023$LastName == "DWARDS"] <- "JACOB"
+
+
+
+rawData2022_2023$FirstName[is.na(rawData2022_2023$FirstName) & 
+                           rawData2022_2023$LastName == "ELPITIYA BADALG D"] <- "MILKA GEHANI"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "MILKA GEHANI" & 
+                          rawData2022_2023$LastName == "ELPITIYA BADALGE DONA"] <- "ELPITIYA BADALGE D"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "NATALIA ISABEL" & 
+                           rawData2022_2023$LastName == "ESCALERA"] <- "NATALIA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JOSE CARLOS" & 
+                          rawData2022_2023$LastName == "ESCANDÓN MARÍN"] <- "ESCANDON MARIN"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JOSE" & 
+                          rawData2022_2023$LastName == "ESCANDON"] <- "ESCANDON MARIN"
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JOSE" & 
+                          rawData2022_2023$LastName == "ESCANDON"] <- "JOSE CARLOS"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "GINNA" & 
+                          rawData2022_2023$LastName == "ESCOBAR BETANCUR"] <- "ESCOBAR"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KEVIN" & 
+                          rawData2022_2023$LastName == "ESPINOSA CASTILLO"] <- "ESPINOSA"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SEBASTIAN NORBERT" & 
+                           rawData2022_2023$LastName == "GAWRONSKI"] <- "SEBASTIAN"
+
+
+
+
+
+
+
+
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023
 ```
 
 
-```{r}
-# JESUS SANTOS, MELANIE
 
-# If LastName is 'JESUS SANT' or 'JESUS SANTOS' and FirstName is NA
-# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
-rawData2021$LastName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "JESUS SANTOS"
-rawData2021$FirstName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "MELANIE"
-rawData2021$FirstName[rawData2021$LastName == "JESUS SANTOS" & is.na(rawData2021$FirstName)] <- "MELANIE"
-
-# If LastName is 'DE' and FirstName is 'JESUS'
-# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
-rawData2021$LastName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "JESUS SANTOS"
-rawData2021$FirstName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "MELANIE"
-
-
-
-# SCHAEFER BETZ, PAULINE
-
-# If the LastName is "SCHAEFER-BETZ", change it to "SCHAEFER BETZ"
-rawData2021$LastName[rawData2021$LastName == "SCHAEFER-BETZ"] <- "SCHAEFER BETZ"
-
-
-
-#uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
-#uniqueCombinationsOfFirstAndLastNameInRawData2021
-#now is length 103
-```
