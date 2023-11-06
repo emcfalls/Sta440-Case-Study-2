@@ -343,7 +343,7 @@ rawData2022_2023$FirstName[rawData2022_2023$FirstName == "EDWARD ANDRE" &
 rawData2022_2023$LastName[rawData2022_2023$FirstName == "EDWARD" & 
                            rawData2022_2023$LastName == "GONZALES"] <- "EDWARD"
 
-rawData2022_2023$FIrstName[rawData2022_2023$FirstName == "ALEXA GABRIELA" & 
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "ALEXA GABRIELA" & 
                            rawData2022_2023$LastName == "GRANDE FRANCO"] <- "ALEXA"
 
 rawData2022_2023$LastName[rawData2022_2023$FirstName == "ALEXA" & 
@@ -367,7 +367,7 @@ rawData2022_2023$LastName[rawData2022_2023$FirstName == "NELSON" &
 
 
 
-
+## functions after Emily decided she had enough
 
 rawData2022_2023 <- rawData2022_2023 %>% 
   mutate(FirstName = word(FirstName, 1)) %>% 
@@ -392,7 +392,10 @@ standardize <- function(name) {
 rawData2022_2023$FirstName <- lapply(rawData2022_2023$FirstName, standardize)
 
 rawData2022_2023$LastName <- lapply(rawData2022_2023$LastName, standardize)
-## start of emily's additions
+
+
+## restart of emily's mutations
+
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "RAKAH" & 
                            rawData2022_2023$LastName == "HARITHI"] <- "RAKAN"
 
@@ -415,6 +418,21 @@ rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FELIPE" &
 rawData2022_2023$LastName[rawData2022_2023$FirstName == "CLAY" & 
                            rawData2022_2023$LastName == "MASON"] <- "MASONSTEPHENS"
 
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "ATEER"] <- "MCATEER"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "MCATEER"] <- "EWAN"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "EWAN" & 
+                           rawData2022_2023$LastName == "MC"] <- "MCATEER"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "CLENAGHAN"] <- "MCCLENAGHAN"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "MCCLENAGHAN"] <- "RHYS"
 
 
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
