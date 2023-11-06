@@ -73,6 +73,9 @@ rawData2021$LastName[rawData2021$LastName == "SCHAEFER-BETZ"] <- "SCHAEFER BETZ"
 #uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
 #uniqueCombinationsOfFirstAndLastNameInRawData2021
 #now is length 103
+
+
+
 ```
 
 ## rawData2021: Dates
@@ -236,25 +239,17 @@ rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SABRINA ALESSANDRA" &
                            rawData2022_2023$LastName == "CARDERO"] <- "SABRINA"
 
 
-
 rawData2022_2023$LastName[rawData2022_2023$FirstName == "JAN" & 
                           rawData2022_2023$LastName == "CARRERES MACIA"] <- "CARRERES"
 
-
-
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JOSEPH" & 
                            rawData2022_2023$LastName == "CEMLYN JONES"] <- "JOE"
-
-
 
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "CARMINA ISABELLA" & 
                            rawData2022_2023$LastName == "CHAVEZ MARTINEZ"] <- "CARMINA"
 
 rawData2022_2023$LastName[rawData2022_2023$FirstName == "CARMINA" & 
                           rawData2022_2023$LastName == "CHAVEZ MARTINEZ"] <- "CHAVEZ"
-
-
-
 
 
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "ZACHARY NATHANIEL" & 
@@ -342,16 +337,107 @@ rawData2022_2023$LastName[rawData2022_2023$FirstName == "KEVIN" &
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SEBASTIAN NORBERT" & 
                            rawData2022_2023$LastName == "GAWRONSKI"] <- "SEBASTIAN"
 
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "EDWARD ANDRE" & 
+                           rawData2022_2023$LastName == "GONZALES RIVAS"] <- "EDWARD"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "EDWARD" & 
+                           rawData2022_2023$LastName == "GONZALES"] <- "EDWARD"
+
+rawData2022_2023$FIrstName[rawData2022_2023$FirstName == "ALEXA GABRIELA" & 
+                           rawData2022_2023$LastName == "GRANDE FRANCO"] <- "ALEXA"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "ALEXA" & 
+                           rawData2022_2023$LastName == "GRANDE FRANCO"] <- "GRANDE"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JERMAIN" & 
+                           rawData2022_2023$LastName == "GRÜNBERG"] <- "GRUENBERG"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "HILDUR MAJA" & 
+                           rawData2022_2023$LastName == "GUDMUNDSDOTTIR"] <- "HILDUR"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "YURI" & 
+                           rawData2022_2023$LastName == "GUIMARÃES"] <- "GUIMARAES"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "NELSON ALBERTO" & 
+                           rawData2022_2023$LastName == "GUILBE MORALES"] <- "NELSON"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "NELSON" & 
+                           rawData2022_2023$LastName == "GUILBE MORALES"] <- "GUILBE"
 
 
 
 
+
+rawData2022_2023 <- rawData2022_2023 %>% 
+  mutate(FirstName = word(FirstName, 1)) %>% 
+  mutate(LastName = word(LastName, 1))
+
+replace_letters <- function(name) {
+  name <- gsub("Ö", "OE", name)
+  name <- gsub("Ü", "U", name)
+  name <- gsub("Ø", "O", name)
+  name <- sub("-.*", "", name)
+  name <- gsub("Ä", "AE", name)
+}
+
+rawData2022_2023$FirstName <- lapply(rawData2022_2023$FirstName, replace_letters)
+
+rawData2022_2023$LastName <- lapply(rawData2022_2023$LastName, replace_letters)
+
+standardize <- function(name) {
+  name <- iconv(name, "UTF-8", "ASCII//TRANSLIT")
+}
+
+rawData2022_2023$FirstName <- lapply(rawData2022_2023$FirstName, standardize)
+
+rawData2022_2023$LastName <- lapply(rawData2022_2023$LastName, standardize)
+## start of emily's additions
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "RAKAH" & 
+                           rawData2022_2023$LastName == "HARITHI"] <- "RAKAN"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VINCENZ" & 
+                           rawData2022_2023$LastName == "HOCK"] <- "HOECK"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MOHAMAD" & 
+                           rawData2022_2023$LastName == "KHALIL"] <- "MOHAMED"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "SEVERIN" & 
+                           rawData2022_2023$LastName == "KRANZLMULLER"] <- "KRANZLMUELLER"
+                           
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MANUEL" & 
+                           rawData2022_2023$LastName == "MARTINEZ"] <- "JOSE"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FELIPE" & 
+                           rawData2022_2023$LastName == "MARTINEZ"] <- "ANDRES"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "CLAY" & 
+                           rawData2022_2023$LastName == "MASON"] <- "MASONSTEPHENS"
 
 
 
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
-uniqueCombinationsOfFirstAndLastNameInRawData2022_2023
+
+
 ```
 
+##CLEANING COUNTRIES
+
+```{r}
+rawData2022_2023 <- rawData2022_2023 %>% 
+  mutate(
+    Country = case_when(Country == "SCO" ~ "GBR",
+                        Country == "ENG" ~ "GBR",
+                        Country == "WAL" ~ "GBR",
+                        Country == "SIN" ~ "SIG",
+                        Country == "GE1" ~ "GER",
+                        Country == "GE2" ~ "GER",
+                        Country == "NIR" ~ "GBR",
+                        Country == "IOM" ~ "GBR", 
+                        Country == "PUR" ~ "USA",
+                        TRUE ~ Country)
+  )
+```
 
 
