@@ -434,6 +434,31 @@ rawData2022_2023$LastName[rawData2022_2023$FirstName == "MC" &
 rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MC" & 
                            rawData2022_2023$LastName == "MCCLENAGHAN"] <- "RHYS"
 
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "RUBY" & 
+                           rawData2022_2023$LastName == "EVAN"] <- "EVANS"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "WONG" & 
+                           rawData2022_2023$LastName == "VANESSA"] <- "WONG"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "WONG" & 
+                           rawData2022_2023$LastName == "WONG"] <- "VANESSA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "LIU" & 
+                           rawData2022_2023$LastName == "MAI"] <- "LIU"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "LIU" & 
+                           rawData2022_2023$LastName == "LIU"] <- "MAI"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "CHRISTINA" & 
+                           rawData2022_2023$LastName == "KIOSO"] <- "VASILOPOULOU"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KORKEM" & 
+                           rawData2022_2023$LastName == "YEROBSSYNKYZY"] <- "YERBOSSYNKYZY"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "LARASATI" & 
+                           rawData2022_2023$LastName == "REGGANIS"] <- "RENGGANIS"
+
 
 uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
 
@@ -456,6 +481,18 @@ rawData2022_2023 <- rawData2022_2023 %>%
                         Country == "PUR" ~ "USA",
                         TRUE ~ Country)
   )
+
+rawData2022_2023 <- rawData2022_2023 %>% 
+  mutate(
+    Country = ifelse(FirstName == "TEJA" & LastName == "BELAK", "SLO", Country),
+    Country = ifelse(FirstName == "NAVEEN" & LastName == "DARIES", "RSA", Country),
+    Country = ifelse(FirstName == "MADELEINE" & LastName == "MARSHALL", "NZL", Country)
+  )
+
 ```
 
+
+```{r}
+
+```
 
