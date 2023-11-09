@@ -71,8 +71,13 @@ df_men_indv <- df_full %>%
 
 ```{r}
 # break off criteria: athletes that have ranked at least top for all countries
+df_men_names <- df_full_men_teams %>%
+  filter(Rank <= 5) %>%
+  distinct(FullName) %>%
+  pull()
+
 df_men <- df_full_men_teams %>%
-  filter(Rank <= 5)
+  filter(FullName %in% df_men_names)
 ```
 
 
@@ -139,8 +144,13 @@ df_full_women_teams <- df_full %>%
 
 ```{r}
 # break off criteria: athletes that have ranked at least top for all countries
+df_women_names <- df_full_women_teams %>%
+  filter(Rank <= 5) %>%
+  distinct(FullName) %>%
+  pull()
+
 df_women <- df_full_women_teams %>%
-  filter(Rank <= 5)
+  filter(FullName %in% df_women_names)
 ```
 
 
@@ -153,6 +163,7 @@ df_women_indv <- df_full %>%
                          "HERON HILLARY", "ROOSKRANTZ CAITLIN", "ARTAMONOVA SONA",
                          "RAZ LIHIE", "HRIBAR LUCIJA"))
 ```
+
 
 ```{r}
 # adding individuals, using distinct to remove overlaps 
