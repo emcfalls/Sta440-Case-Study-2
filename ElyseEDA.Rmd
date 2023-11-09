@@ -28,7 +28,8 @@ library(tidyverse)
 ### Assumptions
 1. An athlete won't change their difficulty score since their last competition 
 2. An athlete won't get tired (so they can partake in any competition they are eligible for)
-3. 
+3. An athlete who hasn't made the top 5 in any prior competition will not place in the olympics 
+  a. use looser criteria for other countries because they may not rank high, but they will represent their country
 
 ## Loading Data and Data Cleaning 
 
@@ -97,6 +98,17 @@ df <- df %>%
          FullName = paste0(LastName, ' ', FirstName), 
          Date = as.Date(Date, format = "%d-%b-%Y")) %>%
   select(-Date_year, -Date_month, -Date_day, -LastName, -FirstName)
+```
+
+```{r}
+# vt1 and VT2 have a lot of NAs
+# 33 NAs are from Croatia, GBR has 17 and PAN has 13
+# 50 nas come from last year's world championships 
+df %>%
+  filter(is.na(Score)) %>%
+  group_by(Competition) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 
@@ -196,11 +208,17 @@ Idk how to check
 ```{r}
 # selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
 df_usaw_vt <- df_usaw %>%
-  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5)
+  filter(stringr::str_like(Apparatus,'VT%'))
 
 df_usaw_vt_bestscore <- df_usaw_vt %>%
   arrange(desc(Score)) %>%
   distinct(FullName, Round, .keep_all = TRUE)
+```
+
+
+```{r}
+ggplot(df_usaw_vt_bestscore, aes(x = Score))+
+  geom_histogram()
 ```
 
 
