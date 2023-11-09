@@ -79,7 +79,7 @@ df_men <- df_full_men_teams %>%
 ```{r}
 # adding individuals, using distinct incase of overlap 
 df_men <- rbind(df_men, df_men_indv) %>%
-  distinct(.)
+  distinct(.keep_all = T)
 ```
 
 ```{r}
@@ -127,11 +127,6 @@ df_men
   - Lucija Hribar (SLO)
   
 
-```{r}
-df_full %>%
-  filter(Gender == "w" & Country == "SLO") %>%
-  distinct(FullName)
-```
 
   
 ```{r}
@@ -161,7 +156,7 @@ df_women_indv <- df_full %>%
 
 ```{r}
 # adding individuals, using distinct to remove overlaps 
-df_women <- rbinf(df_women, df_women_indv) %>% distinct(.)
+df_women <- rbind(df_women, df_women_indv) %>% distinct(.keep_all = T)
 ```
 
 ```{r}

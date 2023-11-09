@@ -1007,3 +1007,316 @@ X,Gender,Country,Date,Competition,Round,Location,Apparatus,Rank,D_Score,E_Score,
 22410,w,AUS,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,final,"Birmingham, England",BB,1,5.1,8.366,NA,13.466,2022,NA KATE
 22411,w,AUS,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,qual,"Birmingham, England",BB,5,5,7.95,NA,12.95,2022,NA KATE
 22413,w,AUS,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,qual,"Birmingham, England",UB,5,5.6,7.9,NA,13.5,2022,NA KATE
+705,w,CZE,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,44,5.1,7.533,NA,12.633,2023,ARTAMONOVA SONA
+706,w,CZE,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,44,5,7.733,NA,12.733,2023,ARTAMONOVA SONA
+707,w,CZE,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,114,4.8,6.733,NA,11.533,2023,ARTAMONOVA SONA
+708,w,CZE,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,62,4.2,8.933,NA,13.133,2023,ARTAMONOVA SONA
+709,w,CZE,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",BB,11,4.6,8.066,NA,12.666,2023,ARTAMONOVA SONA
+710,w,CZE,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",FX,13,4.8,7.766,0.1,12.466,2023,ARTAMONOVA SONA
+711,w,CZE,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,22,4.8,7.3,NA,12.1,2023,ARTAMONOVA SONA
+712,w,CZE,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,90,4.6,6.933,0.3,11.233,2023,ARTAMONOVA SONA
+713,w,CZE,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,68,3.8,7.766,NA,11.566,2023,ARTAMONOVA SONA
+714,w,CZE,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,80,3.6,8.7,NA,12.3,2023,ARTAMONOVA SONA
+1715,w,SUI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,39,5.1,7.6,NA,12.7,2023,BICKEL LENA
+1716,w,SUI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,64,5.1,7.4,NA,12.5,2023,BICKEL LENA
+1717,w,SUI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,75,4.7,7.566,NA,12.266,2023,BICKEL LENA
+1718,w,SUI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,58,4.2,8.966,NA,13.166,2023,BICKEL LENA
+1719,w,SUI,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,90,5.1,4.9,NA,10,2023,BICKEL LENA
+1720,w,SUI,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,10,5.3,7.733,NA,13.033,2023,BICKEL LENA
+1721,w,SUI,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,77,4.7,6.533,NA,11.233,2023,BICKEL LENA
+1722,w,SUI,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,17,4.2,9.166,NA,13.366,2023,BICKEL LENA
+3566,w,HUN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,33,5.6,7.266,NA,12.866,2023,CZIFRA BETTINA
+3567,w,HUN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,91,4.9,7.233,NA,12.133,2023,CZIFRA BETTINA
+3568,w,HUN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,57,5.2,7.533,NA,12.733,2023,CZIFRA BETTINA
+3569,w,HUN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,29,5,8.633,NA,13.633,2023,CZIFRA BETTINA
+3570,w,HUN,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,73,5.3,5.433,0.1,10.633,2023,CZIFRA BETTINA
+3571,w,HUN,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,43,5,7.133,NA,12.133,2023,CZIFRA BETTINA
+3572,w,HUN,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,42,5.1,7.466,NA,12.566,2023,CZIFRA BETTINA
+3573,w,HUN,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,78,4.2,8.533,0.3,12.433,2023,CZIFRA BETTINA
+5813,w,PHI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,38,4.8,7.9,NA,12.7,2023,FINNEGAN ALEAH
+5814,w,PHI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,34,4.8,8.033,NA,12.833,2023,FINNEGAN ALEAH
+5815,w,PHI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,73,4.9,7.533,NA,12.433,2023,FINNEGAN ALEAH
+5816,w,PHI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,40,4.6,8.8,NA,13.4,2023,FINNEGAN ALEAH
+5817,w,PHI,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT2,18,4,8.6,NA,12.6,2023,FINNEGAN ALEAH
+7536,w,PAN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,97,4.8,7,NA,11.8,2023,HERON HILLARY
+7537,w,PAN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,29,5.5,7.566,0.1,12.966,2023,HERON HILLARY
+7538,w,PAN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,102,4.7,7.033,NA,11.733,2023,HERON HILLARY
+7539,w,PAN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,13,5.4,8.7,NA,14.1,2023,HERON HILLARY
+7540,w,PAN,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT2,20,4.6,7.433,0.3,11.733,2023,HERON HILLARY
+7541,w,PAN,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",BB,17,5,6.133,NA,11.133,2023,HERON HILLARY
+7542,w,PAN,2023-04-30,2023 Cairo World Cup,final,"Cairo, Egypt",FX,5,5.1,7.266,NA,12.366,2023,HERON HILLARY
+7543,w,PAN,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",FX,6,5.1,7.2,NA,12.3,2023,HERON HILLARY
+7544,w,PAN,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",UB,12,4.8,7.366,NA,12.166,2023,HERON HILLARY
+7545,w,PAN,2023-04-30,2023 Cairo World Cup,final,"Cairo, Egypt",VT1,3,5.4,8.366,NA,13.766,2023,HERON HILLARY
+7546,w,PAN,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",VT1,4,5.4,8.233,0.3,13.333,2023,HERON HILLARY
+7547,w,PAN,2023-04-30,2023 Cairo World Cup,final,"Cairo, Egypt",VT2,3,5,8.433,NA,13.433,2023,HERON HILLARY
+7548,w,PAN,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",VT2,4,4.2,8.733,NA,12.933,2023,HERON HILLARY
+7549,w,PAN,2023-06-28,2023 Central American and Caribbean Games,AAfinal,"San Salvador, El Salvador",BB,9,4.5,6.85,NA,11.35,2023,HERON HILLARY
+7550,w,PAN,2023-06-28,2023 Central American and Caribbean Games,qual,"San Salvador, El Salvador",BB,23,4.5,6,NA,10.5,2023,HERON HILLARY
+7551,w,PAN,2023-06-28,2023 Central American and Caribbean Games,AAfinal,"San Salvador, El Salvador",FX,1,5,7.95,NA,12.95,2023,HERON HILLARY
+7552,w,PAN,2023-06-28,2023 Central American and Caribbean Games,final,"San Salvador, El Salvador",FX,3,5,7.85,NA,12.85,2023,HERON HILLARY
+7553,w,PAN,2023-06-28,2023 Central American and Caribbean Games,qual,"San Salvador, El Salvador",FX,3,5,8.05,NA,13.05,2023,HERON HILLARY
+7554,w,PAN,2023-06-28,2023 Central American and Caribbean Games,AAfinal,"San Salvador, El Salvador",UB,10,4.7,7,NA,11.7,2023,HERON HILLARY
+7555,w,PAN,2023-06-28,2023 Central American and Caribbean Games,qual,"San Salvador, El Salvador",UB,12,4.8,7.35,NA,12.15,2023,HERON HILLARY
+7556,w,PAN,2023-06-28,2023 Central American and Caribbean Games,AAfinal,"San Salvador, El Salvador",VT1,1,5,8.45,NA,13.45,2023,HERON HILLARY
+7557,w,PAN,2023-06-28,2023 Central American and Caribbean Games,qual,"San Salvador, El Salvador",VT1,2,5,8.95,NA,13.95,2023,HERON HILLARY
+7558,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",BB,NA,4.5,7.367,NA,11.867,2023,HERON HILLARY
+7559,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",BB,NA,4.5,7.033,NA,11.533,2023,HERON HILLARY
+7560,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",FX,NA,4.8,7.533,NA,12.333,2023,HERON HILLARY
+7561,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",FX,NA,4.9,7.733,NA,12.633,2023,HERON HILLARY
+7562,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",UB,NA,4.7,7.1,NA,11.8,2023,HERON HILLARY
+7563,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",UB,NA,4.7,6.933,NA,11.633,2023,HERON HILLARY
+7564,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",VT,NA,5.4,7.167,NA,12.267,2023,HERON HILLARY
+7565,w,PAN,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",VT,NA,3.6,7.167,NA,10.667,2023,HERON HILLARY
+7566,w,PAN,2023-06-28,2023 Central American and Caribbean Games,final,"San Salvador, El Salvador",VT2,5,4.6,7.45,0.3,11.75,2023,HERON HILLARY
+7567,w,PAN,2023-06-28,2023 Central American and Caribbean Games,qual,"San Salvador, El Salvador",VT2,5,4.2,8.55,0.1,12.65,2023,HERON HILLARY
+7747,w,SLO,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",BB,61,4.7,7.066,NA,11.766,2022,HRIBAR LUCIJA
+7748,w,SLO,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",FX,91,4.4,7.7,NA,12.1,2022,HRIBAR LUCIJA
+7749,w,SLO,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",UB,43,5,8.033,NA,13.033,2022,HRIBAR LUCIJA
+7750,w,SLO,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",VT1,57,4.2,8.8,NA,13,2022,HRIBAR LUCIJA
+7751,w,SLO,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",BB,29,4.7,7.666,NA,12.366,2022,HRIBAR LUCIJA
+7752,w,SLO,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",FX,55,4.2,7.733,NA,11.933,2022,HRIBAR LUCIJA
+7753,w,SLO,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",UB,64,4.7,6.766,NA,11.466,2022,HRIBAR LUCIJA
+7754,w,SLO,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",VT1,39,4.2,8.7,NA,12.9,2022,HRIBAR LUCIJA
+7755,w,SLO,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,65,4.7,7.5,NA,12.2,2023,HRIBAR LUCIJA
+7756,w,SLO,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,100,4.5,7.466,NA,11.966,2023,HRIBAR LUCIJA
+7757,w,SLO,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,68,5,7.566,NA,12.566,2023,HRIBAR LUCIJA
+7758,w,SLO,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,51,4.2,9.033,NA,13.233,2023,HRIBAR LUCIJA
+7759,w,SLO,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",BB,24,4.7,6.8,NA,11.5,2023,HRIBAR LUCIJA
+7760,w,SLO,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",FX,15,4.7,7.5,0.1,12.1,2023,HRIBAR LUCIJA
+7761,w,SLO,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",UB,14,4.7,7.066,NA,11.766,2023,HRIBAR LUCIJA
+7762,w,SLO,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",BB,14,4.7,6.866,NA,11.566,2023,HRIBAR LUCIJA
+7763,w,SLO,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",UB,14,4.9,7.133,NA,12.033,2023,HRIBAR LUCIJA
+7764,w,SLO,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",BB,19,4.7,7.533,NA,12.233,2023,HRIBAR LUCIJA
+7765,w,SLO,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",FX,18,4.4,7.9,0.1,12.2,2023,HRIBAR LUCIJA
+7766,w,SLO,2023-02-26,2023 Cottbus World Cup,final,"Cottbus, Germany",UB,4,5,7.833,NA,12.833,2023,HRIBAR LUCIJA
+7767,w,SLO,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",UB,5,5,8.033,NA,13.033,2023,HRIBAR LUCIJA
+7768,w,SLO,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,32,4.4,7.4,NA,11.8,2023,HRIBAR LUCIJA
+7769,w,SLO,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,104,4.4,6.666,0.3,10.766,2023,HRIBAR LUCIJA
+7770,w,SLO,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,27,4.8,8.033,NA,12.833,2023,HRIBAR LUCIJA
+7771,w,SLO,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,27,4.2,8.966,NA,13.166,2023,HRIBAR LUCIJA
+8066,w,SLO,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",BB,20,4.7,6.866,NA,11.566,2022,HRIBAR LUCIJA
+8067,w,SLO,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",UB,11,4.9,7.366,NA,12.266,2022,HRIBAR LUCIJA
+8068,w,SLO,2022-03-20,2022 Cairo World Cup,qual,"Cairo, Egypt",BB,3,4.7,7.7,NA,12.4,2022,HRIBAR LUCIJA
+8069,w,SLO,2022-03-20,2022 Cairo World Cup,final,"Cairo, Egypt",BB,8,4.7,6.333,NA,11.033,2022,HRIBAR LUCIJA
+8070,w,SLO,2022-03-20,2022 Cairo World Cup,qual,"Cairo, Egypt",FX,9,4.2,7.466,NA,11.666,2022,HRIBAR LUCIJA
+8071,w,SLO,2022-03-20,2022 Cairo World Cup,qual,"Cairo, Egypt",UB,8,4.7,6.466,NA,11.166,2022,HRIBAR LUCIJA
+8072,w,SLO,2022-03-20,2022 Cairo World Cup,final,"Cairo, Egypt",UB,7,4.8,5.8,NA,10.6,2022,HRIBAR LUCIJA
+8073,w,SLO,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",BB,11,4.4,7.233,NA,11.633,2022,HRIBAR LUCIJA
+8074,w,SLO,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",FX,4,4.2,7.7,NA,11.9,2022,HRIBAR LUCIJA
+8075,w,SLO,2022-02-27,2022 Cottbus World Cup,final,"Cottbus, Germany",FX,8,0.4,8.4,6.5,2.3,2022,HRIBAR LUCIJA
+8076,w,SLO,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",UB,12,4.8,6.866,NA,11.666,2022,HRIBAR LUCIJA
+8077,w,SLO,2022-03-05,2022 Doha World Cup,final,"Doha, Qatar",BB,6,4.7,7.1,NA,11.8,2022,HRIBAR LUCIJA
+8078,w,SLO,2022-03-05,2022 Doha World Cup,qual,"Doha, Qatar",BB,5,4.2,7.333,NA,11.533,2022,HRIBAR LUCIJA
+8079,w,SLO,2022-03-05,2022 Doha World Cup,qual,"Doha, Qatar",FX,9,4.2,7.3,NA,11.5,2022,HRIBAR LUCIJA
+8080,w,SLO,2022-03-05,2022 Doha World Cup,final,"Doha, Qatar",FX,8,4.3,7.1,0.3,11.1,2022,HRIBAR LUCIJA
+8081,w,SLO,2022-03-05,2022 Doha World Cup,final,"Doha, Qatar",UB,4,4.8,7.6,NA,12.4,2022,HRIBAR LUCIJA
+8082,w,SLO,2022-03-05,2022 Doha World Cup,qual,"Doha, Qatar",UB,6,4.7,6.066,NA,10.766,2022,HRIBAR LUCIJA
+8083,w,SLO,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",BB,18,4.7,5.7,NA,10.4,2022,HRIBAR LUCIJA
+8084,w,SLO,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",FX,9,4.2,7.6,0.1,11.7,2022,HRIBAR LUCIJA
+8085,w,SLO,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",UB,4,5,8,NA,13,2022,HRIBAR LUCIJA
+8086,w,SLO,2022-06-19,2022 Koper World Challenge Cup,final,"Koper, Slovenia",UB,4,5,8.1,NA,13.1,2022,HRIBAR LUCIJA
+8087,w,SLO,2022-10-09,2022 Mersin World Challenge Cup,final,"Mersin, Turkey",BB,6,4.7,7.2,NA,11.9,2022,HRIBAR LUCIJA
+8088,w,SLO,2022-10-09,2022 Mersin World Challenge Cup,qual,"Mersin, Turkey",BB,4,4.7,7.65,NA,12.35,2022,HRIBAR LUCIJA
+8089,w,SLO,2022-10-09,2022 Mersin World Challenge Cup,final,"Mersin, Turkey",FX,8,4.2,7.5,NA,11.7,2022,HRIBAR LUCIJA
+8090,w,SLO,2022-10-09,2022 Mersin World Challenge Cup,qual,"Mersin, Turkey",FX,6,4.2,7.7,NA,11.9,2022,HRIBAR LUCIJA
+8091,w,SLO,2022-10-09,2022 Mersin World Challenge Cup,qual,"Mersin, Turkey",UB,9,4.9,7.45,NA,12.35,2022,HRIBAR LUCIJA
+8092,w,SLO,2022-06-12,2022 Osijek World Challenge Cup,qual,"Osijek, Croatia",BB,7,4.7,7.3,NA,12,2022,HRIBAR LUCIJA
+8093,w,SLO,2022-06-12,2022 Osijek World Challenge Cup,final,"Osijek, Croatia",BB,8,4.7,6.7,NA,11.4,2022,HRIBAR LUCIJA
+8094,w,SLO,2022-06-12,2022 Osijek World Challenge Cup,qual,"Osijek, Croatia",FX,14,4.3,7.6,NA,11.9,2022,HRIBAR LUCIJA
+8095,w,SLO,2022-06-12,2022 Osijek World Challenge Cup,qual,"Osijek, Croatia",UB,10,4.8,7.166,NA,11.966,2022,HRIBAR LUCIJA
+10986,w,UKR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,31,5.6,7.3,NA,12.9,2023,LASHCHEVSKA ANNA
+10987,w,UKR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,112,5.1,6.7,NA,11.8,2023,LASHCHEVSKA ANNA
+10988,w,UKR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,35,5.6,7.533,NA,13.133,2023,LASHCHEVSKA ANNA
+10989,w,UKR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,108,4.2,8.633,NA,12.833,2023,LASHCHEVSKA ANNA
+10990,w,UKR,2023-03-12,2023 Baku World Cup,final,"Baku, Azerbaijan",BB,3,5.7,7.733,NA,13.433,2023,LASHCHEVSKA ANNA
+10991,w,UKR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",BB,3,5.7,7.833,NA,13.533,2023,LASHCHEVSKA ANNA
+10992,w,UKR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",UB,11,5.4,6.833,NA,12.233,2023,LASHCHEVSKA ANNA
+10993,w,UKR,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",BB,24,5.6,5.266,0.1,10.766,2023,LASHCHEVSKA ANNA
+10994,w,UKR,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",FX,24,4.9,6.366,NA,11.266,2023,LASHCHEVSKA ANNA
+10995,w,UKR,2023-04-30,2023 Cairo World Cup,qual,"Cairo, Egypt",UB,18,5.3,6.4,NA,11.7,2023,LASHCHEVSKA ANNA
+10996,w,UKR,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",BB,21,5.2,6.966,NA,12.166,2023,LASHCHEVSKA ANNA
+10997,w,UKR,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",UB,10,5.7,6.866,NA,12.566,2023,LASHCHEVSKA ANNA
+10998,w,UKR,2023-03-04,2023 Doha World Cup,final,"Doha, Qatar",BB,2,5.7,7.633,NA,13.333,2023,LASHCHEVSKA ANNA
+10999,w,UKR,2023-03-04,2023 Doha World Cup,qual,"Doha, Qatar",BB,2,5.7,7.6,NA,13.3,2023,LASHCHEVSKA ANNA
+11000,w,UKR,2023-03-04,2023 Doha World Cup,final,"Doha, Qatar",UB,1,5.6,7.9,NA,13.5,2023,LASHCHEVSKA ANNA
+11001,w,UKR,2023-03-04,2023 Doha World Cup,qual,"Doha, Qatar",UB,3,5.6,7.7,NA,13.3,2023,LASHCHEVSKA ANNA
+11002,w,UKR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,53,5.7,5.633,0.1,11.233,2023,LASHCHEVSKA ANNA
+11003,w,UKR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,48,4.9,7.166,NA,12.066,2023,LASHCHEVSKA ANNA
+11004,w,UKR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,32,5.6,7.133,NA,12.733,2023,LASHCHEVSKA ANNA
+11005,w,UKR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,65,4.2,8.533,NA,12.733,2023,LASHCHEVSKA ANNA
+12310,w,POR,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",UB,60,5.3,6.633,0.3,11.633,2022,MARTINS FILIPA
+12311,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",BB,21,5,7.566,NA,12.566,2023,MARTINS FILIPA
+12312,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,43,5,7.633,NA,12.633,2023,MARTINS FILIPA
+12313,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",FX,15,4.8,7.933,NA,12.733,2023,MARTINS FILIPA
+12314,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,34,4.8,8.033,NA,12.833,2023,MARTINS FILIPA
+12315,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",UB,12,5.3,8.133,NA,13.433,2023,MARTINS FILIPA
+12316,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,30,5.4,7.933,NA,13.333,2023,MARTINS FILIPA
+12317,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",VT,21,4.2,8.766,0.1,12.866,2023,MARTINS FILIPA
+12318,w,POR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,58,4.2,8.966,NA,13.166,2023,MARTINS FILIPA
+12319,w,POR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",BB,21,4.8,6.833,NA,11.633,2023,MARTINS FILIPA
+12320,w,POR,2023-03-12,2023 Baku World Cup,final,"Baku, Azerbaijan",UB,8,5.2,7.7,NA,12.9,2023,MARTINS FILIPA
+12321,w,POR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",UB,8,5.3,7.633,NA,12.933,2023,MARTINS FILIPA
+12322,w,POR,2023-02-26,2023 Cottbus World Cup,final,"Cottbus, Germany",BB,3,5,8.133,NA,13.133,2023,MARTINS FILIPA
+12323,w,POR,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",BB,6,5,8,NA,13,2023,MARTINS FILIPA
+12324,w,POR,2023-02-26,2023 Cottbus World Cup,qual,"Cottbus, Germany",UB,17,4.8,6.766,NA,11.566,2023,MARTINS FILIPA
+12325,w,POR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,103,5,4.4,NA,9.4,2023,MARTINS FILIPA
+12326,w,POR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,19,4.8,7.9,NA,12.7,2023,MARTINS FILIPA
+12327,w,POR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,61,5.5,6.533,NA,12.033,2023,MARTINS FILIPA
+12328,w,POR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,21,4.2,9.1,NA,13.3,2023,MARTINS FILIPA
+13139,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",BB,20,5.1,7.5,NA,12.6,2023,MORENO ALEXA
+13140,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,63,5,7.266,NA,12.266,2023,MORENO ALEXA
+13141,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",FX,21,5.7,6.533,NA,12.233,2023,MORENO ALEXA
+13142,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,27,5.8,7.233,NA,13.033,2023,MORENO ALEXA
+13143,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",UB,17,5.5,7.466,NA,12.966,2023,MORENO ALEXA
+13144,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,72,5.3,7.166,NA,12.466,2023,MORENO ALEXA
+13145,w,MEX,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",VT,7,5.4,8.666,0.1,13.966,2023,MORENO ALEXA
+13149,w,MEX,2023-06-28,2023 Central American and Caribbean Games,AAfinal,"San Salvador, El Salvador",BB,15,4.7,6.3,0.1,10.9,2023,MORENO ALEXA
+13156,w,MEX,2023-06-28,2023 Central American and Caribbean Games,qual,"San Salvador, El Salvador",UB,11,5.5,7,0.3,12.2,2023,MORENO ALEXA
+13162,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",BB,NA,5.1,6.667,NA,11.667,2023,MORENO ALEXA
+13163,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",FX,NA,5.1,7.733,NA,12.833,2023,MORENO ALEXA
+13164,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamFinal,"Medellin, Colombia",VT,NA,5.4,8.7,NA,14.1,2023,MORENO ALEXA
+13165,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",BB,NA,5.1,7.233,NA,12.233,2023,MORENO ALEXA
+13166,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",FX,NA,5.4,7.5,NA,12.9,2023,MORENO ALEXA
+13167,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",UB,NA,5.5,6.8,NA,12.3,2023,MORENO ALEXA
+13168,w,MEX,2023-05-28,2023 Artistic Gymnastics Senior Pan American Championships,TeamQual,"Medellin, Colombia",VT,NA,5.4,8.767,NA,14.167,2023,MORENO ALEXA
+14259,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",BB,14,5.5,7.8,NA,13.3,2023,NEMOUR KAYLIA
+14260,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,21,5.5,7.766,NA,13.266,2023,NEMOUR KAYLIA
+14261,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",FX,16,5,7.8,0.1,12.7,2023,NEMOUR KAYLIA
+14262,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,48,5,7.7,NA,12.7,2023,NEMOUR KAYLIA
+14263,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",UB,1,6.9,8.3,NA,15.2,2023,NEMOUR KAYLIA
+14264,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,final,"Antwerp, Belgium",UB,2,6.7,8.333,NA,15.033,2023,NEMOUR KAYLIA
+14265,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,3,6.8,7.933,NA,14.733,2023,NEMOUR KAYLIA
+14266,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,AAfinal,"Antwerp, Belgium",VT,22,4.2,8.666,0.1,12.766,2023,NEMOUR KAYLIA
+14267,w,ALG,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,85,4.2,8.8,NA,13,2023,NEMOUR KAYLIA
+15422,w,ESP,2022-08-14,2022 Senior European Championships,final,"Munich, Germany",BB,6,5.5,6.9,NA,12.4,2022,PETISCO ALBA
+15423,w,ESP,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",BB,9,5.5,7.6,NA,13.1,2022,PETISCO ALBA
+15424,w,ESP,2022-08-14,2022 Senior European Championships,TeamFinal,"Munich, Germany",BB,14,5.5,7.3,0.1,12.7,2022,PETISCO ALBA
+15425,w,ESP,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",FX,14,5.2,7.733,NA,12.933,2022,PETISCO ALBA
+15426,w,ESP,2022-08-14,2022 Senior European Championships,TeamFinal,"Munich, Germany",FX,13,5.2,7.733,NA,12.933,2022,PETISCO ALBA
+15427,w,ESP,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",UB,28,5.2,7.633,NA,12.833,2022,PETISCO ALBA
+15428,w,ESP,2022-08-14,2022 Senior European Championships,TeamFinal,"Munich, Germany",UB,17,5.2,7.933,NA,13.133,2022,PETISCO ALBA
+15429,w,ESP,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",VT1,20,4.2,9.066,NA,13.266,2022,PETISCO ALBA
+15430,w,ESP,2022-08-14,2022 Senior European Championships,TeamFinal,"Munich, Germany",VT1,18,4.2,8.966,NA,13.166,2022,PETISCO ALBA
+15431,w,ESP,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,107,5.4,6.166,NA,11.566,2023,PETISCO ALBA
+15432,w,ESP,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,24,5.3,7.8,NA,13.1,2023,PETISCO ALBA
+15433,w,ESP,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,60,5,7.666,NA,12.666,2023,PETISCO ALBA
+15434,w,ESP,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,26,4.6,9.033,NA,13.633,2023,PETISCO ALBA
+15435,w,ESP,2023-04-16,2023 Senior European Championships,AAfinal,"Antalya, Turkey",BB,13,5.5,7,NA,12.5,2023,PETISCO ALBA
+15436,w,ESP,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,46,5.5,5.966,NA,11.466,2023,PETISCO ALBA
+15437,w,ESP,2023-04-16,2023 Senior European Championships,AAfinal,"Antalya, Turkey",FX,11,5.2,7.3,NA,12.5,2023,PETISCO ALBA
+15438,w,ESP,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,18,5.2,7.533,NA,12.733,2023,PETISCO ALBA
+15439,w,ESP,2023-04-16,2023 Senior European Championships,AAfinal,"Antalya, Turkey",UB,13,5.2,7.733,NA,12.933,2023,PETISCO ALBA
+15440,w,ESP,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,22,5.2,7.9,NA,13.1,2023,PETISCO ALBA
+15441,w,ESP,2023-04-16,2023 Senior European Championships,AAfinal,"Antalya, Turkey",VT1,15,4.2,8.966,NA,13.166,2023,PETISCO ALBA
+15442,w,ESP,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,38,4.2,8.833,NA,13.033,2023,PETISCO ALBA
+15928,w,ESP,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",BB,4,5.5,6.833,NA,12.333,2022,PETISCO ALBA
+15929,w,ESP,2022-02-27,2022 Cottbus World Cup,final,"Cottbus, Germany",BB,6,5.5,6.4,NA,11.9,2022,PETISCO ALBA
+15930,w,ESP,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",FX,1,5.3,7.866,NA,13.166,2022,PETISCO ALBA
+15931,w,ESP,2022-02-27,2022 Cottbus World Cup,final,"Cottbus, Germany",FX,1,5.3,7.6,NA,12.9,2022,PETISCO ALBA
+15932,w,ESP,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",UB,14,5.2,6.133,NA,11.333,2022,PETISCO ALBA
+15933,w,ESP,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",VT1,4,4.2,8.866,NA,13.066,2022,PETISCO ALBA
+15934,w,ESP,2022-02-27,2022 Cottbus World Cup,final,"Cottbus, Germany",VT1,3,4.2,9,NA,13.2,2022,PETISCO ALBA
+15935,w,ESP,2022-02-27,2022 Cottbus World Cup,final,"Cottbus, Germany",VT2,3,3.8,8.833,NA,12.633,2022,PETISCO ALBA
+15936,w,ESP,2022-02-27,2022 Cottbus World Cup,qual,"Cottbus, Germany",VT2,4,3.4,8.766,NA,12.166,2022,PETISCO ALBA
+15937,w,ESP,2022-06-19,2022 Koper World Challenge Cup,final,"Koper, Slovenia",UB,8,5.4,5.6,NA,11,2022,PETISCO ALBA
+15938,w,ESP,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",UB,3,5.4,7.65,NA,13.05,2022,PETISCO ALBA
+15939,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",BB,6,5.4,6.733,NA,12.133,2023,PETISCO ALBA
+15940,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",BB,3,5.5,7.833,NA,13.333,2023,PETISCO ALBA
+15941,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",FX,8,5,7.567,NA,12.567,2023,PETISCO ALBA
+15942,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",FX,3,5.2,7.967,NA,13.167,2023,PETISCO ALBA
+15943,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",VT1,5,4.2,8.8,NA,13,2023,PETISCO ALBA
+15944,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",VT1,3,4.2,8.867,NA,13.067,2023,PETISCO ALBA
+15945,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",VT2,3,3.8,8.867,NA,12.667,2023,PETISCO ALBA
+15946,w,ESP,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",VT2,5,3.8,8.4,NA,12.2,2023,PETISCO ALBA
+16396,w,ISR,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",BB,27,5.3,7.333,NA,12.633,2022,RAZ LIHIE
+16397,w,ISR,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",FX,40,5,7.833,NA,12.833,2022,RAZ LIHIE
+16398,w,ISR,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",UB,131,4.7,5.566,NA,10.266,2022,RAZ LIHIE
+16399,w,ISR,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",VT1,25,5,8.7,NA,13.7,2022,RAZ LIHIE
+16400,w,ISR,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,final,"Liverpool, England",VT2,8,4.4,8.666,NA,13.066,2022,RAZ LIHIE
+16401,w,ISR,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",VT2,10,4.4,8.733,NA,13.133,2022,RAZ LIHIE
+16402,w,ISR,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",BB,55,5,6.733,NA,11.733,2022,RAZ LIHIE
+16403,w,ISR,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",FX,28,5.2,7.5,0.1,12.6,2022,RAZ LIHIE
+16404,w,ISR,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",UB,42,4.9,7.433,NA,12.333,2022,RAZ LIHIE
+16405,w,ISR,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",VT1,14,5,8.5,NA,13.5,2022,RAZ LIHIE
+16406,w,ISR,2022-08-14,2022 Senior European Championships,final,"Munich, Germany",VT2,7,4.4,8.4,0.1,12.7,2022,RAZ LIHIE
+16407,w,ISR,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",VT2,8,4.4,8.633,NA,13.033,2022,RAZ LIHIE
+16408,w,ISR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,78,5.1,6.933,NA,12.033,2023,RAZ LIHIE
+16409,w,ISR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,59,5,7.533,NA,12.533,2023,RAZ LIHIE
+16410,w,ISR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,74,4.9,7.5,NA,12.4,2023,RAZ LIHIE
+16411,w,ISR,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,82,4.2,8.833,NA,13.033,2023,RAZ LIHIE
+16412,w,ISR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",BB,39,5.3,5.066,NA,10.366,2023,RAZ LIHIE
+16413,w,ISR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",FX,12,4.7,7.5,NA,12.2,2023,RAZ LIHIE
+16414,w,ISR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",UB,19,4.9,6.633,NA,11.533,2023,RAZ LIHIE
+16415,w,ISR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",VT1,11,4.2,8.7,NA,12.9,2023,RAZ LIHIE
+16416,w,ISR,2023-03-12,2023 Baku World Cup,qual,"Baku, Azerbaijan",VT2,11,3.4,8.533,NA,11.933,2023,RAZ LIHIE
+16417,w,ISR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",BB,98,5.2,4.5,NA,9.7,2023,RAZ LIHIE
+16418,w,ISR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",FX,46,5,7.2,0.1,12.1,2023,RAZ LIHIE
+16419,w,ISR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",UB,77,4.7,6.533,NA,11.233,2023,RAZ LIHIE
+16420,w,ISR,2023-04-16,2023 Senior European Championships,qual,"Antalya, Turkey",VT1,51,4.2,8.733,NA,12.933,2023,RAZ LIHIE
+16668,w,RSA,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",BB,86,4.9,6.4,NA,11.3,2022,ROOSKRANTZ CAITLIN
+16669,w,RSA,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",FX,83,4.6,7.6,NA,12.2,2022,ROOSKRANTZ CAITLIN
+16670,w,RSA,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",UB,41,5.3,7.8,NA,13.1,2022,ROOSKRANTZ CAITLIN
+16671,w,RSA,2022-11-06,2022 51st FIG Artistic Gymnastics World Championships,qual,"Liverpool, England",VT1,95,4.2,8.4,NA,12.6,2022,ROOSKRANTZ CAITLIN
+16672,w,RSA,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",BB,103,4.4,7.3,NA,11.7,2023,ROOSKRANTZ CAITLIN
+16673,w,RSA,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,70,4.8,7.633,NA,12.433,2023,ROOSKRANTZ CAITLIN
+16674,w,RSA,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,46,5.6,7.3,NA,12.9,2023,ROOSKRANTZ CAITLIN
+16675,w,RSA,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,78,4.2,8.866,NA,13.066,2023,ROOSKRANTZ CAITLIN
+16676,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,AAfinal,"Birmingham, England",BB,16,4.8,6.05,NA,10.85,2022,ROOSKRANTZ CAITLIN
+16677,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,qual,"Birmingham, England",BB,24,4.8,6.3,NA,11.1,2022,ROOSKRANTZ CAITLIN
+16678,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,AAfinal,"Birmingham, England",FX,6,4.9,7.6,NA,12.5,2022,ROOSKRANTZ CAITLIN
+16679,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,qual,"Birmingham, England",FX,12,4.9,7.7,0.1,12.5,2022,ROOSKRANTZ CAITLIN
+16680,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,AAfinal,"Birmingham, England",UB,9,5.3,6.85,NA,12.15,2022,ROOSKRANTZ CAITLIN
+16681,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,final,"Birmingham, England",UB,3,5.8,7.633,NA,13.433,2022,ROOSKRANTZ CAITLIN
+16682,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,qual,"Birmingham, England",UB,7,5.8,7.55,NA,13.35,2022,ROOSKRANTZ CAITLIN
+16683,w,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,AAfinal,"Birmingham, England",VT,9,4.2,8.65,NA,12.85,2022,ROOSKRANTZ CAITLIN
+16684,m,RSA,2022-08-02,BIRMINGHAM 2022 Commonwealth Games,AAqual,"Birmingham, England",VT1,NA,4.2,8.75,NA,12.95,2022,ROOSKRANTZ CAITLIN
+16894,w,ISR,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",BB,13,5.4,6.866,NA,12.266,2022,RAZ LIHIE
+16895,w,ISR,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",FX,19,5,6.433,NA,11.433,2022,RAZ LIHIE
+16896,w,ISR,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",UB,NA,4.9,7.366,NA,12.266,2022,RAZ LIHIE
+16897,w,ISR,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",VT1,10,4.2,8.7,NA,12.9,2022,RAZ LIHIE
+16898,w,ISR,2022-04-03,2022 Baku World Cup,qual,"Baku, Azerbaijan",VT2,10,3.8,8.7,NA,12.5,2022,RAZ LIHIE
+16899,w,ISR,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",BB,3,5.3,7.35,NA,12.65,2022,RAZ LIHIE
+16900,w,ISR,2022-06-19,2022 Koper World Challenge Cup,final,"Koper, Slovenia",BB,7,4.9,5.75,NA,10.65,2022,RAZ LIHIE
+16901,w,ISR,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",FX,7,5.1,7.05,0.1,12.05,2022,RAZ LIHIE
+16902,w,ISR,2022-06-19,2022 Koper World Challenge Cup,final,"Koper, Slovenia",FX,4,5.1,7.25,NA,12.35,2022,RAZ LIHIE
+16903,w,ISR,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",UB,8,4.9,7.6,NA,12.5,2022,RAZ LIHIE
+16904,w,ISR,2022-06-19,2022 Koper World Challenge Cup,final,"Koper, Slovenia",UB,7,4.9,7.2,NA,12.1,2022,RAZ LIHIE
+16905,w,ISR,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",VT1,12,4.2,8.75,NA,12.95,2022,RAZ LIHIE
+16906,w,ISR,2022-06-19,2022 Koper World Challenge Cup,qual,"Koper, Slovenia",VT2,12,3.8,7.4,NA,11.2,2022,RAZ LIHIE
+16907,w,ISR,2022-09-25,2022 Paris World Challenge Cup,qual,"Paris, France",BB,37,5.3,4.8,NA,10.1,2022,RAZ LIHIE
+16908,w,ISR,2022-09-25,2022 Paris World Challenge Cup,qual,"Paris, France",FX,12,4.9,7.4,NA,12.3,2022,RAZ LIHIE
+16909,w,ISR,2022-09-25,2022 Paris World Challenge Cup,qual,"Paris, France",UB,20,4.9,6.7,NA,11.6,2022,RAZ LIHIE
+16910,w,ISR,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",BB,7,5.4,7.15,NA,12.55,2022,RAZ LIHIE
+16911,w,ISR,2022-03-29,2022 Varna World Challenge Cup,final,"Varna, Bulgaria",BB,7,5.3,6.2,NA,11.5,2022,RAZ LIHIE
+16912,w,ISR,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",FX,13,5.3,7.1,0.1,12.3,2022,RAZ LIHIE
+16913,w,ISR,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",UB,18,4.7,6.85,NA,11.55,2022,RAZ LIHIE
+16914,w,ISR,2022-03-29,2022 Varna World Challenge Cup,final,"Varna, Bulgaria",VT1,6,4.2,8.9,NA,13.1,2022,RAZ LIHIE
+16915,w,ISR,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",VT1,8,4.2,9,NA,13.2,2022,RAZ LIHIE
+16916,w,ISR,2022-03-29,2022 Varna World Challenge Cup,final,"Varna, Bulgaria",VT2,6,3.8,8.95,NA,12.75,2022,RAZ LIHIE
+16917,w,ISR,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",VT2,8,3.8,8.8,NA,12.6,2022,RAZ LIHIE
+16918,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",BB,6,5.2,7.467,NA,12.667,2023,RAZ LIHIE
+16919,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",BB,8,5,5.367,NA,10.367,2023,RAZ LIHIE
+16920,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",FX,7,5,7.6,NA,12.6,2023,RAZ LIHIE
+16921,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",FX,6,5,7.767,NA,12.767,2023,RAZ LIHIE
+16922,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",UB,12,4.9,6.267,NA,11.167,2023,RAZ LIHIE
+16923,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",VT1,6,4.2,8.7,NA,12.9,2023,RAZ LIHIE
+16924,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",VT1,8,4.2,8.833,NA,13.033,2023,RAZ LIHIE
+16925,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,final,"Tel Aviv, Israel",VT2,6,3.4,8.5,NA,11.9,2023,RAZ LIHIE
+16926,w,ISR,2023-06-04,2023 Tel Aviv World Challenge Cup,qual,"Tel Aviv, Israel",VT2,8,3.2,8.567,0.1,11.667,2023,RAZ LIHIE
+17035,w,RSA,2022-03-20,2022 Cairo World Cup,qual,"Cairo, Egypt",BB,7,4.8,7,NA,11.8,2022,ROOSKRANTZ CAITLIN
+17036,w,RSA,2022-03-20,2022 Cairo World Cup,final,"Cairo, Egypt",BB,6,4.7,6.666,NA,11.366,2022,ROOSKRANTZ CAITLIN
+17037,w,RSA,2022-03-20,2022 Cairo World Cup,qual,"Cairo, Egypt",FX,17,4.4,6.266,NA,10.666,2022,ROOSKRANTZ CAITLIN
+17038,w,RSA,2022-03-20,2022 Cairo World Cup,final,"Cairo, Egypt",UB,1,5.4,6.9,NA,12.3,2022,ROOSKRANTZ CAITLIN
+17039,w,RSA,2022-03-20,2022 Cairo World Cup,qual,"Cairo, Egypt",UB,3,5.1,6.966,NA,12.066,2022,ROOSKRANTZ CAITLIN
+17040,w,RSA,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",BB,11,5,6.95,NA,11.95,2022,ROOSKRANTZ CAITLIN
+17041,w,RSA,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",FX,14,4.7,7.55,NA,12.25,2022,ROOSKRANTZ CAITLIN
+17042,w,RSA,2022-03-29,2022 Varna World Challenge Cup,qual,"Varna, Bulgaria",UB,9,5.6,6.75,NA,12.35,2022,ROOSKRANTZ CAITLIN
+17413,w,GER,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",BB,8,5.5,7.766,0.1,13.166,2022,SCHAEFER PAULINE
+17415,w,GER,2022-08-14,2022 Senior European Championships,qual,"Munich, Germany",FX,18,4.6,8.166,NA,12.766,2022,SCHAEFER PAULINE
+17416,w,GER,2022-08-14,2022 Senior European Championships,TeamFinal,"Munich, Germany",FX,18,4.6,7.833,NA,12.433,2022,SCHAEFER PAULINE
+17417,w,GER,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,final,"Antwerp, Belgium",BB,8,5.4,7.5,0.1,12.8,2023,SCHAEFER PAULINE
+17419,w,GER,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",FX,41,4.6,8.133,NA,12.733,2023,SCHAEFER PAULINE
+17420,w,GER,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",UB,40,4.8,8.166,NA,12.966,2023,SCHAEFER PAULINE
+17421,w,GER,2023-10-08,2023 52nd FIG Artistic Gymnastics World Championships,qual,"Antwerp, Belgium",VT1,90,4,8.966,NA,12.966,2023,SCHAEFER PAULINE
+18573,w,GER,2022-06-12,2022 Osijek World Challenge Cup,qual,"Osijek, Croatia",BB,6,5.2,6.966,0.1,12.066,2022,SCHAEFER PAULINE
