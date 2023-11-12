@@ -33,6 +33,16 @@ women_scores %>%
   group_by(Country) %>% 
   summarise(Count = n_distinct(FullName))
 ```
+Colombia, Indonesia missing 1 athlete representation
+Spain missing 1 more athletes representation
+
+https://en.wikipedia.org/wiki/Gymnastics_at_the_2024_Summer_Olympics_%E2%80%93_Qualification 
+
+```{r}
+top_USA <- women_scores %>% 
+  filter(Country == "USA") %>% 
+  distinct(FullName, .keep_all=TRUE)
+```
 
 
 
