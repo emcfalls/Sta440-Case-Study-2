@@ -1,0 +1,106 @@
+---
+title: "Simulation-EZ"
+subtitle: "no subtitle"
+author: "Emily Zhao"
+format: 
+  html:
+    self-contained: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Setup
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(purrr)
+library(dplyr)
+```
+
+
+** selecting variables that matter ** 
+```{r}
+women_scores <- read.csv("cleaned data/restricted_women_2023.csv") %>% 
+  select(Country, FullName, Apparatus, Score)
+```
+
+
+** Checking if there's enough athletes represented for each team country ** 
+```{r}
+women_scores %>%
+  distinct(FullName, .keep_all = TRUE) %>%  # Keep the first occurrence of each athlete
+  group_by(Country) %>% 
+  summarise(Count = n_distinct(FullName))
+```
+
+
+
+** create vector and data frame with unique names as rows** 
+
+```{r}
+
+Score_List <- distinct(women_scores, FullName, Country)
+
+```
+
+
+```{r}
+points <- 1
+name <- "BILES SIMONE"
+col_name <- paste("event_", "BB", sep = "")
+
+Score_List[which(Score_List$FullName == name), col_name] <- 3
+```
+
+
+```{r}
+
+results_sim <- function(events, women_scores) {
+  Score_List <- distinct(women_scores, FullName, Country)
+
+  
+
+    for (name in Score_List$FullName) {
+          for (event in events) {
+            points <- simulate_score(name, event, women_scores)
+            col_name <- paste("event_", event, sep = "")
+            Score_List[which(Score_List$FullName == name), col_name] <- points
+          }
+    }
+  Score_List$Total_Score <- rowSums(Score_List[, -c(1,2), drop = FALSE], na.rm = TRUE)
+
+  winners <- Score_List %>% 
+    arrange(desc(Total_Score)) %>% 
+    slice(1:3)
+  
+  return(winners)
+    
+}
+```
+
+
+```{r}
+simulate_score <- function(name, event, women_scores) {
+  result <- women_scores %>%
+    filter(FullName == name, Apparatus == event) %>% 
+    summarize(mean_score = mean(Score, na.rm = TRUE))
+  
+  return(result)
+}
+```
+
+```{r}
+simulate_score("BILES SIMONE", "BB", women_scores)
+```
+
+
+```{r}
+results_sim(c("BB", "FX"), women_scores)
+```
+
+
+
+
+
+
