@@ -33,6 +33,16 @@ women_scores %>%
   group_by(Country) %>% 
   summarise(Count = n_distinct(FullName))
 ```
+Colombia, Indonesia missing 1 athlete representation
+Spain missing 1 more athletes representation
+
+https://en.wikipedia.org/wiki/Gymnastics_at_the_2024_Summer_Olympics_%E2%80%93_Qualification 
+
+```{r}
+top_USA <- women_scores %>% 
+  filter(Country == "USA") %>% 
+  distinct(FullName, .keep_all=TRUE)
+```
 
 
 
@@ -101,6 +111,128 @@ results_sim(c("BB", "FX"), women_scores)
 
 
 
+
+
+
+
+## 11.12.2023 evan 9 48am
+
+
+## Dataframe where each row is an athlete. For each athlete, there are four columns (the different apparatuses) and in each column is a list of scores for that event.
+```{r}
+women_scores_here <- read.csv("cleaned data/restricted_women_2023.csv") %>% 
+  select(Country, FullName, Apparatus, Score)
+
+# first, making c(VT, VT1, VT2) all just VT
+women_scores_VT_united <- women_scores_here %>%
+  mutate(Apparatus = ifelse(Apparatus %in% c("VT1", "VT2"), "VT", Apparatus))
+
+# dropping all NAs in the Score column (considering them as effectively "no attempt" or "no score for the simulation to consider")
+women_scores_VT_united <- women_scores_VT_united %>%
+  filter(!is.na(Score) & Score != 0)
+
+min_score <- min(women_scores_VT_united$Score, na.rm = TRUE)
+max_score <- max(women_scores_VT_united$Score, na.rm = TRUE)
+print(min_score)
+print(max_score)
+# making the Dataframe where each row is an athlete. For each athlete, there are four columns (the different apparatuses) and in each column is a list of scores for that event.
+women_scores_consolidated <- women_scores_VT_united %>%
+  group_by(Country, FullName, Apparatus) %>%
+  summarise(Scores = list(Score), .groups = 'drop')
+
+# View the transformed data
+# print(women_scores_consolidated)
+
+
+# sanity check
+#georgia_brown_FX_scores <- women_scores_consolidated %>%
+#  filter(Country == "AUS", FullName == "BROWN GEORGIA", Apparatus == "UB") %>%
+#  select(Scores) %>% 
+#  unnest(Scores)
+
+#georgia_brown_FX_scores
+
+# Exporting women_scores_consolidated to a CSV file
+
+
+```
+
+
+## attempt: KernSmooth (paper linked also has 20 other kernel density estimating options in R)
+```{r}
+# KernSmooth
+# Deng and Wickham's Paper - https://vita.had.co.nz/papers/density-estimation.pdf
+# Documentation for KernSmooth - https://cran.r-project.org/web/packages/KernSmooth/KernSmooth.pdf
+
+georgia_brown_FX_scores <- women_scores_consolidated %>%
+  filter(Country == "AUS", FullName == "BROWN GEORGIA", Apparatus == "UB") %>%
+  select(Scores) %>% 
+  unnest(Scores) %>%
+  unlist() 
+
+class(georgia_brown_FX_scores)
+print(georgia_brown_FX_scores)
+
+
+library(KernSmooth)
+
+
+example_KDE_for_georgia_brown_FX_scores <- bkde(x = georgia_brown_FX_scores, kernel = "normal", canonical = FALSE, bandwidth = 0.25, gridsize = 401L, range.x = c(min(georgia_brown_FX_scores, na.rm = TRUE)-2, max(georgia_brown_FX_scores)+2), truncate = TRUE)
+
+
+library(ggplot2)
+
+kde_data <- data.frame(
+  x = example_KDE_for_georgia_brown_FX_scores$x, 
+  y = example_KDE_for_georgia_brown_FX_scores$y
+)
+
+# Convert actual scores to data frame for plotting
+scores_data <- data.frame(score = georgia_brown_FX_scores)
+
+# actual data values and the smoothed-out kernel density estimation
+ggplot() +
+  geom_line(data = kde_data, aes(x, y), color = "blue") +  # KDE line
+  geom_jitter(data = scores_data, aes(x = score, y = 0), color = "red", width = 0.1, height = 0) +  # Actual scores
+  labs(title = "Kernel Density Estimate and Actual Scores for Georgia Brown's FX Scores",
+       x = "Score",
+       y = "Density") +
+  theme_minimal()
+
+
+
+# Create a CDF from the KDE
+kde_y_cumsum <- cumsum(example_KDE_for_georgia_brown_FX_scores$y)
+cdf <- kde_y_cumsum / max(kde_y_cumsum)
+sample_from_kde <- function(cdf, kde_x, n) {
+  u <- runif(n)  # Generate uniform random numbers
+  sampled_values <- numeric(n)
+  for (i in 1:n) {
+    # Find the closest value in CDF, then get corresponding x-value from KDE
+    sampled_values[i] <- kde_x[which.min(abs(cdf - u[i]))]
+  }
+  return(sampled_values)
+}
+
+# Sample 10 scores from the KDE
+sampled_scores <- sample_from_kde(cdf, example_KDE_for_georgia_brown_FX_scores$x, 10)
+
+
+
+# actual data values and the smoothed-out kernel density estimation, and the sampled scores
+sampled_scores_data <- data.frame(score = sampled_scores)
+
+# Plot using ggplot
+ggplot() +
+  geom_line(data = kde_data, aes(x, y), color = "blue") +  # KDE line
+  geom_jitter(data = scores_data, aes(x = score, y = 0), color = "red", width = 0.1, height = 0) +  # Actual scores
+  geom_point(data = sampled_scores_data, aes(x = score, y = 0), color = "green", size = 1) +  # Sampled scores
+  labs(title = "Kernel Density Estimate, Actual, and Sampled Scores for Georgia Brown's FX Scores",
+       x = "Score",
+       y = "Density") +
+  theme_minimal()
+
+```
 
 
 

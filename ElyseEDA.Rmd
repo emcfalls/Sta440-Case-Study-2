@@ -31,12 +31,55 @@ library(tidyverse)
 3. An athlete who hasn't made the top 5 in any prior competition will not place in the olympics 
   a. use looser criteria for other countries because they may not rank high, but they will represent their country
 
+```{r}
+rawData2022_2023 %>%
+  
+```
+
+```{r}
+# data from Emily
+df23 <- rawData2022_2023 %>%
+  mutate(Date = sapply(strsplit(as.character(Date), "-"), tail, 1),
+         Date = trimws(Date),                 # Trim leading and trailing spaces
+         Date = sub(" *$", "", Date),         # Remove spaces at the end
+         Date = gsub(" ", "-", Date))         # Replace remaining spaces with "-"
+```
+
+```{r}
+# date split df
+df_date <- data.frame(stringr::str_split_fixed(df23$Date, '-', n = 3))
+colnames(df_date) <- c('Date_day', 'Date_month', 'Date_year')
+
+# add to df column
+df23 <- cbind(df23, df_date)
+```
+
+```{r}
+df23 <- df23 %>%
+  # formatting the date column
+  mutate(Date = case_when(.default = paste0(Date_day, '-',  Date_month, '-', Date_year),
+                          Date_month == 'Sept' ~ paste0(Date_day, '-Sep-', Date_year))) %>%
+  mutate(Date = as.Date(Date, format = "%d-%b-%Y"), Year = Date_year) %>%
+  # standardizing names and making a full name column
+  mutate(LastName = toupper(LastName), FirstName = toupper(FirstName), 
+         FullName = paste0(LastName, ' ', FirstName), 
+         Date = as.Date(Date, format = "%d-%b-%Y")) %>%
+  select(-Date_year, -Date_month, -Date_day, -LastName, -FirstName)
+```
+
+```{r}
+# saving full dataframe
+write.csv(df23, "cleaned data/full_data_2023.csv")
+```
+
+
 ## Loading Data and Data Cleaning 
 
 ```{r}
 df <- read.csv("cleaned data/data_2022_2023_cleaned.csv")
 df_old <- read.csv("data/data_2017_2021.csv")
 ```
+
 
 ### Old Data
 ```{r}

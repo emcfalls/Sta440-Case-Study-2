@@ -96,9 +96,14 @@ write_csv(df_men, "cleaned data/restricted_men_2023.csv")
 df_men
 ```
 
+```{r}
+df_men %>%
+  distinct(FullName)
+```
+
 
 ### Women:
-
+[link](https://www.insidethegames.biz/articles/1141357/artistic-gymnastics-paris-2024-places) 
 - USA
 - Great Britain
 - Canada
@@ -143,7 +148,7 @@ df_full_women_teams <- df_full %>%
 ```
 
 ```{r}
-# break off criteria: athletes that have ranked at least top for all countries
+# break off criteria: athletes that have ranked at least top 5 for all countries
 df_women_names <- df_full_women_teams %>%
   filter(Rank <= 5) %>%
   distinct(FullName) %>%
@@ -193,4 +198,8 @@ df_women %>%
   filter(individual == 1)
 ```
 
+```{r}
+df_women %>%
+  distinct(Competition)
+```
 
