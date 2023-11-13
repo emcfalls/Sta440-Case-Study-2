@@ -1,0 +1,203 @@
+---
+title: "Creating Smaller Dataset and EDA"
+author: "Elyse McFalls"
+date: "2023-11-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+## Loading full data
+
+```{r}
+df_full <- read.csv("cleaned data/full_data_2023.csv")
+head(df_full)
+```
+
+## Selecting Olympic Bound Countries and Individuals
+
+### Men:
+
+[link](https://www.gymnastics.sport/site/news/displaynews.php?urlNews=3989229#:~:text=The%20Paris%202024%20Olympic%20team%20tableau%20is,decide%20the%20destination%20of%20the%20Olympic%20medals)
+- USA
+- Canada
+- Germany
+- Italy
+- Switzerland
+- Spain
+- Turkey
+- the Netherlands
+- Ukraine
+- the People's Republic of China
+- Japan
+- Great Britain
+- Brazil (1 person)
+- the Republic of Korea (1 person)
+- Belguim (1 person)
+
+Individuals:
+- Milad Karimi (indv.)
+- Artem Dolgopyat (indv.)
+- Artur Davtyan (indv.)
+- Krisztofer Meszaros (indv.)
+- Lee Junho (KOR)
+- Soares, Luca van den Keybus (indv.)
+- Andrei Muntean (indv.)
+
+```{r}
+df_full_men_teams <- df_full %>%
+  filter(Gender == 'm' &
+         Country %in% c('USA', 'CAN', 'GER', 'ITA', 'SUI', 'ESP', 'TUR', 'NED', 
+                        'UKR', 'CHN', 'JPN', 'GBR', 'BRA', 'KOR', 'BEL')) 
+```
+
+```{r}
+# Juhno lee is in the data twice, one as Junho Lee and one as Lee Junho
+# same for Soares, Luca van den Keybus from Belgium 
+# the other ones are fine
+df_men_indv <- df_full %>%
+  filter(FullName %in% c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA"))
+```
+
+
+```{r}
+# break off criteria: athletes that have ranked at least top for all countries
+df_men_names <- df_full_men_teams %>%
+  filter(Rank <= 5) %>%
+  distinct(FullName) %>%
+  pull()
+
+df_men <- df_full_men_teams %>%
+  filter(FullName %in% df_men_names)
+```
+
+
+```{r}
+# adding individuals, using distinct incase of overlap 
+df_men <- rbind(df_men, df_men_indv) %>%
+  distinct(.keep_all = T)
+```
+
+```{r}
+# writing to csv
+write_csv(df_men, "cleaned data/restricted_men_2023.csv")
+```
+
+```{r}
+df_men
+```
+
+
+### Women:
+
+- USA
+- Great Britain
+- Canada
+- the People's Republic of China
+- Brazil 
+- Italy
+- the Netherlands
+- France
+- Japan
+- Australia
+- Romania
+- the Republic of Korea 
+- Germany (1 person)
+- Mexico (1 person)
+- Hungary (1 person)
+
+- Individuals:
+  - Kaylia Nemour (ALG)
+  -Pauline Schaefer-Betz (GER)
+  - Alexa Moreno (MEX)
+  - Filipa Martins (POR)
+  - Aleah Finnegan (PHI)
+  - Bettina Lili Czifra (HUN)
+  - Alba Petisco (ESP)
+  - Anna Lashchevska (UKR)
+  - Lena Bickel (SUI)
+  - Hillary Heron (PAN)
+  - Caitlin Rooskrantz (RSA)
+  - Sona Artamonova (CZE)
+  - Lihie Raz (ISR)
+  - Lucija Hribar (SLO)
+  
+
+
+  
+```{r}
+# all athletes for teams
+df_full_women_teams <- df_full %>%
+  filter(Gender == 'w' &
+         Country %in% c('USA', 'CAN', 'GER', 'ITA', 'AUS', 'KOR', 'ROU', 'NED', 
+                        'HUN', 'CHN', 'JPN', 'GBR', 'BRA', 'MEX', 'FRA'))
+```
+
+```{r}
+# break off criteria: athletes that have ranked at least top for all countries
+df_women_names <- df_full_women_teams %>%
+  filter(Rank <= 5) %>%
+  distinct(FullName) %>%
+  pull()
+
+df_women <- df_full_women_teams %>%
+  filter(FullName %in% df_women_names)
+```
+
+
+```{r}
+# individuals 
+df_women_indv <- df_full %>%
+  filter(FullName %in% c("NEMOUR KAYLIA", "SCHAEFER PAULINE", "MORENO ALEXA",
+                         "MARTINS FILIPA", "FINNEGAN ALEAH", "CZIFRA BETTINA",
+                         "PETISCO ALBA", "LASHCHEVSKA ANNA", "BICKEL LENA",
+                         "HERON HILLARY", "ROOSKRANTZ CAITLIN", "ARTAMONOVA SONA",
+                         "RAZ LIHIE", "HRIBAR LUCIJA"))
+```
+
+
+```{r}
+# adding individuals, using distinct to remove overlaps 
+df_women <- rbind(df_women, df_women_indv) %>% distinct(.keep_all = T)
+```
+
+```{r}
+# writing to csv
+write_csv(df_women, "cleaned data/restricted_women_2023.csv")
+```
+
+
+```{r}
+df_women %>%
+  mutate(top12_team = case_when(Country %in% c('USA', 'CAN', 'ITA', 'AUS', 
+                                                'KOR', 'ROU', 'NED', 'CHN', 
+                                                'JPN', 'GBR', 'BRA', 'FRA') ~ 1,
+                                .default = 0),
+         individual = case_when(FullName %in% c("NEMOUR KAYLIA", "SCHAEFER PAULINE", 
+                                                    "MORENO ALEXA", "MARTINS FILIPA", 
+                                                    "FINNEGAN ALEAH", "CZIFRA BETTINA", 
+                                                    "PETISCO ALBA", "LASHCHEVSKA ANNA", 
+                                                    "BICKEL LENA", "HERON HILLARY", 
+                                                    "ROOSKRANTZ CAITLIN", "ARTAMONOVA SONA", 
+                                                    "RAZ LIHIE", "HRIBAR LUCIJA") ~ 1,
+                                .default = 0)) %>%
+  filter(individual == 1)
+```
+
+```{r}
+df_women_list <- unique(df_women[c("Country", "FullName", "Gender")])
+write.csv(df_women_list, file = "df_women_list.csv", row.names = FALSE)
+
+df_men_list <- unique(df_men[c("Country", "FullName", "Gender")])
+write.csv(df_men_list, file = "df_men_list.csv", row.names = FALSE)
+
+```

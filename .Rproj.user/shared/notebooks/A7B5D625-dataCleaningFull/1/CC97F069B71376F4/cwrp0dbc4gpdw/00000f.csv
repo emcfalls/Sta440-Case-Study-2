@@ -1,0 +1,4 @@
+"0","write.csv(rawData2022_2023, file = ""rawData2022_2023.csv"", row.names = FALSE)"
+"2","Error in utils::write.table(rawData2022_2023, file = ""rawData2022_2023.csv"",  : 
+  unimplemented type 'list' in 'EncodeElement'
+"

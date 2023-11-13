@@ -1,0 +1,7 @@
+"0","# Juhno lee is in the data twice, one as Junho Lee and one as Lee Junho"
+"0","# same for Soares, Luca van den Keybus from Belgium "
+"0","# the other ones are fine"
+"0","df_men_indv <- df_full %>%"
+"0","  filter(FullName %in% c(""KARIMI MILAD"", ""DOLGOPYAT ARTEM"", ""DAVTYAN ARTUR"","
+"0","                           ""MESZAROS KRISZTOFER"", ""MUNTEAN ANDREI"", ""LEE JUHNO"", "
+"0","                          ""JUHNO LEE"", ""KEYBUS LUKA"", ""VAN LUKA""))"

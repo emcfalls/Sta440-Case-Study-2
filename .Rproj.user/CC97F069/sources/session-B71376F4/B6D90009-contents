@@ -1,0 +1,499 @@
+---
+title: "11.05.2023 data cleaning (all)"
+subtitle: "no subtitle"
+author: "Team 3"
+format: 
+  html:
+    self-contained: true
+---
+
+## Setup
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(purrr)
+library(dplyr)
+
+library(lubridate)
+```
+
+
+
+## Reading in original data from competition org
+```{r message=FALSE, warning=FALSE}
+library(readr)
+
+rawData2021 <- read_csv("data/data_2017_2021.csv")
+rawData2022_2023 <- read_csv("data/data_2022_2023.csv")
+
+```
+
+## rawData2021: making all names bigger-case letters (for convenience down the line when we have to filter out an individual athlete)
+```{r}
+rawData2021$LastName <- toupper(rawData2021$LastName)
+rawData2021$FirstName <- toupper(rawData2021$FirstName)
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
+# uniqueCombinationsOfFirstAndLastNameInRawData2021
+# was length 107
+```
+
+
+## rawData2021: Correcting for duplicates when they are the same athlete
+```{r}
+# D'AMATO, ALICE and D'AMATO, ASIA
+
+# If the LastName is "D AMATO", change it to "D'AMATO"
+rawData2021$LastName[rawData2021$LastName == "D AMATO"] <- "D'AMATO"
+
+
+# JESUS SANTOS, MELANIE
+
+# If LastName is 'JESUS SANT' or 'JESUS SANTOS' and FirstName is NA
+# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
+rawData2021$LastName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "JESUS SANTOS"
+rawData2021$FirstName[rawData2021$LastName == "JESUS SANT" & is.na(rawData2021$FirstName)] <- "MELANIE"
+rawData2021$FirstName[rawData2021$LastName == "JESUS SANTOS" & is.na(rawData2021$FirstName)] <- "MELANIE"
+
+# If LastName is 'DE' and FirstName is 'JESUS'
+# Make LastName as 'JESUS SANTOS' and make FirstName as 'MELANIE'
+rawData2021$LastName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "JESUS SANTOS"
+rawData2021$FirstName[rawData2021$LastName == "DE" & rawData2021$FirstName == "JESUS"] <- "MELANIE"
+
+
+
+# SCHAEFER BETZ, PAULINE
+
+# If the LastName is "SCHAEFER-BETZ", change it to "SCHAEFER BETZ"
+rawData2021$LastName[rawData2021$LastName == "SCHAEFER-BETZ"] <- "SCHAEFER BETZ"
+
+
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2021 <- unique(rawData2021[, c("FirstName", "LastName")])
+#uniqueCombinationsOfFirstAndLastNameInRawData2021
+#now is length 103
+
+
+
+```
+
+## rawData2021: Dates
+```{r}
+# function removing prefixes like SUN
+removeDatePrefix <- function(date_string) {
+  cleaned_string <- gsub("^[A-Z]{3} ", "", date_string)
+}
+
+rawData2021$Date <- sapply(rawData2021$Date, removeDatePrefix)
+
+
+
+rawData2021$Date <- gsub(" JUL ", "-07-", rawData2021$Date)
+rawData2021$Date <- gsub(" July ", "-07-", rawData2021$Date)
+rawData2021$Date <- gsub(" Aug ", "-08-", rawData2021$Date)
+
+
+
+
+# Making sure all of the Dates column is "dd-mm-yyyy"
+format_dates <- function(date_str) {
+  if (grepl("^\\d-\\d{2}-\\d{4}$", date_str)) {  # Check if the format is "d-mm-yyyy"
+    parts <- unlist(strsplit(date_str, "-"))
+    return(paste0(sprintf("%02d", as.numeric(parts[1])),
+                  "-",
+                  sprintf("%02d", as.numeric(parts[2])),
+                  "-",
+                  parts[3]))
+  } else {
+    return(date_str)
+  }
+}
+
+rawData2021$Date <- sapply(rawData2021$Date, format_dates)
+
+
+#class(rawData2021$Date)
+```
+
+
+
+## rawData2021: Penalty
+```{r}
+# Change any NA's in the Penalty column to zero
+rawData2021$Penalty[is.na(rawData2021$Penalty)] <- 0
+```
+
+
+
+
+
+## rawData2021: NA's
+```{r}
+NAsInrawData2021 <- rawData2021 %>%
+  filter(is.na(Rank) | is.na(D_Score) | is.na(E_Score))
+
+# To view the filtered dataframe
+print(NAsInrawData2021)
+```
+NOTE: now, the NA's in rawData2021 just mean no attempt
+NOTE: there are two rows that say Apparatus is UE, which is not an event for women... it should be UB...?
+
+
+## rawData2021 cleaning done -> NOW CALLED data2021Female
+```{r}
+data2021Female <- rawData2021
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## rawData2022_2023: making all names bigger-case letters (for convenience down the line when we have to filter out an individual athlete)
+```{r}
+rawData2022_2023$LastName <- toupper(rawData2022_2023$LastName)
+rawData2022_2023$FirstName <- toupper(rawData2022_2023$FirstName)
+
+#uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
+# uniqueCombinationsOfFirstAndLastNameInRawData2022_2023
+# was length 1824
+```
+
+## rawData2022_2023: Correcting for duplicates when they are the same athlete (did until last name G!)
+```{r}
+# AAS, FREDRIK BJORNEVIK
+
+# If the FirstName is "FREDRIK BJORNEVIK", change it to "FREDRIK"
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FREDRIK BJORNEVIK"] <- "FREDRIK"
+
+
+# Athlete ABIYURAFI (Last Name) just does not have a first name in any competition, so change his first name to simply ""
+rawData2022_2023$FirstName[rawData2022_2023$LastName == "ABIYURAFI" & is.na(rawData2022_2023$FirstName)] <- ""
+
+
+
+# MISELLA ANTILA
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MISELLA ALLI HELENA" & rawData2022_2023$LastName == "ANTILA"] <- "MISELLA"
+
+
+# ANTON YEFFERSON
+rawData2022_2023$FirstName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON GREGORIO"] <- "YEFFERSON"
+rawData2022_2023$LastName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON GREGORIO"] <- "ANTON"
+rawData2022_2023$LastName[rawData2022_2023$LastName == "ANTON YEGUEZ" & rawData2022_2023$FirstName == "YEFFERSON"] <- "ANTON"
+
+
+# MIGUEL AQUINO III
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MIGUEL ANGEL" & rawData2022_2023$LastName == "AQUINO III"] <- "MIGUEL"
+
+# SYDNEY TATIANA BARROS FROM PUR IS DIFFERENT FROM SYDNEY TATIANA FROM USA
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SYDNEY" & 
+                           rawData2022_2023$LastName == "BARROS" & 
+                           rawData2022_2023$Country == "PUR"] <- "SYDNEY TATIANA"
+
+
+
+
+# CAMERON-LIE BERNARD
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "CAMERON LIE" & rawData2022_2023$LastName == "BERNARD"] <- "CAMERON-LIE"
+
+
+
+# JUANCHO BESANA
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JUANCHO MIGUEL" & rawData2022_2023$LastName == "BESANA"] <- "JUANCHO"
+
+
+# VICTOR BETANCOURT
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "VICTOR MANUEL" & rawData2022_2023$LastName == "BETANCOURT QUINTANA"] <- "VICTOR"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VICTOR MANUEL" & rawData2022_2023$LastName == "BETANCOURT QUINTANA"] <- "BETANCOURT"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VICTOR" & rawData2022_2023$LastName == "BETANCOURT QUINTANA"] <- "BETANCOURT"
+
+
+
+# KRISTOPHER BOHORQUEZ
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "KRISTOPHER STEVEN" & rawData2022_2023$LastName == "BOHORQUEZ CANTOR"] <- "KRISTOPHER"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KRISTOPHER STEVEN" & rawData2022_2023$LastName == "BOHORQUEZ CANTOR"] <- "BOHORQUEZ"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KRISTOPHER" & rawData2022_2023$LastName == "BOHORQUEZ CANTOR"] <- "BOHORQUEZ"
+
+
+# VALENTINA BROSTELLA
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VALENTINA" & rawData2022_2023$LastName == "BROSTELLA ARIAS"] <- "BROSTELLA"
+
+
+# non-alphabetic
+rawData2022_2023$LastName[rawData2022_2023$LastName == "BÖCZÖGÖ"] <- "BOCZOGO"
+
+
+# JOSSIMAR ORLANDO   CALVO MORENO
+rawData2022_2023$LastName[is.na(rawData2022_2023$FirstName) & rawData2022_2023$LastName == "CALVO MORENO JO"] <- "CALVO MORENO"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SABRINA ALESSANDRA" & 
+                           rawData2022_2023$LastName == "CARDERO"] <- "SABRINA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JAN" & 
+                          rawData2022_2023$LastName == "CARRERES MACIA"] <- "CARRERES"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JOSEPH" & 
+                           rawData2022_2023$LastName == "CEMLYN JONES"] <- "JOE"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "CARMINA ISABELLA" & 
+                           rawData2022_2023$LastName == "CHAVEZ MARTINEZ"] <- "CARMINA"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "CARMINA" & 
+                          rawData2022_2023$LastName == "CHAVEZ MARTINEZ"] <- "CHAVEZ"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "ZACHARY NATHANIEL" & 
+                           rawData2022_2023$LastName == "CLAY"] <- "ZACHARY"
+
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "WILFRY MANUEL" & 
+                           rawData2022_2023$LastName == "CONTRERAS"] <- "WILFRY"
+
+
+
+
+rawData2022_2023 <- rawData2022_2023 %>%
+  mutate(
+    FirstName = ifelse(FirstName == 'JHOSSUA ARIEL' & LastName == 'CORRALES CASTRO', 'JHOSSUA', FirstName),
+    LastName = ifelse(FirstName == 'JHOSSUA ARIEL' & LastName == 'CORRALES CASTRO', 'CORRALES', LastName)
+  )
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MATTHEW" & 
+                           rawData2022_2023$LastName == "CORMIER"] <- "MATT"
+
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "ALEJANDRO" & 
+                          rawData2022_2023$LastName == "DE LA CRUZ GATO"] <- "DE LA CRUZ"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FABIÁN"] <- "FABIAN"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "FABIAN" & 
+                          rawData2022_2023$LastName == "DE LUNA HERNÁNDEZ"] <- "DE LUNA"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "NATALIA GABRIELA" & 
+                           rawData2022_2023$LastName == "DELGADO LOPEZ"] <- "NATALIA"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "NATALIA" & 
+                           rawData2022_2023$LastName == "DELGADO LOPEZ"] <- "DELGADO"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "STELLA LOREN" & 
+                           rawData2022_2023$LastName == "DIAZ"] <- "STELLA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KARELYS" & 
+                          rawData2022_2023$LastName == "DIAZ DAVILA"] <- "DIAZ"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JACOB GUEST" & 
+                           rawData2022_2023$LastName == "DWARDS"] <- "JACOB"
+
+
+
+rawData2022_2023$FirstName[is.na(rawData2022_2023$FirstName) & 
+                           rawData2022_2023$LastName == "ELPITIYA BADALG D"] <- "MILKA GEHANI"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "MILKA GEHANI" & 
+                          rawData2022_2023$LastName == "ELPITIYA BADALGE DONA"] <- "ELPITIYA BADALGE D"
+
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "NATALIA ISABEL" & 
+                           rawData2022_2023$LastName == "ESCALERA"] <- "NATALIA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JOSE CARLOS" & 
+                          rawData2022_2023$LastName == "ESCANDÓN MARÍN"] <- "ESCANDON MARIN"
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JOSE" & 
+                          rawData2022_2023$LastName == "ESCANDON"] <- "ESCANDON MARIN"
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "JOSE" & 
+                          rawData2022_2023$LastName == "ESCANDON"] <- "JOSE CARLOS"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "GINNA" & 
+                          rawData2022_2023$LastName == "ESCOBAR BETANCUR"] <- "ESCOBAR"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KEVIN" & 
+                          rawData2022_2023$LastName == "ESPINOSA CASTILLO"] <- "ESPINOSA"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "SEBASTIAN NORBERT" & 
+                           rawData2022_2023$LastName == "GAWRONSKI"] <- "SEBASTIAN"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "EDWARD ANDRE" & 
+                           rawData2022_2023$LastName == "GONZALES RIVAS"] <- "EDWARD"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "EDWARD" & 
+                           rawData2022_2023$LastName == "GONZALES"] <- "EDWARD"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "ALEXA GABRIELA" & 
+                           rawData2022_2023$LastName == "GRANDE FRANCO"] <- "ALEXA"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "ALEXA" & 
+                           rawData2022_2023$LastName == "GRANDE FRANCO"] <- "GRANDE"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "JERMAIN" & 
+                           rawData2022_2023$LastName == "GRÜNBERG"] <- "GRUENBERG"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "HILDUR MAJA" & 
+                           rawData2022_2023$LastName == "GUDMUNDSDOTTIR"] <- "HILDUR"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "YURI" & 
+                           rawData2022_2023$LastName == "GUIMARÃES"] <- "GUIMARAES"
+
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "NELSON ALBERTO" & 
+                           rawData2022_2023$LastName == "GUILBE MORALES"] <- "NELSON"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "NELSON" & 
+                           rawData2022_2023$LastName == "GUILBE MORALES"] <- "GUILBE"
+
+
+
+## functions after Emily decided she had enough
+
+rawData2022_2023 <- rawData2022_2023 %>% 
+  mutate(FirstName = word(FirstName, 1)) %>% 
+  mutate(LastName = word(LastName, 1))
+
+replace_letters <- function(name) {
+  name <- gsub("Ö", "OE", name)
+  name <- gsub("Ü", "U", name)
+  name <- gsub("Ø", "O", name)
+  name <- sub("-.*", "", name)
+  name <- gsub("Ä", "AE", name)
+}
+
+rawData2022_2023$FirstName <- lapply(rawData2022_2023$FirstName, replace_letters)
+
+rawData2022_2023$LastName <- lapply(rawData2022_2023$LastName, replace_letters)
+
+standardize <- function(name) {
+  name <- iconv(name, "UTF-8", "ASCII//TRANSLIT")
+}
+
+rawData2022_2023$FirstName <- lapply(rawData2022_2023$FirstName, standardize)
+
+rawData2022_2023$LastName <- lapply(rawData2022_2023$LastName, standardize)
+
+
+## restart of emily's mutations
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "RAKAH" & 
+                           rawData2022_2023$LastName == "HARITHI"] <- "RAKAN"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "VINCENZ" & 
+                           rawData2022_2023$LastName == "HOCK"] <- "HOECK"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MOHAMAD" & 
+                           rawData2022_2023$LastName == "KHALIL"] <- "MOHAMED"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "SEVERIN" & 
+                           rawData2022_2023$LastName == "KRANZLMULLER"] <- "KRANZLMUELLER"
+                           
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MANUEL" & 
+                           rawData2022_2023$LastName == "MARTINEZ"] <- "JOSE"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "FELIPE" & 
+                           rawData2022_2023$LastName == "MARTINEZ"] <- "ANDRES"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "CLAY" & 
+                           rawData2022_2023$LastName == "MASON"] <- "MASONSTEPHENS"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "ATEER"] <- "MCATEER"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "MCATEER"] <- "EWAN"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "EWAN" & 
+                           rawData2022_2023$LastName == "MC"] <- "MCATEER"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "CLENAGHAN"] <- "MCCLENAGHAN"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "MC" & 
+                           rawData2022_2023$LastName == "MCCLENAGHAN"] <- "RHYS"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "RUBY" & 
+                           rawData2022_2023$LastName == "EVAN"] <- "EVANS"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "WONG" & 
+                           rawData2022_2023$LastName == "VANESSA"] <- "WONG"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "WONG" & 
+                           rawData2022_2023$LastName == "WONG"] <- "VANESSA"
+
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "LIU" & 
+                           rawData2022_2023$LastName == "MAI"] <- "LIU"
+
+rawData2022_2023$FirstName[rawData2022_2023$FirstName == "LIU" & 
+                           rawData2022_2023$LastName == "LIU"] <- "MAI"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "CHRISTINA" & 
+                           rawData2022_2023$LastName == "KIOSO"] <- "VASILOPOULOU"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "KORKEM" & 
+                           rawData2022_2023$LastName == "YEROBSSYNKYZY"] <- "YERBOSSYNKYZY"
+
+rawData2022_2023$LastName[rawData2022_2023$FirstName == "LARASATI" & 
+                           rawData2022_2023$LastName == "REGGANIS"] <- "RENGGANIS"
+
+
+uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c("FirstName", "LastName")])
+
+
+```
+
+##CLEANING COUNTRIES
+
+```{r}
+rawData2022_2023 <- rawData2022_2023 %>% 
+  mutate(
+    Country = case_when(Country == "SCO" ~ "GBR",
+                        Country == "ENG" ~ "GBR",
+                        Country == "WAL" ~ "GBR",
+                        Country == "SIN" ~ "SIG",
+                        Country == "GE1" ~ "GER",
+                        Country == "GE2" ~ "GER",
+                        Country == "NIR" ~ "GBR",
+                        Country == "IOM" ~ "GBR", 
+                        Country == "PUR" ~ "USA",
+                        TRUE ~ Country)
+  )
+
+rawData2022_2023 <- rawData2022_2023 %>% 
+  mutate(
+    Country = ifelse(FirstName == "TEJA" & LastName == "BELAK", "SLO", Country),
+    Country = ifelse(FirstName == "NAVEEN" & LastName == "DARIES", "RSA", Country),
+    Country = ifelse(FirstName == "MADELEINE" & LastName == "MARSHALL", "NZL", Country)
+  )
+
+```
+
+
+```{r}
+write.csv(rawData2022_2023, file = "rawData2022_2023.csv", row.names = FALSE)
+
+```
+

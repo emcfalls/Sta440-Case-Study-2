@@ -1,0 +1,5 @@
+"0","library(readr)"
+"0",""
+"0","rawData2021 <- read_csv(""data/data_2017_2021.csv"")"
+"0","rawData2022_2023 <- read_csv(""data/data_2022_2023.csv"")"
+"0",""

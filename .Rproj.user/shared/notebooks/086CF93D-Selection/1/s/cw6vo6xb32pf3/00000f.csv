@@ -1,0 +1,4 @@
+"0","df_full_men_teams <- df_full %>%"
+"0","  filter(Gender == 'm' &"
+"0","         Country %in% c('USA', 'CAN', 'GER', 'ITA', 'SUI', 'ESP', 'TUR', 'NED', "
+"0","                        'UKR', 'CHN', 'JPN', 'GBR', 'BRA', 'KOR', 'BEL')) "
