@@ -1,0 +1,274 @@
+---
+title: "evan"
+subtitle: "no subtitle"
+author: "evan"
+format: 
+  html:
+    self-contained: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Setup
+```{r setup, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(purrr)
+library(dplyr)
+```
+
+
+## 11.13.2023 (MON) - 7PM - THE SIMULATION ALGO - WOMEN
+
+
+
+## THE SET-UP BEFORE THE ALGO
+```{r}
+## Re-arranged data
+data_women_scores_2022_to_2023 <- read.csv("cleaned data/restricted_women_2023.csv") %>% 
+  select(Country, FullName, Apparatus, Score) %>% 
+  # first, making c(VT, VT1, VT2) all just VT, since they're all the same apparatus, just named different at different competitions
+  mutate(Apparatus = ifelse(Apparatus %in% c("VT1", "VT2"), "VT", Apparatus))  %>%
+  filter(!is.na(Score) & Score != 0) #dropping all NAs -- ask the team: should we also drop zeros? -> emily said yeah 11.13.2023 7 21pm
+
+
+# this is the data that will feed into the algo
+data_ready_for_algo <- data_women_scores_2022_to_2023 %>%
+  group_by(Country, FullName, Apparatus) %>%
+  summarise(Scores = list(Score), .groups = 'drop')
+
+
+
+
+## Global Fixed Integers
+minBBScoreIn_data_women_scores_2022_to_2023 <- min(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "BB"], na.rm = TRUE)
+maxBBScoreIn_data_women_scores_2022_to_2023 <- max(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "BB"], na.rm = TRUE)
+
+minFXScoreIn_data_women_scores_2022_to_2023 <- min(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "FX"], na.rm = TRUE)
+maxFXScoreIn_data_women_scores_2022_to_2023 <- max(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "FX"], na.rm = TRUE)
+
+minUBScoreIn_data_women_scores_2022_to_2023 <- min(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "UB"], na.rm = TRUE)
+maxUBScoreIn_data_women_scores_2022_to_2023 <- max(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "UB"], na.rm = TRUE)
+
+minVTScoreIn_data_women_scores_2022_to_2023 <- min(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "VT"], na.rm = TRUE)
+maxVTScoreIn_data_women_scores_2022_to_2023 <- max(data_women_scores_2022_to_2023$Score[data_women_scores_2022_to_2023$Apparatus == "VT"], na.rm = TRUE)
+
+
+## 2D Table of Global Fixed Integers
+minAndMaxScores2DTable <- list(
+    BB = list(
+        min = minBBScoreIn_data_women_scores_2022_to_2023,
+        max = maxBBScoreIn_data_women_scores_2022_to_2023
+    ),
+    FX = list(
+        min = minFXScoreIn_data_women_scores_2022_to_2023,
+        max = maxFXScoreIn_data_women_scores_2022_to_2023
+    ),
+    UB = list(
+        min = minUBScoreIn_data_women_scores_2022_to_2023,
+        max = maxUBScoreIn_data_women_scores_2022_to_2023
+    ),
+    VT = list(
+        min = minVTScoreIn_data_women_scores_2022_to_2023,
+        max = maxVTScoreIn_data_women_scores_2022_to_2023
+    )
+)
+
+
+## TO BE FED INTO runOlympicsNTimes
+allWomenBBParticipants <- data_ready_for_algo %>%
+  select(Country, FullName, Apparatus) %>%
+  unique() %>% 
+  filter(Apparatus == "BB")
+
+allWomenUBParticipants <- data_ready_for_algo %>%
+  select(Country, FullName, Apparatus) %>%
+  unique() %>% 
+  filter(Apparatus == "UB")
+
+allWomenFXParticipants <- data_ready_for_algo %>%
+  select(Country, FullName, Apparatus) %>%
+  unique() %>% 
+  filter(Apparatus == "FX")
+
+allWomenVTParticipants <- data_ready_for_algo %>%
+  select(Country, FullName, Apparatus) %>%
+  unique() %>% 
+  filter(Apparatus == "VT")
+```
+
+```{r}
+# sanity checking the 2D Table
+# minAndMaxScores2DTable$BB$min
+```
+
+
+
+## HELPER FUNCTION: createProperDataframe
+```{r}
+# Helper Function: createProperDataframe
+# inputs are: "country code", "Athlete Name", "Apparatus (the two letters, like FX")
+# output is a dataframe that is suitable for going in as input into the next step, aka creating estimated kernel densities
+
+createProperDataframe = function(countryCode, athleteName, apparatusInitials){
+  dataframeToReturn <- data_ready_for_algo %>% 
+    filter(Country == countryCode, FullName == athleteName, Apparatus == apparatusInitials) %>% 
+    select(Scores) %>% 
+    unnest(Scores) %>% 
+    unlist()
+  
+  apparatus <- apparatusInitials
+  
+  return(list(dataframeToReturn, apparatus))
+}
+```
+
+```{r}
+# sanity checking function: createProperDataframe
+#a = createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "FX")
+#a
+
+#print(a[[1]])
+
+#a[[2]]
+
+#class(a[[1]]) --> should be "numeric"
+#class(a[[2]])
+
+#a[[1]]
+```
+
+
+## HELPER FUNCTION: estimateKernelDensity
+```{r}
+# Helper Function: estimateKernelDensity
+
+# coming up with an estimate kernel density based on the inputs that are:
+# 1. output of createProperDataframe = list(properDataframeCreatedForAthleteAndApparatusCombination, apparatus)
+# 2. bandwidthValue (the bigger, the "smoother")
+
+# output:
+# dataframe of x and y coordinates --> coordinates of the estimated density function
+
+estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue){
+  library(KernSmooth)
+  apparatusOfInterestHere = outputOfCreateProperDataframe[[2]]
+  kernelLowerLimit = min(minAndMaxScores2DTable$apparatusOfInterestHere$min - 2, 0)
+  kernelUpperLimit = max(minAndMaxScores2DTable$apparatusOfInterestHere$max + 2, 15.7)
+  
+  
+  almostToReturn <- bkde(x = outputOfCreateProperDataframe[[1]], kernel = "normal", canonical = FALSE, bandwidth = bandwidthValue, gridsize = 401L, range.x = c(kernelLowerLimit, kernelUpperLimit), truncate = TRUE)
+  #range.x = c(kernelLowerLimit, kernelUpperLimit)
+  dataframeToReturn <- data.frame(
+    x = almostToReturn$x, 
+    y = almostToReturn$y
+  )
+  
+  return(dataframeToReturn)
+}
+
+```
+
+```{r}
+# sanity checking function: estimateKernelDensity
+#b = estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25)
+#b
+#class(b)
+
+
+ggplot() +
+  geom_line(data = estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25), aes(x, y), color = "blue")
+```
+
+
+
+
+
+
+
+
+## HELPER FUNCTION: createCDFfromKDEandDrawONEscore
+```{r}
+createCDFfromKDEandDrawONEscore <- function(dataframeReturnedByestimateKernelDensity){
+  # Create a CDF from the KDE
+  kde_y_cumsum <- cumsum(dataframeReturnedByestimateKernelDensity$y)
+  cdf <- kde_y_cumsum / max(kde_y_cumsum)
+  
+  
+  u <- runif(1)  # Generate uniform random number
+  sampled_value <- dataframeReturnedByestimateKernelDensity$x[which.min(abs(cdf - u))]
+  
+  return(sampled_value)
+  
+  
+}
+```
+
+```{r}
+# sanity checking function: createCDFfromKDEandDrawONEscore
+c = createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25))
+c
+class(c)
+
+emptyList <- vector("list", 2000)
+
+for (i in 1:2000) {
+  toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "FX"), 0.25))
+  emptyList[[i]] <- toAdd
+}
+
+emptyListDF <- data.frame(values = unlist(emptyList))
+
+# Creating a histogram with ggplot2
+ggplot(emptyListDF, aes(x = values)) +
+  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
+  theme_minimal() +
+  labs(title = "Histogram of Scores", x = "Score", y = "Frequency")
+```
+
+```{r}
+class(allWomenBBParticipants[1, ])
+```
+
+
+## OVERALL ALGO: runOlympicsNTimes
+```{r}
+# OVERALL ALGO: runOlympicsNTimes
+# input: n
+# uses all sorts of helper functions
+
+
+runOlympicsNTimes <- function(n){
+  
+  # 1. running the Women's BB n times
+  for (i in 1:nrow(allWomenBBParticipants)) {
+    row <- allWomenBBParticipants[i, ]
+    
+    
+    
+    
+    
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  # 2. running the Women's FX n times
+  
+  
+  
+  # 3. running the Women's UB n times
+  
+  
+  
+  # 4. running the Women's VT n times
+}
+
+
+```
