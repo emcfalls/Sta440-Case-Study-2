@@ -1,0 +1,91 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+data_women_scores_2022_to_2023 <- read.csv("cleaned data/restricted_women_2023.csv")
+data_men_scores_2022_to_2023 <- read.csv("cleaned data/restricted_men_2023.csv")
+
+women_birth_date <- read.csv("cleaned data/women_list_birth_date.csv")
+men_birth_date <- read.csv("cleaned data/men_list_birth_date.csv")
+
+```
+
+
+```{r}
+
+# Merge the scores dataframe with the active women birth date dataframe by 'FullName'
+data_women_scores_2022_to_2023 <- merge(
+  data_women_scores_2022_to_2023, 
+  women_birth_date[, c("FullName", "Birth_Date", "Active")], 
+  by = "FullName", 
+  all.x = TRUE
+)
+
+# Rename the 'Date' column from active_women to 'BirthDate' to avoid confusion with 'Date' from scores
+names(data_women_scores_2022_to_2023)[names(data_women_scores_2022_to_2023) == "Date.y"] <- "BirthDate"
+
+
+
+data_women_scores_2022_to_2023 <- data_women_scores_2022_to_2023 %>%
+  mutate(Gender = case_when(
+    FullName == "m" ~ "w",
+    TRUE ~ Gender # This keeps all other FullNames the same
+  ))
+
+
+data_women_scores_2022_to_2023 <- data_women_scores_2022_to_2023 %>%
+  mutate(FullName = case_when(
+    FullName == "BLACK ELSABETH" ~ "BLACK ELLIE",
+    FullName == "FRANCERIES L'EA" ~ "FRANCERIES LEA",
+    TRUE ~ FullName # This keeps all other FullNames the same
+  ))
+
+
+```
+
+
+```{r}
+
+# Merge the scores dataframe with the active women birth date dataframe by 'FullName'
+data_men_scores_2022_to_2023 <- merge(
+  data_men_scores_2022_to_2023, 
+  men_birth_date[, c("FullName", "Birth_Date", "Active")], 
+  by = "FullName", 
+  all.x = TRUE
+)
+
+# Rename the 'Date' column from active_women to 'BirthDate' to avoid confusion with 'Date' from scores
+names(data_men_scores_2022_to_2023)[names(data_men_scores_2022_to_2023) == "Date.y"] <- "BirthDate"
+
+# MUNCK LORAN's full name is Loran De MUNCK
+data_men_scores_2022_to_2023 <- data_men_scores_2022_to_2023 %>%
+  mutate(FullName = case_when(
+    FullName == "DE LORAN" ~ "MUNCK LORAN",
+    FullName == "DE EDOARDO" ~ "ROSA EDOARDO",
+    TRUE ~ FullName # This keeps all other FullNames the same
+  ))
+
+```
+
+```{r}
+# Filter out the rows where Active is 'Y'
+data_women_scores_2022_to_2023 <- data_women_scores_2022_to_2023 %>%
+  filter(Active == "Y")
+
+# Write the dataframe to a CSV file
+write.csv(data_women_scores_2022_to_2023, "cleaned data/active_restricted_women_2023.csv", row.names = FALSE)
+
+# Filter out the rows where Active is 'Y'
+data_men_scores_2022_to_2023 <- data_men_scores_2022_to_2023 %>%
+  filter(Active == "Y")
+
+# Write the dataframe to a CSV file
+write.csv(data_men_scores_2022_to_2023, "cleaned data/active_restricted_men_2023.csv", row.names = FALSE)
+
+```

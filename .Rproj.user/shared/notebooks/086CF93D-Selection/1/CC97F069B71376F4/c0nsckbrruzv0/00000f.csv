@@ -1,6 +1,0 @@
-"0","df_women_list <- unique(df_women[c(""Country"", ""FullName"", ""Gender"")])"
-"0","write.csv(df_women_list, file = ""df_women_list.csv"", row.names = FALSE)"
-"0",""
-"0","df_men_list <- unique(df_men[c(""Country"", ""FullName"", ""Gender"")])"
-"0","write.csv(df_men_list, file = ""df_men_list.csv"", row.names = FALSE)"
-"0",""

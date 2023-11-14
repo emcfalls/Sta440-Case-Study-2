@@ -1,8 +1,0 @@
-"0","# break off criteria: athletes that have ranked at least top for all countries"
-"0","df_men_names <- df_full_men_teams %>%"
-"0","  filter(Rank <= 5) %>%"
-"0","  distinct(FullName) %>%"
-"0","  pull()"
-"0",""
-"0","df_men <- df_full_men_teams %>%"
-"0","  filter(FullName %in% df_men_names)"

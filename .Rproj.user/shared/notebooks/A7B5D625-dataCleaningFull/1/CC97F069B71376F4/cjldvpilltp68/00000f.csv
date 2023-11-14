@@ -1,2 +1,0 @@
-"0","# Change any NA's in the Penalty column to zero"
-"0","rawData2021$Penalty[is.na(rawData2021$Penalty)] <- 0"

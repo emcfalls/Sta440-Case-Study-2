@@ -1,6 +1,0 @@
-"0","rawData2022_2023$LastName <- toupper(rawData2022_2023$LastName)"
-"0","rawData2022_2023$FirstName <- toupper(rawData2022_2023$FirstName)"
-"0",""
-"0","#uniqueCombinationsOfFirstAndLastNameInRawData2022_2023 <- unique(rawData2022_2023[, c(""FirstName"", ""LastName"")])"
-"0","# uniqueCombinationsOfFirstAndLastNameInRawData2022_2023"
-"0","# was length 1824"

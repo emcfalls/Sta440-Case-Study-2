@@ -1,7 +1,0 @@
-"0","# individuals "
-"0","df_women_indv <- df_full %>%"
-"0","  filter(FullName %in% c(""NEMOUR KAYLIA"", ""SCHAEFER PAULINE"", ""MORENO ALEXA"","
-"0","                         ""MARTINS FILIPA"", ""FINNEGAN ALEAH"", ""CZIFRA BETTINA"","
-"0","                         ""PETISCO ALBA"", ""LASHCHEVSKA ANNA"", ""BICKEL LENA"","
-"0","                         ""HERON HILLARY"", ""ROOSKRANTZ CAITLIN"", ""ARTAMONOVA SONA"","
-"0","                         ""RAZ LIHIE"", ""HRIBAR LUCIJA""))"

@@ -1,2 +1,0 @@
-"0","df_full <- read.csv(""cleaned data/full_data_2023.csv"")"
-"0","head(df_full)"

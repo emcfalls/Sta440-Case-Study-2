@@ -1,5 +1,0 @@
-"0","NAsInrawData2021 <- rawData2021 %>%"
-"0","  filter(is.na(Rank) | is.na(D_Score) | is.na(E_Score))"
-"0",""
-"0","# To view the filtered dataframe"
-"0","print(NAsInrawData2021)"

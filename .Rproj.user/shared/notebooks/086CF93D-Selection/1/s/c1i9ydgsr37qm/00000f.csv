@@ -1,2 +1,0 @@
-"0","# writing to csv"
-"0","write_csv(df_women, ""cleaned data/restricted_women_2023.csv"")"

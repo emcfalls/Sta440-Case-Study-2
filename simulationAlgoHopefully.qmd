@@ -26,7 +26,7 @@ library(dplyr)
 ## THE SET-UP BEFORE THE ALGO
 ```{r}
 ## Re-arranged data
-data_women_scores_2022_to_2023 <- read.csv("cleaned data/restricted_women_2023.csv") %>% 
+data_women_scores_2022_to_2023 <- read.csv("cleaned data/active_restricted_women_2023.csv") %>% 
   select(Country, FullName, Apparatus, Score) %>% 
   # first, making c(VT, VT1, VT2) all just VT, since they're all the same apparatus, just named different at different competitions
   mutate(Apparatus = ifelse(Apparatus %in% c("VT1", "VT2"), "VT", Apparatus))  %>%
