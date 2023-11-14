@@ -559,15 +559,54 @@ separate_columns <- function(data, list_column_name, num_columns) {
   
   return(result_data)
 }
+```
 
 
+
+```{r}
+
+## calculating the top three potential people
 aBB_separated_data <- separate_columns(aBB, "SimulationResults", 100)
 
+aBB_separated_data %>% 
+  filter(FullName == "BILES SIMONE") %>% 
+  select(avg_result)
 
 aBB_separated_data %>% 
   filter(FullName == "WU RAN") %>% 
   select(percentile_75_result)
-  
+
+aBB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result) %>% 
+  slice(1:5)
+
+
+aFX_separated_data <- separate_columns(aFX, "SimulationResults", 100)
+
+aFX_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result) %>% 
+  slice(1:3)
+
+aUB_separated_data <- separate_columns(aUB, "SimulationResults", 100)
+
+aUB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result) %>% 
+  slice(1:3)
+
+aVT_separated_data <- separate_columns(aFX, "SimulationResults", 100)
+
+aVT_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result) %>% 
+  slice(1:3)
+
 ```
 
 
