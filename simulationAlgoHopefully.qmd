@@ -332,12 +332,13 @@ row1 <- allWomenBBParticipants[1, ]$SimulationResults
 
 
 runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants){
-  BBParticipants_copied <- allWomenBBParticipants
   
-  BBParticipants_copied$SimulationResults <- lapply(1:nrow(BBParticipants_copied), function(x) vector("list", n))
  
   
   # 1. running the Women's BB n times
+  BBParticipants_copied <- allWomenBBParticipants
+  
+  BBParticipants_copied$SimulationResults <- lapply(1:nrow(BBParticipants_copied), function(x) vector("list", n))
   for (nthOlympic in 1:n){
     
     # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
@@ -351,34 +352,87 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
     
   }
   
-  return(BBParticipants_copied)
+  #return(BBParticipants_copied)
   
   
     
     
-    
-    
-    
-    
-    
-  
-  
-  
-  
-  
   
   
   
   
   # 2. running the Women's FX n times
+  FXParticipants_copied <- allWomenFXParticipants
+  
+  FXParticipants_copied$SimulationResults <- lapply(1:nrow(FXParticipants_copied), function(x) vector("list", n))
+  for (nthOlympic in 1:n){
+    
+    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
+    for (i in 1:nrow(FXParticipants_copied)) {
+      row <- FXParticipants_copied[i, ]
+      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    
+      FXParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
+    }
+    print(paste(nthOlympic, "th olympic done for Women's FX"))
+    
+  }
+  
+  #return(FXParticipants_copied)
   
   
   
   # 3. running the Women's UB n times
+  UBParticipants_copied <- allWomenUBParticipants
+  
+  UBParticipants_copied$SimulationResults <- lapply(1:nrow(UBParticipants_copied), function(x) vector("list", n))
+  for (nthOlympic in 1:n){
+    
+    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
+    for (i in 1:nrow(UBParticipants_copied)) {
+      row <- UBParticipants_copied[i, ]
+      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    
+      UBParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
+    }
+    print(paste(nthOlympic, "th olympic done for Women's UB"))
+    
+  }
+  
+  #return(UBParticipants_copied)
+  
+  
+  
+  
   
   
   
   # 4. running the Women's VT n times
+  VTParticipants_copied <- allWomenVTParticipants
+  
+  VTParticipants_copied$SimulationResults <- lapply(1:nrow(VTParticipants_copied), function(x) vector("list", n))
+  for (nthOlympic in 1:n){
+    
+    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
+    for (i in 1:nrow(VTParticipants_copied)) {
+      row <- VTParticipants_copied[i, ]
+      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    
+      VTParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
+    }
+    print(paste(nthOlympic, "th olympic done for Women's VT"))
+    
+  }
+  
+  #return(VTParticipants_copied)
+  
+  
+  
+  
+  # RETURN FOUR DATAFRAMES
+  return(list(BBResults = BBParticipants_copied, FXResults = FXParticipants_copied, UBResults = UBParticipants_copied, VTResults = VTParticipants_copied))
+  
+  
 }
 
 
@@ -389,11 +443,37 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 ```{r}
 # sanityCheck: runOlympicsNTimes
 
-a = runOlympicsNTimes(100, allWomenBBParticipants)
+a = runOlympicsNTimes(100, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
-a <- a %>% 
-  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+#a <- a %>% 
+#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 ```
+```{r}
+aBB <- a$BBResults
+
+aBB <- aBB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+aUB <- a$UBResults
+
+aUB <- aUB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+aFX <- a$FXResults
+
+aFX <- aFX %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+aVT <- a$VTResults
+
+aVT <- aVT %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+```
+
 
 
 
