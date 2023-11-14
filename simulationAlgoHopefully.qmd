@@ -526,6 +526,9 @@ write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
 
 
 
+
+
+
 ```{r}
 
 ## helper function to transform scores into relevant medals
@@ -565,7 +568,8 @@ separate_columns <- function(data, list_column_name, num_columns) {
 
 ```{r}
 
-## calculating the top three potential people
+## calculating the top three potential people in each individual event 
+
 aBB_separated_data <- separate_columns(aBB, "SimulationResults", 100)
 
 aBB_separated_data %>% 
@@ -576,45 +580,130 @@ aBB_separated_data %>%
   filter(FullName == "WU RAN") %>% 
   select(percentile_75_result)
 
-aBB_separated_data %>% 
+aBB_Top_Three <- aBB_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result) %>% 
-  slice(1:5)
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:4)
 
 
 aFX_separated_data <- separate_columns(aFX, "SimulationResults", 100)
 
-aFX_separated_data %>% 
+aFX_Top_Three <- aFX_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result) %>% 
-  slice(1:3)
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:4)
 
 aUB_separated_data <- separate_columns(aUB, "SimulationResults", 100)
 
-aUB_separated_data %>% 
+aUB_Top_Three <- aUB_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result) %>% 
-  slice(1:3)
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:4)
 
 aVT_separated_data <- separate_columns(aFX, "SimulationResults", 100)
 
-aVT_separated_data %>% 
+aVT_Top_Three <- aVT_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result) %>% 
-  slice(1:3)
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:4)
+
+
+
 
 ```
+
+
+
+## slowly starting to craft code for individual all-around
 
 
 ```{r}
-nested_list <- unlist(aBB$SimulationResults[1]) 
-nested_list[1]
+
+## removes any athletes that have not competed in all four events
+remove_low_occurrences <- function(data) {
+  result_data <- data %>%
+    group_by(FullName) %>%
+    filter(n() > 3) %>%
+    ungroup()
+  
+  return(result_data)
+}
+
+## names of all athletes that have competed in all four events
+allWomenAllAroundParticipants <- remove_low_occurrences(data_ready_for_algo) %>%
+  select(FullName) %>% 
+  unique()
+  
+
+## simulate 100 simulations from each event with the randomly sampled group of athletes (should be 12*5 = 60 athletes)
+## sum up each athletes score in each simulation
+
+
+
+
 ```
 
 
+
+
+## slowly starting to build code for team event simulation 
+```{r}
+
+## find USA players to plug into possible US teams
+
+Top_Contenders_Across_Events <- rbind(aBB_Top_Three, aFX_Top_Three, aUB_Top_Three, aVT_Top_Three) %>% 
+  select(FullName) %>% 
+  unique()
+
+Top_Contenders_Across_Events <- Top_Contenders_Across_Events$FullName
+
+# Find all combinations of 5
+all_combinations <- combn(Top_Contenders_Across_Events, 5, simplify = TRUE)
+
+# Find the columns that include "BILES SIMONE" as a row
+columns_with_biles_simone <- apply(all_combinations, 2, function(col) "BILES SIMONE" %in% col)
+
+# Filter the matrix to keep only the columns with "BILES SIMONE"
+columns_with_biles_simone <- all_combinations[, columns_with_biles_simone]
+
+
+## if we assume SHILESE JONES will also be a lock 
+# Find the columns that include "BILES SIMONE" as a row and "JONES SHILES" 
+columns_with_jones_shiles <- apply(columns_with_biles_simone, 2, function(col) "JONES SHILESE" %in% col)
+
+# Filter the matrix to keep only the columns with "JONES SHILESE"
+columns_with_jones_shiles <- columns_with_biles_simone[, columns_with_jones_shiles]
+  
+
+
+```
+
+
+Now, we need to write a simulation that randomly samples 5 athletes from each of the 12 team countries 
+
+AUS: 10
+CAN : 14
+CHN: 14
+FRA: 13
+GBR: 22
+BRA: 5
+ITA: 9
+JPN: 12
+KOR: 5
+NED: 9
+ROU: 7
+USA: 31
+
+1. Randomly sample team of 5 from each Country, 
+
+```{r}
+
+
+
+```
 
 
