@@ -105,9 +105,6 @@ simulate_score("BILES SIMONE", "BB", women_scores)
 ```
 
 
-```{r}
-results_sim(c("VT", "VT1", "VT2"), women_scores)
-```
 
 
 
