@@ -1,0 +1,463 @@
+---
+title: "Elyse EDA Updated"
+author: "Elyse McFalls"
+date: "2023-11-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+Notes:
+1. Do we want to consider different scenarios (i.e., the best US team when all of our players perform at their worst and everyone else performs at their best)
+  - the graphs show different medal placements based on each person's average, best, and worst scores
+
+## Loading Data
+
+```{r}
+women <- read.csv('cleaned data/restricted_women_2023.csv')
+men <- read.csv('cleaned data/restricted_men_2023.csv')
+all <- read.csv('cleaned data/full_data_2023.csv')
+```
+
+## Trying Weights
+
+```{r}
+women <- women %>%
+  group_by(FullName) %>%
+  mutate(last_comp = max(Date)) %>%
+  ungroup() %>%
+  mutate(time_diff = as.numeric(difftime(last_comp, Date, units = "days")), 
+         weight_95 = 0.95**time_diff, weight_90 = 0.90**time_diff) 
+
+head(women)  
+```
+
+
+## Women's Data
+
+### Vault
+
+```{r}
+women_vt <- women%>%
+  filter(stringr::str_like(Apparatus,'VT%') & Rank <= 5)
+
+women_vt_all <- all%>%
+  filter(Gender == 'w' & stringr::str_like(Apparatus,'VT%'))
+```
+
+#### Number of Gymnasts by Rank (VT)
+```{r}
+rank_curve_vt <- function(r){
+  women_vt_all %>%
+    filter(Rank <= r & Country == 'USA') %>%
+    distinct(FullName) %>%
+    summarise(n = n()) %>%
+    pull()
+}
+```
+
+```{r}
+ranks = seq(10, 1, -1)
+athletes_vt = c()
+
+for (rank in ranks){
+  count = rank_curve_vt(rank)
+  athletes_vt = c(athletes_vt, count)
+}
+```
+
+```{r}
+plot(x = ranks, y = athletes_vt, type = 'b', xlim = rev(range(ranks)), main = "Number of USA Athletes Who've Placed \n at each Rank or Higher for Vault (2022-2023)", ylab = "Number of Athletes")
+abline(v = 3, col = "red")
+abline(v = 5, col = "blue")
+text(x=6, y=5, 'Simulation \n cutoff', col = 'blue')
+text(x=3.75, y=5, 'Medal \n cutoff', col = 'red')
+```
+
+
+
+#### Distributions for top 5 Gymnasts
+
+```{r}
+women_vt %>%
+  filter(Country == 'USA') %>%
+  ggplot(aes(x = Score)) +
+  geom_histogram() +
+  geom_density(aes(weight = weight_95), color = "red") +
+  facet_wrap(~FullName)
+```
+
+
+#### Best Gymnasts per Country
+
+```{r}
+# best average scores
+women_vt_summary <- women_vt %>%
+  group_by(FullName, Country) %>%
+  summarise(avg_score = mean(Score), min_score = min(Score), max_score = max(Score)) 
+
+head(women_vt_summary)
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_vt_summary %>%
+  group_by(Country) %>%
+  arrange(desc(avg_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(avg_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, avg_score), x = avg_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Average Valut Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_vt_summary %>%
+  group_by(Country) %>%
+  arrange(desc(max_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(max_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, max_score), x = max_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Best Valut Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_vt_summary %>%
+  group_by(Country) %>%
+  arrange(desc(min_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(min_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, min_score), x = min_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Worst Valut Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+
+
+
+### Balance Beam
+
+```{r}
+women_bb <- women%>%
+  filter(stringr::str_like(Apparatus,'BB%'))
+
+women_bb_all <- all%>%
+  filter(Gender == 'w' & stringr::str_like(Apparatus,'BB%'))
+```
+
+*Number of Gymnasts by Rank (BB)*
+```{r}
+rank_curve_bb <- function(r){
+  women_bb_all %>%
+    filter(Rank <= r & Country == 'USA') %>%
+    distinct(FullName) %>%
+    summarise(n = n()) %>%
+    pull()
+}
+```
+
+```{r}
+ranks = seq(10, 1, -1)
+athletes_bb = c()
+
+for (rank in ranks){
+  count = rank_curve_bb(rank)
+  athletes_bb = c(athletes_bb, count)
+}
+```
+
+```{r}
+plot(x = ranks, y = athletes_bb, type = 'b', xlim = rev(range(ranks)), main = "Number of USA Athletes Who've Placed \n at each Rank or Higher for Balance Beam (2022-2023)", ylab = "Number of Athletes")
+abline(v = 3, col = "red")
+abline(v = 5, col = "blue")
+text(x=6, y=10, 'Simulation \n cutoff', col = 'blue')
+text(x=3.75, y=10, 'Medal \n cutoff', col = 'red')
+```
+
+
+*Best Gymnasts per Country*
+
+```{r}
+# best average scores
+women_bb_summary <- women_bb %>%
+  group_by(FullName, Country) %>%
+  summarise(avg_score = mean(Score), min_score = min(Score), max_score = max(Score)) 
+
+head(women_bb_summary)
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_bb_summary %>%
+  group_by(Country) %>%
+  arrange(desc(avg_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(avg_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, avg_score), x = avg_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Average Balance Beam Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_bb_summary %>%
+  group_by(Country) %>%
+  arrange(desc(max_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(max_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, max_score), x = max_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Best Balance Beam Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_bb_summary %>%
+  group_by(Country) %>%
+  arrange(desc(min_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(min_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, min_score), x = min_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Worst Balance Beam Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+### Floor Exercises 
+
+```{r}
+women_fx <- women%>%
+  filter(stringr::str_like(Apparatus,'FX%'))
+women_fx_all <- all%>%
+  filter(Gender == 'w' & stringr::str_like(Apparatus,'FX%'))
+```
+
+*Number of Gymnasts by Rank (FX)*
+```{r}
+rank_curve_fx <- function(r){
+  women_fx_all %>%
+    filter(Rank <= r & Country == 'USA') %>%
+    distinct(FullName) %>%
+    summarise(n = n()) %>%
+    pull()
+}
+```
+
+```{r}
+ranks = seq(10, 1, -1)
+athletes_fx = c()
+
+for (rank in ranks){
+  count = rank_curve_fx(rank)
+  athletes_fx = c(athletes_fx, count)
+}
+```
+
+```{r}
+plot(x = ranks, y = athletes_fx, type = 'b', xlim = rev(range(ranks)), main = "Number of USA Athletes Who've Placed \n at each Rank or Higher for Floor (2022-2023)", ylab = "Number of Athletes")
+abline(v = 3, col = "red")
+abline(v = 5, col = "blue")
+text(x=6, y=10, 'Simulation \n cutoff', col = 'blue')
+text(x=3.75, y=10, 'Medal \n cutoff', col = 'red')
+```
+
+*Best Gymnasts per Country*
+
+```{r}
+# best average scores
+women_fx_summary <- women_fx %>%
+  group_by(FullName, Country) %>%
+  summarise(avg_score = mean(Score), min_score = min(Score), max_score = max(Score)) 
+
+head(women_fx_summary)
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_fx_summary %>%
+  group_by(Country) %>%
+  arrange(desc(avg_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(avg_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, avg_score), x = avg_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Average Floor Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 max score
+women_fx_summary %>%
+  group_by(Country) %>%
+  arrange(desc(max_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(max_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, max_score), x = max_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Best Floor Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+```{r fig.width=20, fig.height=10}
+# top 3 min score
+women_fx_summary %>%
+  group_by(Country) %>%
+  arrange(desc(min_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(min_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, min_score), x = min_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Worst Balance Beam Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+
+### Uneven Bars
+
+```{r}
+women_ub <- women%>%
+  filter(stringr::str_like(Apparatus,'UB%'))
+women_ub_all <- all%>%
+  filter(Gender == 'w' & stringr::str_like(Apparatus,'UB%'))
+```
+
+*Number of Gymnasts by Rank (FX)*
+```{r}
+rank_curve_ub <- function(r){
+  women_ub_all %>%
+    filter(Rank <= r & Country == 'USA') %>%
+    distinct(FullName) %>%
+    summarise(n = n()) %>%
+    pull()
+}
+```
+
+```{r}
+ranks = seq(10, 1, -1)
+athletes_ub = c()
+
+for (rank in ranks){
+  count = rank_curve_ub(rank)
+  athletes_ub = c(athletes_ub, count)
+}
+```
+
+```{r}
+plot(x = ranks, y = athletes_ub, type = 'b', xlim = rev(range(ranks)), main = "Number of USA Athletes Who've Placed \n at each Rank or Higher for Uneven Bars (2022-2023)", ylab = "Number of Athletes")
+abline(v = 3, col = "red")
+abline(v = 5, col = "blue")
+text(x=6, y=10, 'Simulation \n cutoff', col = 'blue')
+text(x=3.75, y=10, 'Medal \n cutoff', col = 'red')
+```
+
+*Best Gymnasts per Country*
+
+```{r}
+# best average scores
+women_ub_summary <- women_ub %>%
+  group_by(FullName, Country) %>%
+  summarise(avg_score = mean(Score), min_score = min(Score), max_score = max(Score)) 
+
+head(women_ub_summary)
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 avg score
+women_ub_summary %>%
+  group_by(Country) %>%
+  arrange(desc(avg_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(avg_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, avg_score), x = avg_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Average Uneven Bars Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+
+```
+
+```{r fig.width=20, fig.height=10}
+# top 3 max score
+women_ub_summary %>%
+  group_by(Country) %>%
+  arrange(desc(max_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(max_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, max_score), x = max_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Best Uneven Bars Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+```{r fig.width=20, fig.height=10}
+# top 3 min score
+women_ub_summary %>%
+  group_by(Country) %>%
+  arrange(desc(min_score)) %>%
+  slice(1:3) %>%
+  ungroup() %>%
+  arrange(desc(min_score)) %>%
+  mutate(top5 = ifelse(row_number() <= 5, row_number(), NA), top5 = as.factor(top5)) %>%
+  ggplot(aes(y= reorder(FullName, min_score), x = min_score, fill = top5)) +
+  geom_col(stat = "identity") +
+  labs(title = "Top 3 Female Athletes per Country by Worst Uneven Bars Score (2022-2023)") +
+  facet_wrap(~factor(Country, unique(Country)), ncol = 3, scales = "free_y") 
+```
+
+
+
+
+
+
+
+
+
+
+
+

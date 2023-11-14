@@ -1,0 +1,5 @@
+"0","# all athletes for teams"
+"0","df_full_women_teams <- df_full %>%"
+"0","  filter(Gender == 'w' &"
+"0","         Country %in% c('USA', 'CAN', 'GER', 'ITA', 'AUS', 'KOR', 'ROU', 'NED', "
+"0","                        'HUN', 'CHN', 'JPN', 'GBR', 'BRA', 'MEX', 'FRA'))"
