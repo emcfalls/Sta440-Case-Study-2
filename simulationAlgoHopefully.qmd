@@ -474,6 +474,88 @@ aVT <- aVT %>%
 
 ```
 
+```{r}
+BBResults <- aBB
+
+# Convert all list columns in BBResults to character strings
+BBResults[] <- lapply(BBResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
+# Now save the modified data frame to a CSV file
+write.csv(BBResults, file = "BBResults.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+UBResults <- aUB
+
+# Convert all list columns in BBResults to character strings
+UBResults[] <- lapply(UBResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
+# Now save the modified data frame to a CSV file
+write.csv(UBResults, file = "UBResults.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+
+FXResults <- aFX
+
+# Convert all list columns in BBResults to character strings
+FXResults[] <- lapply(FXResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
+# Now save the modified data frame to a CSV file
+write.csv(FXResults, file = "FXResults.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+
+
+VTResults <- aVT
+
+# Convert all list columns in BBResults to character strings
+VTResults[] <- lapply(VTResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
+# Now save the modified data frame to a CSV file
+write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
+
+```
 
 
 
