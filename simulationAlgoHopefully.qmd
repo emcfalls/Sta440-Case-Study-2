@@ -442,12 +442,14 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 
 ```{r}
 # sanityCheck: runOlympicsNTimes
-
+set.seed(1)
 a = runOlympicsNTimes(100, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
 #a <- a %>% 
 #  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 ```
+
+
 ```{r}
 aBB <- a$BBResults
 
@@ -474,9 +476,9 @@ aVT <- aVT %>%
 
 ```
 
+
 ```{r}
 BBResults <- aBB
-
 # Convert all list columns in BBResults to character strings
 BBResults[] <- lapply(BBResults, function(x) {
   if (is.list(x)) {
@@ -485,19 +487,9 @@ BBResults[] <- lapply(BBResults, function(x) {
     x
   }
 })
-
 # Now save the modified data frame to a CSV file
 write.csv(BBResults, file = "BBResults.csv", row.names = FALSE)
-
-
-
-
-
-
-
-
 UBResults <- aUB
-
 # Convert all list columns in BBResults to character strings
 UBResults[] <- lapply(UBResults, function(x) {
   if (is.list(x)) {
@@ -506,20 +498,9 @@ UBResults[] <- lapply(UBResults, function(x) {
     x
   }
 })
-
 # Now save the modified data frame to a CSV file
 write.csv(UBResults, file = "UBResults.csv", row.names = FALSE)
-
-
-
-
-
-
-
-
-
 FXResults <- aFX
-
 # Convert all list columns in BBResults to character strings
 FXResults[] <- lapply(FXResults, function(x) {
   if (is.list(x)) {
@@ -528,21 +509,9 @@ FXResults[] <- lapply(FXResults, function(x) {
     x
   }
 })
-
 # Now save the modified data frame to a CSV file
 write.csv(FXResults, file = "FXResults.csv", row.names = FALSE)
-
-
-
-
-
-
-
-
-
-
 VTResults <- aVT
-
 # Convert all list columns in BBResults to character strings
 VTResults[] <- lapply(VTResults, function(x) {
   if (is.list(x)) {
@@ -551,11 +520,62 @@ VTResults[] <- lapply(VTResults, function(x) {
     x
   }
 })
-
 # Now save the modified data frame to a CSV file
 write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
-
 ```
+
+
+
+```{r}
+
+## helper function to transform scores into relevant medals
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  return(result)
+}
+
+separate_columns <- function(data, list_column_name, num_columns) {
+  # Create empty data frame to store the separated columns
+  result_matrix <- matrix(NA, nrow = nrow(data), ncol = num_columns)
+  colnames(result_matrix) <- paste(list_column_name, seq_len(num_columns), sep = "_")
+  
+  # Loop through each row and separate the nested list into columns
+  for (i in seq_len(nrow(data))) {
+    nested_list <- data[[list_column_name]][i]
+    
+    # Assign the values to the corresponding columns in the result matrix
+    result_matrix[i, ] <- unlist(nested_list)
+    
+  }
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- cbind(data[, -which(names(data) == list_column_name)], result_matrix)
+  result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
+  
+  result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
+  result_data$percentile_75_result <- apply(select(result_data, starts_with(list_column_name)), 1, function(x) quantile(x, 0.75))
+
+  
+  return(result_data)
+}
+
+
+aBB_separated_data <- separate_columns(aBB, "SimulationResults", 100)
+
+
+aBB_separated_data %>% 
+  filter(FullName == "WU RAN") %>% 
+  select(percentile_75_result)
+  
+```
+
+
+```{r}
+nested_list <- unlist(aBB$SimulationResults[1]) 
+nested_list[1]
+```
+
 
 
 
