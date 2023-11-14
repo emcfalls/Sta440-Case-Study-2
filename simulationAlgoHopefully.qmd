@@ -96,6 +96,18 @@ allWomenVTParticipants <- data_ready_for_algo %>%
   select(Country, FullName, Apparatus) %>%
   unique() %>% 
   filter(Apparatus == "VT")
+
+allWomenBBParticipants <- allWomenBBParticipants %>%
+  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
+
+allWomenUBParticipants <- allWomenUBParticipants %>%
+  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
+
+allWomenFXParticipants <- allWomenFXParticipants %>%
+  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
+
+allWomenVTParticipants <- allWomenVTParticipants %>%
+  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
 ```
 
 ```{r}
@@ -211,10 +223,10 @@ c = createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(
 c
 class(c)
 
-emptyList <- vector("list", 2000)
+emptyList <- vector("list", 3000)
 
-for (i in 1:2000) {
-  toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "FX"), 0.25))
+for (i in 1:3000) {
+  toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25))
   emptyList[[i]] <- toAdd
 }
 
@@ -229,7 +241,87 @@ ggplot(emptyListDF, aes(x = values)) +
 
 ```{r}
 class(allWomenBBParticipants[1, ])
+
+allWomenBBParticipants[1, ]
+
+allWomenBBParticipants[1, ]$Country
+allWomenBBParticipants[1, ]$FullName
+allWomenBBParticipants[1, ]$Apparatus
+
+class(allWomenBBParticipants[1, ]$Country)
+class(allWomenBBParticipants[1, ]$FullName)
+class(allWomenBBParticipants[1, ]$Apparatus)
+
+
+row1 <- allWomenBBParticipants[1, ]$SimulationResults
 ```
+
+
+```{r}
+# sanity checking inner loop in runOlympicsNTimes
+
+#row1 <- allWomenBBParticipants[1, ]
+#    emptyList1 <- vector("list", 1000)
+#    for (i in 1:1000) {
+#      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row1$Country, athleteName = row1$FullName, apparatusInitials = row1$Apparatus), 0.25))
+#      emptyList1[[i]] <- toAdd
+#    }
+    
+    
+    
+#emptyList1_df <- data.frame(values = unlist(emptyList1))
+
+# Create a histogram using ggplot
+#ggplot(emptyList1_df, aes(x = values)) +
+#  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") + # Adjust binwidth as needed
+#  theme_minimal() +
+#  labs(title = "Histogram of Sampled Scores", x = "Score", y = "Frequency")
+
+
+
+#ggplot() +
+#  geom_line(data = estimateKernelDensity(createProperDataframe(countryCode = "ALG", athleteName = "NEMOUR KAYLIA", apparatusInitials = "BB"), 0.25), aes(x, y), color = "blue")
+```
+
+
+```{r}
+#for (i in 1:nrow(allWomenBBParticipants)) {
+#    row <- allWomenBBParticipants[i, ]
+#    row$SimulationResults <- make the list length 10
+#}
+
+
+ # setting up SimulationResults Vector for allWomenBBParticipants
+#  for (i in 1:nrow(allWomenBBParticipants)) {
+#    row <- allWomenBBParticipants[i, ]
+#    row$SimulationResults <- vector("list", n)
+#  }
+```
+
+```{r}
+#for (i in 1:nrow(allWomenBBParticipants)) {
+#  row <- allWomenBBParticipants[i, ]
+#  toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+#  print(class(allWomenBBParticipants[i, ]$Simulation))
+#  print(class(toAdd))
+#  print(toAdd)
+#      #toAddList <- list(toAdd)
+#      #allWomenBBParticipants[i, ]$SimulationResults[[nthOlympic]] <- toAddList
+#}
+```
+```{r}
+#allWomenBBParticipants$SimulationResults <- lapply(1:nrow(allWomenBBParticipants), function(x) vector("list", 10))
+#allWomenBBParticipants[2, ]$SimulationResults[[1]][[3]] <- 3
+
+```
+
+```{r}
+#allWomenBBParticipants$SimulationResults[[i]][[nthOlympic]] <- toAdd
+```
+
+
+
+
 
 
 ## OVERALL ALGO: runOlympicsNTimes
@@ -239,18 +331,37 @@ class(allWomenBBParticipants[1, ])
 # uses all sorts of helper functions
 
 
-runOlympicsNTimes <- function(n){
+runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants){
+  BBParticipants_copied <- allWomenBBParticipants
+  
+  BBParticipants_copied$SimulationResults <- lapply(1:nrow(BBParticipants_copied), function(x) vector("list", n))
+ 
   
   # 1. running the Women's BB n times
-  for (i in 1:nrow(allWomenBBParticipants)) {
-    row <- allWomenBBParticipants[i, ]
+  for (nthOlympic in 1:n){
     
+    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
+    for (i in 1:nrow(BBParticipants_copied)) {
+      row <- BBParticipants_copied[i, ]
+      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
     
-    
-    
-    
+      BBParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
+    }
+    print(paste(nthOlympic, "th olympic done for Women's BB"))
     
   }
+  
+  return(BBParticipants_copied)
+  
+  
+    
+    
+    
+    
+    
+    
+    
+  
   
   
   
@@ -272,3 +383,17 @@ runOlympicsNTimes <- function(n){
 
 
 ```
+
+
+
+```{r}
+# sanityCheck: runOlympicsNTimes
+
+a = runOlympicsNTimes(100, allWomenBBParticipants)
+
+a <- a %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+```
+
+
+
