@@ -181,7 +181,7 @@ estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue)
       nugget = nuggetBB*4
     }
     else{
-      nugget = sd(outputOfCreateProperDataframe[[1]])*4
+      nugget = nuggetBB*2
     }
   }
   else if (apparatusOfInterestHere == "UB"){
@@ -189,7 +189,7 @@ estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue)
       nugget = nuggetUB*4
     }
     else{
-      nugget = sd(outputOfCreateProperDataframe[[1]])*4
+      nugget = nuggetUB*2
     }
   }
   else if (apparatusOfInterestHere == "FX"){
@@ -197,7 +197,7 @@ estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue)
       nugget = nuggetFX*4
     }
     else{
-      nugget = sd(outputOfCreateProperDataframe[[1]])*4
+      nugget = nuggetFX*2
     }
   }
   else{
@@ -205,7 +205,7 @@ estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue)
       nugget = nuggetVT*4
     }
     else{
-      nugget = sd(outputOfCreateProperDataframe[[1]])*4
+      nugget = nuggetVT*2
     }
   }
   
