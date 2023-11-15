@@ -18,7 +18,7 @@ library(purrr)
 library(dplyr)
 library(KernSmooth)
 
-## LOG INTO https://hypatia.stat.duke.edu AND THEN CLONE OUR REPO THERE AND THEN RUN THESE SIMULATION .QMD FILES
+## LOG INTO https://hypatia.stat.duke.edu USING NET ID AND PW AND THEN CLONE OUR REPO THERE AND THEN RUN THESE SIMULATION .QMD FILES
 
 flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
   flexiblas::flexiblas_switch()
