@@ -189,8 +189,8 @@ estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue)
 #class(b)
 
 
-ggplot() +
-  geom_line(data = estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25), aes(x, y), color = "blue")
+#ggplot() +
+#  geom_line(data = estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25), aes(x, y), color = "blue")
 ```
 
 
@@ -219,41 +219,41 @@ createCDFfromKDEandDrawONEscore <- function(dataframeReturnedByestimateKernelDen
 
 ```{r}
 # sanity checking function: createCDFfromKDEandDrawONEscore
-c = createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25))
-c
-class(c)
+#c = createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25))
+#c
+#class(c)
 
-emptyList <- vector("list", 3000)
+#emptyList <- vector("list", 3000)
 
-for (i in 1:3000) {
-  toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25))
-  emptyList[[i]] <- toAdd
-}
+#for (i in 1:3000) {
+#  toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = "AUS", athleteName = "BROWN GEORGIA", apparatusInitials = "UB"), 0.25))
+#  emptyList[[i]] <- toAdd
+#}
 
-emptyListDF <- data.frame(values = unlist(emptyList))
+#emptyListDF <- data.frame(values = unlist(emptyList))
 
 # Creating a histogram with ggplot2
-ggplot(emptyListDF, aes(x = values)) +
-  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
-  theme_minimal() +
-  labs(title = "Histogram of Scores", x = "Score", y = "Frequency")
+#ggplot(emptyListDF, aes(x = values)) +
+#  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
+#  theme_minimal() +
+#  labs(title = "Histogram of Scores", x = "Score", y = "Frequency")
 ```
 
 ```{r}
-class(allWomenBBParticipants[1, ])
+#class(allWomenBBParticipants[1, ])
 
-allWomenBBParticipants[1, ]
+#allWomenBBParticipants[1, ]
 
-allWomenBBParticipants[1, ]$Country
-allWomenBBParticipants[1, ]$FullName
-allWomenBBParticipants[1, ]$Apparatus
+#allWomenBBParticipants[1, ]$Country
+#allWomenBBParticipants[1, ]$FullName
+#allWomenBBParticipants[1, ]$Apparatus
 
-class(allWomenBBParticipants[1, ]$Country)
-class(allWomenBBParticipants[1, ]$FullName)
-class(allWomenBBParticipants[1, ]$Apparatus)
+#class(allWomenBBParticipants[1, ]$Country)
+#class(allWomenBBParticipants[1, ]$FullName)
+#class(allWomenBBParticipants[1, ]$Apparatus)
 
 
-row1 <- allWomenBBParticipants[1, ]$SimulationResults
+#row1 <- allWomenBBParticipants[1, ]$SimulationResults
 ```
 
 
