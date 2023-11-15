@@ -443,7 +443,7 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 ```{r}
 # sanityCheck: runOlympicsNTimes
 set.seed(1)
-a = runOlympicsNTimes(100, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
+a = runOlympicsNTimes(10, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
 #a <- a %>% 
 #  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
@@ -478,50 +478,50 @@ aVT <- aVT %>%
 
 
 ```{r}
-BBResults <- aBB
+#BBResults <- aBB
 # Convert all list columns in BBResults to character strings
-BBResults[] <- lapply(BBResults, function(x) {
-  if (is.list(x)) {
-    sapply(x, toString)
-  } else {
-    x
-  }
-})
+#BBResults[] <- lapply(BBResults, function(x) {
+#  if (is.list(x)) {
+#    sapply(x, toString)
+#  } else {
+#    x
+#  }
+#})
 # Now save the modified data frame to a CSV file
-write.csv(BBResults, file = "BBResults.csv", row.names = FALSE)
-UBResults <- aUB
+#write.csv(BBResults, file = "BBResults.csv", row.names = FALSE)
+#UBResults <- aUB
 # Convert all list columns in BBResults to character strings
-UBResults[] <- lapply(UBResults, function(x) {
-  if (is.list(x)) {
-    sapply(x, toString)
-  } else {
-    x
-  }
-})
+#UBResults[] <- lapply(UBResults, function(x) {
+#  if (is.list(x)) {
+#    sapply(x, toString)
+#  } else {
+#    x
+#  }
+#})
 # Now save the modified data frame to a CSV file
-write.csv(UBResults, file = "UBResults.csv", row.names = FALSE)
-FXResults <- aFX
+#write.csv(UBResults, file = "UBResults.csv", row.names = FALSE)
+#FXResults <- aFX
 # Convert all list columns in BBResults to character strings
-FXResults[] <- lapply(FXResults, function(x) {
-  if (is.list(x)) {
-    sapply(x, toString)
-  } else {
-    x
-  }
-})
+#FXResults[] <- lapply(FXResults, function(x) {
+#  if (is.list(x)) {
+#    sapply(x, toString)
+#  } else {
+#    x
+#  }
+#})
 # Now save the modified data frame to a CSV file
-write.csv(FXResults, file = "FXResults.csv", row.names = FALSE)
-VTResults <- aVT
+#write.csv(FXResults, file = "FXResults.csv", row.names = FALSE)
+#VTResults <- aVT
 # Convert all list columns in BBResults to character strings
-VTResults[] <- lapply(VTResults, function(x) {
-  if (is.list(x)) {
-    sapply(x, toString)
-  } else {
-    x
-  }
-})
+#VTResults[] <- lapply(VTResults, function(x) {
+#  if (is.list(x)) {
+#    sapply(x, toString)
+#  } else {
+#    x
+#  }
+#})
 # Now save the modified data frame to a CSV file
-write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
+#write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
 ```
 
 
@@ -570,7 +570,7 @@ separate_columns <- function(data, list_column_name, num_columns) {
 
 ## calculating the top three potential people in each individual event 
 
-aBB_separated_data <- separate_columns(aBB, "SimulationResults", 100)
+aBB_separated_data <- separate_columns(aBB, "SimulationResults", 10)
 
 aBB_separated_data %>% 
   filter(FullName == "BILES SIMONE") %>% 
@@ -587,7 +587,7 @@ aBB_Top_Three <- aBB_separated_data %>%
   slice(1:4)
 
 
-aFX_separated_data <- separate_columns(aFX, "SimulationResults", 100)
+aFX_separated_data <- separate_columns(aFX, "SimulationResults", 10)
 
 aFX_Top_Three <- aFX_separated_data %>% 
   filter(Country == "USA") %>% 
@@ -595,7 +595,7 @@ aFX_Top_Three <- aFX_separated_data %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:4)
 
-aUB_separated_data <- separate_columns(aUB, "SimulationResults", 100)
+aUB_separated_data <- separate_columns(aUB, "SimulationResults", 10)
 
 aUB_Top_Three <- aUB_separated_data %>% 
   filter(Country == "USA") %>% 
@@ -603,7 +603,7 @@ aUB_Top_Three <- aUB_separated_data %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:4)
 
-aVT_separated_data <- separate_columns(aFX, "SimulationResults", 100)
+aVT_separated_data <- separate_columns(aFX, "SimulationResults", 10)
 
 aVT_Top_Three <- aVT_separated_data %>% 
   filter(Country == "USA") %>% 
