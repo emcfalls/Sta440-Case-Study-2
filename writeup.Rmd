@@ -1,0 +1,34 @@
+---
+title: "Predicting the Best U.S. Men's and Women's Gymnastics Teams for the 2024 Paris Olympics"
+author: "Emily Zhao, Elyse McFalls, Young Jun, Evan Kim"
+date: "2023-11-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Gymnastics is quickly becoming one of America's favorite past times. Just in the last Olympic cycle, polls showed that gymnastics was Americans the most anticipated event ([source](https://sgbonline.com/poll-gymnastics-is-americans-most-highly-anticipated-olympic-sport/)). Much of the hype around gymnastics in the states can be attributed to the historical sucess the U.S. has had in the Olympics. Specifically for women's rhytmic gymnastics, the farily dominance of teams like the Final Five in 2016 and athletes like Simone Biles (active 2011 - current) has given the sport and its players great noteriety ([source](https://www.si.com/olympics/2016/08/10/usa-womens-gymnastics-system-rio-olympics-martha-karolyi#gid=ci02554e18c0032580&pid=us-women-gymnastics-team-wins-gold-medal-at-rio-olympic-games-26jpg)). The U.S. men's rhythmic gymnastics team, while being less of a powerhouse, have also consistently placed in the top 5 for team events in the Olympics and bolstered decorated athletes like Khoi Young in recent years ([source](https://en.wikipedia.org/wiki/United_States_men%27s_national_artistic_gymnastics_team)).
+
+In late July of 2024, millions of Americans will be eagarly awaiting the Olympic display of one of their favorite pastime sports: rhytmic gymnastics. Despite orgiginating in Greece, rhythmic gymnastics has taken hold of American zietgiest. 
+
+## Methodology 
+
+### Data Collection and Selection Criteria 
+
+### Exploratory Data Analysis
+
+### Weighted Kernel Density Estimates 
+
+## Results
+
+### Average Scenario
+
+### Best-case Scenario
+
+### Worst-case Scenario
+
+## Conlcusions 

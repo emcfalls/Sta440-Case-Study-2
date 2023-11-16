@@ -27,6 +27,12 @@ all <- read.csv('cleaned data/full_data_2023.csv')
 ```
 
 ## Trying Weights
+Exponential rate of decay
+
+[Article](https://jackbakerds.com/posts/upweight-recent-observations-regression-classification/)
+[Paper on Weighting for Pathogen Data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7774545/)
+
+$$w_{ij} = \alpha^{T_i-t_{ij}} \text{, where } T_i \text{ is the most recent time (in days) for athlete i and } t_{ij} \text{ is the jth recorded time (in days) for the ith athlete}$$
 
 ```{r}
 women <- women %>%
