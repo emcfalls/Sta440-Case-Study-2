@@ -368,7 +368,7 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 
 # sanityCheck: runOlympicsNTimes
 set.seed(1)
-a = runOlympicsNTimes(5, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
+a = runOlympicsNTimes(1000, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
 
 ```
@@ -458,7 +458,12 @@ all_aroud_finalists <- all_aroud_finalists %>%
 
 ```
 
+```{r}
 
+write.csv(all_aroud_finalists, file = "all_aroud_finalists_1000.csv")
+
+
+```
 
 
 
