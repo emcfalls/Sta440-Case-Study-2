@@ -399,6 +399,7 @@ aVT <- a$VTResults
 aVT <- aVT %>% 
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
+
 ```
 
 
@@ -458,9 +459,20 @@ all_aroud_finalists <- all_aroud_finalists %>%
 
 ```
 
+## Save Simulation Results
+
 ```{r}
 
-write.csv(all_aroud_finalists, file = "all_aroud_finalists_1000.csv")
+
+write.csv(all_aroud_finalists, file = "women_all_aroud_finalists_1000.csv")
+
+
+
+write.csv(aBB_prepared, file = "women_BB_1000.csv")
+write.csv(aUB_prepared, file = "women_UB_1000.csv")
+write.csv(aFX_prepared, file = "women_FX_1000.csv")
+write.csv(aVT_prepared, file = "women_VT_1000.csv")
+
 
 
 ```
