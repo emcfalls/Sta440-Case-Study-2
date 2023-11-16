@@ -20,9 +20,9 @@ library(KernSmooth)
 
 ## LOG INTO https://hypatia.stat.duke.edu USING NET ID AND PW AND THEN CLONE OUR REPO THERE AND THEN RUN THESE SIMULATION .QMD FILES
 
-flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
-  flexiblas::flexiblas_switch()
-  flexiblas::flexiblas_set_num_threads(8)
+#flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
+#  flexiblas::flexiblas_switch()
+#  flexiblas::flexiblas_set_num_threads(8)
 ```
 
 
@@ -362,90 +362,104 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 
 
 
-## EXAMPLE WAY OF UTILIZING runOlympicsNTimes (all commented out below)
+## Running the simulation
 ```{r}
+
+
 # sanityCheck: runOlympicsNTimes
-#set.seed(1)
-#a = runOlympicsNTimes(5, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
+set.seed(1)
+a = runOlympicsNTimes(5, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
-#a <- a %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
 ```
 
+## Code to get the mean from all simulations 
 
 ```{r}
-#aBB <- a$BBResults
+aBB <- a$BBResults
 
-#aBB <- aBB %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
-
-
-#aUB <- a$UBResults
-
-#aUB <- aUB %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+aBB <- aBB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 
-#aFX <- a$FXResults
+aUB <- a$UBResults
 
-#aFX <- aFX %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+aUB <- aUB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 
-#aVT <- a$VTResults
+aFX <- a$FXResults
 
-#aVT <- aVT %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+aFX <- aFX %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+aVT <- a$VTResults
+
+aVT <- aVT %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 ```
 
+
+## Getting the aggregate scores
 
 ```{r}
-#BBResults <- aBB
-# Convert all list columns in BBResults to character strings
-#BBResults[] <- lapply(BBResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
-# Now save the modified data frame to a CSV file
-#write.csv(BBResults, file = "BBResults.csv", row.names = FALSE)
-#UBResults <- aUB
-# Convert all list columns in BBResults to character strings
-#UBResults[] <- lapply(UBResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
-# Now save the modified data frame to a CSV file
-#write.csv(UBResults, file = "UBResults.csv", row.names = FALSE)
-#FXResults <- aFX
-# Convert all list columns in BBResults to character strings
-#FXResults[] <- lapply(FXResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
-# Now save the modified data frame to a CSV file
-#write.csv(FXResults, file = "FXResults.csv", row.names = FALSE)
-#VTResults <- aVT
-# Convert all list columns in BBResults to character strings
-#VTResults[] <- lapply(VTResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
-# Now save the modified data frame to a CSV file
-#write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
+
+# List of all data frames
+data_frames <- list(aBB, aUB, aFX, aVT)
+
+# Function to select the relevant columns and rename 'mean' to a unique name
+prepare_df <- function(df, name) {
+  df <- df[, c('Country', 'FullName', 'mean')]
+  colnames(df)[3] <- name
+  return(df)
+}
+
+# Prepare each data frame
+aBB_prepared <- prepare_df(aBB, 'meanBB')
+aUB_prepared <- prepare_df(aUB, 'meanUB')
+aFX_prepared <- prepare_df(aFX, 'meanFX')
+aVT_prepared <- prepare_df(aVT, 'meanVT')
+
+# Merge all data frames by 'Country' and 'FullName'
+all_around <- Reduce(function(x, y) merge(x, y, by = c('Country', 'FullName'), all = TRUE), 
+                     list(aBB_prepared, aUB_prepared, aFX_prepared, aVT_prepared))
+
+# Calculate the AllAroundScore by row-wise summing of the mean columns
+all_around$AllAroundScore <- rowSums(all_around[,c('meanBB', 'meanUB', 'meanFX', 'meanVT')], na.rm = TRUE)
+
+# Select only the Country, FullName, and AllAroundScore columns
+all_around <- all_around[, c('Country', 'FullName', 'AllAroundScore')]
+
+# Output the final data frame
+all_around
+
+
+
+
 ```
+## Choosing top two atheletes from each nation
+```{r}
+
+# Arrange the data by Country and descending AllAroundScore
+all_around <- all_around %>%
+  arrange(Country, desc(AllAroundScore))
+
+# Filter out the top two individuals from each country
+all_aroud_finalists <- all_around %>% 
+  group_by(Country) %>% 
+  slice_max(AllAroundScore, n = 2)
+
+# Now, sort the top individuals by AllAroundScore in descending order
+all_aroud_finalists <- all_aroud_finalists %>% 
+  ungroup() %>% 
+  arrange(desc(AllAroundScore))
+
+```
+
+
+
 
 
 
