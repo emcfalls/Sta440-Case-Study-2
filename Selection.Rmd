@@ -13,6 +13,39 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+## Update -> adding athlete type
+
+```{r}
+women <- read.csv("cleaned data/active_restricted_women_2023.csv")
+men <- read.csv("cleaned data/active_restricted_men_2023.csv")
+```
+
+```{r}
+men <- men %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"))
+
+women <- women %>%
+  mutate(type = case_when(Country %in% c("GER", "MEX", "HUN") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("NEMOUR KAYLIA", "SCHAEFER PAULINE", "MORENO ALEXA",
+                         "MARTINS FILIPA", "FINNEGAN ALEAH", "CZIFRA BETTINA",
+                         "PETISCO ALBA", "LASHCHEVSKA ANNA", "BICKEL LENA",
+                         "HERON HILLARY", "ROOSKRANTZ CAITLIN", "ARTAMONOVA SONA",
+                         "RAZ LIHIE", "HRIBAR LUCIJA") ~ "individual",
+                          .default = "full team"))
+```
+
+
+```{r}
+write.csv(men, "cleaned data/active_restricted_men_2023.csv")
+write.csv(women, "cleaned data/active_restricted_women_2023.csv")
+```
+
 
 ## Loading full data
 
