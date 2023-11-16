@@ -447,8 +447,8 @@ runOlympicsNTimes <- function(n, allMenHBParticipants, allMenFXParticipants, all
 ## EXAMPLE WAY OF UTILIZING runOlympicsNTimes (all commented out below)
 ```{r}
 # sanityCheck: runOlympicsNTimes
-set.seed(1)
-a = runOlympicsNTimes(5, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants)
+set.seed(120)
+a = runOlympicsNTimes(1000, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants)
 
 ```
 
@@ -492,52 +492,154 @@ aVT <- aVT %>%
 
 
 ```{r}
-#BBResults <- aBB
-# Convert all list columns in BBResults to character strings
-#BBResults[] <- lapply(BBResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
+HBResults <- aHB
+ # Convert all list columns in BBResults to character strings
+HBResults[] <- lapply(HBResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
 # Now save the modified data frame to a CSV file
-#write.csv(BBResults, file = "BBResults.csv", row.names = FALSE)
-#UBResults <- aUB
-# Convert all list columns in BBResults to character strings
-#UBResults[] <- lapply(UBResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
+write.csv(HBResults, file = "Men_HBResults.csv", row.names = FALSE)
+
+
+FXResults <- aFX
+ # Convert all list columns in BBResults to character strings
+FXResults[] <- lapply(FXResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
 # Now save the modified data frame to a CSV file
-#write.csv(UBResults, file = "UBResults.csv", row.names = FALSE)
-#FXResults <- aFX
-# Convert all list columns in BBResults to character strings
-#FXResults[] <- lapply(FXResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
+write.csv(FXResults, file = "Men_FXResults.csv", row.names = FALSE)
+
+
+PBResults <- aPB
+ # Convert all list columns in BBResults to character strings
+PBResults[] <- lapply(PBResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
 # Now save the modified data frame to a CSV file
-#write.csv(FXResults, file = "FXResults.csv", row.names = FALSE)
-#VTResults <- aVT
-# Convert all list columns in BBResults to character strings
-#VTResults[] <- lapply(VTResults, function(x) {
-#  if (is.list(x)) {
-#    sapply(x, toString)
-#  } else {
-#    x
-#  }
-#})
+write.csv(PBResults, file = "Men_PBResults.csv", row.names = FALSE)
+
+
+PHResults <- aPH
+ # Convert all list columns in BBResults to character strings
+PHResults[] <- lapply(PHResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
 # Now save the modified data frame to a CSV file
-#write.csv(VTResults, file = "VTResults.csv", row.names = FALSE)
+write.csv(PHResults, file = "Men_PHResults.csv", row.names = FALSE)
+
+
+SRResults <- aSR
+ # Convert all list columns in BBResults to character strings
+SRResults[] <- lapply(SRResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
+# Now save the modified data frame to a CSV file
+write.csv(SRResults, file = "Men_SRResults.csv", row.names = FALSE)
+
+
+VTResults <- aVT
+VTResults[] <- lapply(VTResults, function(x) {
+  if (is.list(x)) {
+    sapply(x, toString)
+  } else {
+    x
+  }
+})
+
+# Now save the modified data frame to a CSV file
+write.csv(VTResults, file = "Men_VTResults.csv", row.names = FALSE)
+
 ```
 
 
 
+## Getting the aggregate scores
+
+```{r}
+
+# List of all data frames
+data_frames <- list(aHB, aFX, aPB, aPH, aSR, aVT)
+
+# Function to select the relevant columns and rename 'mean' to a unique name
+prepare_df <- function(df, name) {
+  df <- df[, c('Country', 'FullName', 'mean')]
+  colnames(df)[3] <- name
+  return(df)
+}
+
+# Prepare each data frame
+aHB_prepared <- prepare_df(aHB, 'meanHB')
+aFX_prepared <- prepare_df(aFX, 'meanFX')
+aPB_prepared <- prepare_df(aPB, 'meanPB')
+aPH_prepared <- prepare_df(aPH, 'meanPH')
+aSR_prepared <- prepare_df(aSR, 'meanSR')
+aVT_prepared <- prepare_df(aVT, 'meanVT')
+
+# Merge all data frames by 'Country' and 'FullName'
+all_around <- Reduce(function(x, y) merge(x, y, by = c('Country', 'FullName'), all = TRUE), 
+                     list(aHB_prepared, aFX_prepared, aPB_prepared, aPH_prepared, aSR_prepared, aVT_prepared))
+
+# Calculate the AllAroundScore by row-wise summing of the mean columns
+all_around$AllAroundScore <- rowSums(all_around[,c('meanHB', 'meanFX', 'meanPB', 'meanPH', 'meanSR', 'meanVT')], na.rm = TRUE)
+
+# Select only the Country, FullName, and AllAroundScore columns
+all_around <- all_around[, c('Country', 'FullName', 'AllAroundScore')]
+
+# Output the final data frame
+all_around
+
+
+
+
+```
+## Choosing top two atheletes from each nation
+```{r}
+
+# Arrange the data by Country and descending AllAroundScore
+all_around <- all_around %>%
+  arrange(Country, desc(AllAroundScore))
+
+# Filter out the top two individuals from each country
+all_aroud_finalists <- all_around %>% 
+  group_by(Country) %>% 
+  slice_max(AllAroundScore, n = 2)
+
+# Now, sort the top individuals by AllAroundScore in descending order
+all_aroud_finalists <- all_aroud_finalists %>% 
+  ungroup() %>% 
+  arrange(desc(AllAroundScore))
+
+```
+
+```{r}
+
+write.csv(all_aroud_finalists, file = "all_aroud_finalists_1000.csv")
+
+
+```
 
