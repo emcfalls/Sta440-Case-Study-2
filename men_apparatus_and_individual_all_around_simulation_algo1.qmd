@@ -409,7 +409,7 @@ runOlympicsNTimes <- function(n, allMenHBParticipants, allMenFXParticipants, all
   }
   
   
-  
+
   # 4. running the Men's VT n times
   VTParticipants_copied <- allMenVTParticipants
   
@@ -764,5 +764,12 @@ all_aroud_finalists <- all_aroud_finalists %>%
 write.csv(all_aroud_finalists, file = "men_all_aroud_finalists_1000.csv")
 
 
+write.csv(aHB_prepared, file = "men_aHB_Weighted_Medals.csv")
+write.csv(aPB_prepared, file = "men_aPB_Weighted_Medals.csv")
+write.csv(aPH_prepared, file = "men_aPH_Weighted_Medals.csv")
+write.csv(aFX_prepared, file = "men_aFX_Weighted_Medals.csv")
+write.csv(aSR_prepared, file = "men_aSR_Weighted_Medals.csv")
+write.csv(aVT_prepared, file = "men_aVT_Weighted_Medals.csv")
 ```
+
 

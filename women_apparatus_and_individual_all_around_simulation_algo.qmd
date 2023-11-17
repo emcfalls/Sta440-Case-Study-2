@@ -367,7 +367,7 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 
 
 # sanityCheck: runOlympicsNTimes
-set.seed(1)
+set.seed(120)
 a = runOlympicsNTimes(1000, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
 
@@ -422,8 +422,15 @@ separate_columns <- function(data, list_column_name, num_columns) {
   for (i in seq_len(nrow(data))) {
     nested_list <- data[[list_column_name]][i]
     
-    # Assign the values to the corresponding columns in the result matrix
-    result_matrix[i, ] <- unlist(nested_list)
+    # checking if list is empty (numeric(0))
+    if (is.na(data[["mean"]][i])){
+      result_matrix[i, ] <- 0
+    }
+    
+    else {
+      # Assign the values to the corresponding columns in the result matrix
+      result_matrix[i, ] <- unlist(nested_list)
+    }
     
   }
   
@@ -432,9 +439,7 @@ separate_columns <- function(data, list_column_name, num_columns) {
   result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
   
   result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
-  result_data$percentile_75_result <- apply(select(result_data, starts_with(list_column_name)), 1, function(x) quantile(x, 0.75))
 
-  
   return(result_data)
 }
 ```
@@ -443,73 +448,42 @@ separate_columns <- function(data, list_column_name, num_columns) {
 
 ```{r}
 
-convert_simulation_results_to_numeric_list <- function(data, column_name = "SimulationResults") {
-  # Function to convert a comma-separated string to a numeric list
-  convert_string_to_numeric_vector <- function(data_string) {
-    numeric_vector <- as.numeric(unlist(strsplit(data_string, ", ")))
-    return(numeric_vector)
-  }
-
-  # Apply the conversion function to each row in the specified column
-  data$NumericList <- lapply(data[[column_name]], convert_string_to_numeric_list)
-
-  return(data)
-}
-
-aVT <- read.csv("VTResults.csv") 
-aBH <- convert_simulation_results_to_numeric_list(aBH, "SimulationResults")
-
-
-aFX <- read.csv("simluation result/women_FX_1000.csv")
-aUB <- read.csv("simluation result/women_UB_1000.csv")
-aVT <- read.csv("simluation result/women_VT_1000.csv")
 
 ## calculating the top three potential people in each individual event 
 
-aBB$SimulationResults[1]
 
-aBB_separated_data <- separate_columns(aBB, "SimulationResults", 10)
-
-aBB_separated_data %>% 
-  filter(FullName == "BILES SIMONE") %>% 
-  select(avg_result)
-
-aBB_separated_data %>% 
-  filter(FullName == "WU RAN") %>% 
-  select(percentile_75_result)
+aBB_separated_data <- separate_columns(aBB, "SimulationResults", 1000)
 
 aBB_Top_Three <- aBB_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:4)
+  slice(1:3)
 
 
-aFX_separated_data <- separate_columns(aFX, "SimulationResults", 10)
+aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
 
 aFX_Top_Three <- aFX_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:4)
+  slice(1:3)
 
-aUB_separated_data <- separate_columns(aUB, "SimulationResults", 10)
+aUB_separated_data <- separate_columns(aUB, "SimulationResults", 1000)
 
 aUB_Top_Three <- aUB_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:4)
+  slice(1:3)
 
-aVT_separated_data <- separate_columns(aFX, "SimulationResults", 10)
+aVT_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
 
 aVT_Top_Three <- aVT_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:4)
-
-
+  slice(1:3)
 
 
 ```
@@ -572,19 +546,79 @@ all_aroud_finalists <- all_aroud_finalists %>%
 
 ```
 
+
+Convert list to string type
+```{r}
+BBResults <- aBB
+#Convert all list columns in BBResults to character strings
+BBResults[] <- lapply(BBResults, function(x) {
+ if (is.list(x)) {
+   sapply(x, toString)
+ } else {
+   x
+ }
+})
+
+
+UBResults <- aUB
+#Convert all list columns in BBResults to character strings
+UBResults[] <- lapply(UBResults, function(x) {
+ if (is.list(x)) {
+   sapply(x, toString)
+ } else {
+   x
+ }
+})
+
+
+FXResults <- aFX
+#Convert all list columns in BBResults to character strings
+FXResults[] <- lapply(FXResults, function(x) {
+ if (is.list(x)) {
+   sapply(x, toString)
+ } else {
+   x
+ }
+})
+#Now save the modified data frame to a CSV file
+
+VTResults <- aVT
+#Convert all list columns in BBResults to character strings
+VTResults[] <- lapply(VTResults, function(x) {
+ if (is.list(x)) {
+   sapply(x, toString)
+ } else {
+   x
+ }
+})
+
+```
+```
+
+
+
 ## Save Simulation Results
 
 ```{r}
 
 
-write.csv(all_aroud_finalists, file = "women_all_aroud_finalists_1000.csv")
+write.csv(all_aroud_finalists, file = "women_all_around_finalists_1000_EZ.csv")
+
+write.csv(aBB_Top_Three, file = "women_aBB_Top_Three_EZ.csv")
+write.csv(aUB_Top_Three, file = "women_aUB_Top_Three_EZ.csv")
+write.csv(aFX_Top_Three, file = "women_aFX_Top_Three_EZ.csv")
+write.csv(aVT_Top_Three, file = "women_aVT_Top_Three_EZ.csv")
+
+write.csv(aBB_separated_data, file = "women_aBB_Weighted_Medals.csv")
+write.csv(aUB_separated_data, file = "women_aUB_Weighted_Medals.csv")
+write.csv(aFX_separated_data, file = "women_aFX_Weighted_Medals.csv")
+write.csv(aVT_separated_data, file = "women_aVT_Weighted_Medals.csv")
 
 
-
-write.csv(aBB_prepared, file = "women_BB_1000.csv")
-write.csv(aUB_prepared, file = "women_UB_1000.csv")
-write.csv(aFX_prepared, file = "women_FX_1000.csv")
-write.csv(aVT_prepared, file = "women_VT_1000.csv")
+write.csv(BBResults, file = "women_BB_1000_EZ.csv")
+write.csv(UBResults, file = "women_UB_1000_EZ.csv")
+write.csv(FXResults, file = "women_FX_1000_EZ.csv")
+write.csv(VTResults, file = "women_VT_1000_EZ.csv")
 
 
 
