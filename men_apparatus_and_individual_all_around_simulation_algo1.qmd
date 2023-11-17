@@ -491,6 +491,7 @@ mVT <- mVT %>%
 ```
 
 
+## converting into character strings for export 
 ```{r}
 HBResults <- mHB
  # Convert all list columns in BBResults to character strings
@@ -503,7 +504,7 @@ HBResults[] <- lapply(HBResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-# write.csv(HBResults, file = "Men_HBResults.csv", row.names = FALSE)
+write.csv(HBResults, file = "Men_HBResults_1000_EZ.csv", row.names = FALSE)
 
 
 FXResults <- mFX
@@ -517,7 +518,7 @@ FXResults[] <- lapply(FXResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-# write.csv(FXResults, file = "Men_FXResults.csv", row.names = FALSE)
+write.csv(FXResults, file = "Men_FXResults_1000_EZ.csv", row.names = FALSE)
 
 
 PBResults <- mPB
@@ -531,7 +532,7 @@ PBResults[] <- lapply(PBResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-# write.csv(PBResults, file = "Men_PBResults.csv", row.names = FALSE)
+write.csv(PBResults, file = "Men_PBResults_1000_EZ.csv", row.names = FALSE)
 
 
 PHResults <- mPH
@@ -545,7 +546,7 @@ PHResults[] <- lapply(PHResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-# write.csv(PHResults, file = "Men_PHResults.csv", row.names = FALSE)
+write.csv(PHResults, file = "Men_PHResults_1000_EZ.csv", row.names = FALSE)
 
 
 SRResults <- mSR
@@ -559,7 +560,7 @@ SRResults[] <- lapply(SRResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-# write.csv(SRResults, file = "Men_SRResults.csv", row.names = FALSE)
+write.csv(SRResults, file = "Men_SRResults_1000_EZ.csv", row.names = FALSE)
 
 
 VTResults <- mVT
@@ -572,7 +573,7 @@ VTResults[] <- lapply(VTResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-# write.csv(VTResults, file = "Men_VTResults.csv", row.names = FALSE)
+write.csv(VTResults, file = "Men_VTResults_1000_EZ.csv", row.names = FALSE)
 
 ```
 
@@ -611,7 +612,7 @@ separate_columns <- function(data, list_column_name, num_columns) {
   result_data <- cbind(data[, -which(names(data) == list_column_name)], result_matrix)
   result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
   
-  result_datm$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
+  result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
 
   
   return(result_data)
@@ -632,7 +633,7 @@ mHB_Top_Three <- mHB_separated_data %>%
   filter(Country == "USA") %>%
   arrange(desc(avg_result)) %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
-  slice(1:3)
+  slice(1:10)
 
 write.csv(mHB_Top_Three, file = "men_mHB_Top_Three.csv")
 
@@ -642,11 +643,9 @@ mFX_Top_Three <- mFX_separated_data %>%
   filter(Country == "USA") %>%
   arrange(desc(avg_result)) %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
-  slice(1:3)
+  slice(1:20)
 
 write.csv(mFX_Top_Three, file = "men_mFX_Top_Three.csv")
-
-
 
 
 mPB_separated_data <- separate_columns(mPB, "SimulationResults", 1000)
@@ -655,7 +654,7 @@ mPB_Top_Three <- mPB_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:14)
 
 write.csv(mPB_Top_Three, file = "men_mPB_Top_Three.csv")
 
@@ -666,7 +665,7 @@ mPH_Top_Three <- mPH_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:12)
 
 write.csv(mPH_Top_Three, file = "men_mPH_Top_Three.csv")
 
@@ -677,18 +676,18 @@ mSR_Top_Three <- mSR_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:8)
 
 write.csv(mSR_Top_Three, file = "men_mSR_Top_Three.csv")
 
 
-mVT_separated_data <- separate_columns(mFX, "SimulationResults", 1000)
+mVT_separated_data <- separate_columns(mVT, "SimulationResults", 1000)
 
 mVT_Top_Three <- mVT_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:21)
 
 
 write.csv(mVT_Top_Three, file = "men_mVT_Top_Three.csv")
