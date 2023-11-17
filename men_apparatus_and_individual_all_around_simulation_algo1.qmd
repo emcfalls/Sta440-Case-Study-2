@@ -656,7 +656,7 @@ aPB_Top_Three <- aPB_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:4)
+  slice(1:3)
 
 write.csv(aPB_Top_Three, file = "men_aPB_Top_Three.csv")
 
