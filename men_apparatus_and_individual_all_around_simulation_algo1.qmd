@@ -595,8 +595,15 @@ separate_columns <- function(data, list_column_name, num_columns) {
   for (i in seq_len(nrow(data))) {
     nested_list <- data[[list_column_name]][i]
     
-    # Assign the values to the corresponding columns in the result matrix
-    result_matrix[i, ] <- unlist(nested_list)
+    # checking if list is empty (numeric(0))
+    if (is.na(data[["mean"]][i])){
+      result_matrix[i, ] <- 0
+    }
+    
+    else {
+      # Assign the values to the corresponding columns in the result matrix
+      result_matrix[i, ] <- unlist(nested_list)
+    }
     
   }
   
@@ -620,22 +627,22 @@ separate_columns <- function(data, list_column_name, num_columns) {
 ## calculating the top three potential people in each individual event 
 
 
-aHB_separated_data <- separate_columns(aHB, "SimulationResults", 1000)
+aHB_separated_data <- separate_columns(aHB, "SimulationResults",1000)
 
-aHB_Top_Three <- aHB_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+aHB_Top_Three <- aHB_separated_data %>%
+  filter(Country == "USA") %>%
+  arrange(desc(avg_result)) %>%
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:3)
 
 write.csv(aHB_Top_Three, file = "men_aHB_Top_Three.csv")
 
 aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
 
-aFX_Top_Three <- aFX_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+aFX_Top_Three <- aFX_separated_data %>%
+  filter(Country == "USA") %>%
+  arrange(desc(avg_result)) %>%
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:3)
 
 write.csv(aFX_Top_Three, file = "men_aFX_Top_Three.csv")
