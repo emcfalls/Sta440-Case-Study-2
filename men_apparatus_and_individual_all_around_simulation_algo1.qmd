@@ -577,6 +577,122 @@ write.csv(VTResults, file = "Men_VTResults.csv", row.names = FALSE)
 ```
 
 
+```{r}
+
+## helper function to transform scores into relevant medals
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  return(result)
+}
+
+separate_columns <- function(data, list_column_name, num_columns) {
+  # Create empty data frame to store the separated columns
+  result_matrix <- matrix(NA, nrow = nrow(data), ncol = num_columns)
+  colnames(result_matrix) <- paste(list_column_name, seq_len(num_columns), sep = "_")
+  
+  # Loop through each row and separate the nested list into columns
+  for (i in seq_len(nrow(data))) {
+    nested_list <- data[[list_column_name]][i]
+    
+    # Assign the values to the corresponding columns in the result matrix
+    result_matrix[i, ] <- unlist(nested_list)
+    
+  }
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- cbind(data[, -which(names(data) == list_column_name)], result_matrix)
+  result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
+  
+  result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
+  result_data$percentile_75_result <- apply(select(result_data, starts_with(list_column_name)), 1, function(x) quantile(x, 0.75))
+
+  
+  return(result_data)
+}
+```
+
+
+
+
+```{r}
+
+## calculating the top three potential people in each individual event 
+
+
+aHB_separated_data <- separate_columns(aHB, "SimulationResults", 1000)
+
+aHB_Top_Three <- aHB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:3)
+
+write.csv(aHB_Top_Three, file = "men_aHB_Top_Three.csv")
+
+aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
+
+aFX_Top_Three <- aFX_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:3)
+
+write.csv(aFX_Top_Three, file = "men_aFX_Top_Three.csv")
+
+
+
+
+aPB_separated_data <- separate_columns(aPB, "SimulationResults", 1000)
+
+aPB_Top_Three <- aPB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:4)
+
+write.csv(aPB_Top_Three, file = "men_aPB_Top_Three.csv")
+
+
+aPH_separated_data <- separate_columns(aPH, "SimulationResults", 1000)
+
+aPH_Top_Three <- aPH_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:3)
+
+write.csv(aPH_Top_Three, file = "men_aPH_Top_Three.csv")
+
+
+aSR_separated_data <- separate_columns(aSR, "SimulationResults", 1000)
+
+aSR_Top_Three <- aSR_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:3)
+
+write.csv(aSR_Top_Three, file = "men_aSR_Top_Three.csv")
+
+
+aVT_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
+
+aVT_Top_Three <- aVT_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:3)
+
+
+write.csv(aVT_Top_Three, file = "men_aVT_Top_Three.csv")
+
+
+```
+
+
+
+## ignore this, hasn't been adapted completely yet 
 
 ## Getting the aggregate scores
 
@@ -638,7 +754,7 @@ all_aroud_finalists <- all_aroud_finalists %>%
 
 ```{r}
 
-write.csv(all_aroud_finalists, file = "all_aroud_finalists_1000.csv")
+write.csv(all_aroud_finalists, file = "men_all_aroud_finalists_1000.csv")
 
 
 ```
