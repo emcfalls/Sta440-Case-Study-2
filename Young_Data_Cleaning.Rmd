@@ -46,7 +46,6 @@ data_women_scores_2022_to_2023 <- data_women_scores_2022_to_2023 %>%
     TRUE ~ FullName # This keeps all other FullNames the same
   ))
 
-
 ```
 
 
@@ -68,6 +67,7 @@ data_men_scores_2022_to_2023 <- data_men_scores_2022_to_2023 %>%
   mutate(FullName = case_when(
     FullName == "DE LORAN" ~ "MUNCK LORAN",
     FullName == "DE EDOARDO" ~ "ROSA EDOARDO",
+    FullName == "RICHARD FREDERICK" ~ "RICHARD FRED",
     TRUE ~ FullName # This keeps all other FullNames the same
   ))
 
