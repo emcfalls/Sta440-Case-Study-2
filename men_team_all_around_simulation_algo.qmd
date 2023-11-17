@@ -585,3 +585,167 @@ candidates <- function(iter, main_df, HB, FX, PB, PH, SR, VT){
   return(olympics)
 }
 ```
+
+
+```{r}
+# helper: function to get best scores for each team for each country
+team_scores <- function(teams, country_data){
+  # collect best score for each team
+  best_scores <- c()
+  
+  for (i in 1:nrow(teams)){
+    
+    # sum of best 3 HB scores
+    HB_score <- country_data %>%
+      filter(FullName %in% teams[i,]) %>%
+      arrange(desc(HB)) %>%
+      slice(1:3) %>%
+      summarise(total = sum(HB)) %>%
+      pull()
+    
+    # sum of best 3 FX scores
+    FX_score <- country_data %>%
+      filter(FullName %in% teams[i,]) %>%
+      arrange(desc(FX)) %>%
+      slice(1:3) %>%
+      summarise(total = sum(FX)) %>%
+      pull()
+    
+    # sum of best 3 PB scores
+    PB_score <- country_data %>%
+      filter(FullName %in% teams[i,]) %>%
+      arrange(desc(PB)) %>%
+      slice(1:3) %>%
+      summarise(total = sum(PB)) %>%
+      pull()
+    
+        # sum of best 3 PH scores
+    PH_score <- country_data %>%
+      filter(FullName %in% teams[i,]) %>%
+      arrange(desc(PH)) %>%
+      slice(1:3) %>%
+      summarise(total = sum(PH)) %>%
+      pull()
+    
+            # sum of best 3 SR scores
+    SR_score <- country_data %>%
+      filter(FullName %in% teams[i,]) %>%
+      arrange(desc(SR)) %>%
+      slice(1:3) %>%
+      summarise(total = sum(SR)) %>%
+      pull()
+    
+    # sum of best 3 VT scores
+    VT_score <- country_data %>%
+      filter(FullName %in% teams[i,]) %>%
+      arrange(desc(VT)) %>%
+      slice(1:3) %>%
+      summarise(total = sum(VT)) %>%
+      pull()
+    
+    best_scores <- c(best_scores, sum(HB_score, FX_score, PB_score, PH_score, SR_score, VT_score, na.rm = T))
+  }
+  
+  return(best_scores)
+}
+```
+
+```{r}
+# main function: return a list of data frames with the best score for each possible teams for each country. Each element in the list is a new iteration 
+get_team_scores <- function(iter, samples){
+  all_team_scores <- c()
+  
+  # 1. filter by eligible athletes 
+  df_HB_eligible <- samples$HBResults %>%
+    filter(type == "full team")
+  
+  df_FX_eligible <- samples$FXResults %>%
+    filter(type == "full team")
+  
+  df_PB_eligible <- samples$PBResults %>%
+    filter(type == "full team")
+  
+  df_PB_eligible <- samples$PHResults %>%
+    filter(type == "full team")
+    
+  df_SR_eligible <- samples$SRResults %>%
+    filter(type == "full team")
+  
+  df_VT_eligible <- samples$VTResults %>%
+    filter(type == "full team")
+  
+  # 2. Remake data frames so they are easier to work with 
+  df_HB_eligible <- df_HB_eligible %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+  
+  df_FX_eligible <- df_FX_eligible %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+  
+  df_PB_eligible <- df_PB_eligible %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+  
+  df_PH_eligible <- df_PH_eligible %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+  
+    
+  df_SR_eligible <- df_SR_eligible %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+  
+    
+  df_VT_eligible <- df_VT_eligible %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+  
+  # 2a. add all of the data frames together
+  all_eligible <- rbind(df_HB_eligible, df_PB_eligible, df_PH_eligible, df_FX_eligible, df_SR_eligible, df_VT_eligible)
+  
+  # 3. Find top candidates for each team by country (top 3 for each apparatus)
+  top_candidates <- candidates(iter, all_eligible, df_HB_eligible, df_PB_eligible, df_PH_eligible, df_FX_eligible, df_SR_eligible, df_VT_eligible)
+  
+  # 4. Get team scores for each country, for each iteration
+  for (i in 1:iter){
+    # 4a. get iteration
+    olympics <- top_candidates[[sprintf("sim%s", i)]]
+    olympics_data <- data.frame()
+    countries = c("USA", "GBR", "CAN", "CHN", "ITA", "NED", "JPN", "GER", "TUR", "SUI", "UKR", "ESP"
+                      )
+    
+    for (country in countries){
+      df_country <- olympics %>%
+        filter(Country == country) %>%
+        pivot_wider(names_from = Apparatus, values_from = value)
+      
+      # 4b. get all possible teams
+      possible_teams <-  data.frame(t(combn(df_country$FullName, 5)))
+      possible_teams$Country <- country
+      
+      # 4c. get scores for each team
+      scores <- team_scores(possible_teams, df_country)
+      possible_teams$score <- scores
+      
+      # 4d. add data for this country to the main data frame
+      olympics_data <- rbind(olympics_data, data.frame(possible_teams))
+    }
+    
+    # 4e. add simulation to list
+    all_team_scores[[sprintf("sim%s", i)]] <- olympics_data
+    
+  }
+  
+  
+  return(all_team_scores)
+  
+}
+
+```
+
+
+```{r}
+
+```
+
