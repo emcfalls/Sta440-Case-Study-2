@@ -448,51 +448,51 @@ runOlympicsNTimes <- function(n, allMenHBParticipants, allMenFXParticipants, all
 ```{r}
 # sanityCheck: runOlympicsNTimes
 set.seed(120)
-a = runOlympicsNTimes(1000, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants)
+m = runOlympicsNTimes(1000, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants)
 
 ```
 
 
 ```{r}
-aHB <- a$HBResults
+mHB <- m$HBResults
 
-aHB <- aHB %>%
+mHB <- mHB %>%
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 
-aFX <- a$FXResults
+mFX <- m$FXResults
 
-aFX <- aFX %>%
+mFX <- mFX %>%
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 
-aPB <- a$PBResults
+mPB <- m$PBResults
 
-aPB <- aPB %>%
+mPB <- mPB %>%
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
-aPH <- a$PHResults
+mPH <- m$PHResults
 
-aPH <- aPH %>%
-  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
-
-
-aSR <- a$SRResults
-
-aSR <- aSR %>%
+mPH <- mPH %>%
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 
-aVT <- a$VTResults
+mSR <- m$SRResults
 
-aVT <- aVT %>%
+mSR <- mSR %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+mVT <- m$VTResults
+
+mVT <- mVT %>%
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
 
 ```
 
 
 ```{r}
-HBResults <- aHB
+HBResults <- mHB
  # Convert all list columns in BBResults to character strings
 HBResults[] <- lapply(HBResults, function(x) {
   if (is.list(x)) {
@@ -503,10 +503,10 @@ HBResults[] <- lapply(HBResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-write.csv(HBResults, file = "Men_HBResults.csv", row.names = FALSE)
+# write.csv(HBResults, file = "Men_HBResults.csv", row.names = FALSE)
 
 
-FXResults <- aFX
+FXResults <- mFX
  # Convert all list columns in BBResults to character strings
 FXResults[] <- lapply(FXResults, function(x) {
   if (is.list(x)) {
@@ -517,10 +517,10 @@ FXResults[] <- lapply(FXResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-write.csv(FXResults, file = "Men_FXResults.csv", row.names = FALSE)
+# write.csv(FXResults, file = "Men_FXResults.csv", row.names = FALSE)
 
 
-PBResults <- aPB
+PBResults <- mPB
  # Convert all list columns in BBResults to character strings
 PBResults[] <- lapply(PBResults, function(x) {
   if (is.list(x)) {
@@ -531,10 +531,10 @@ PBResults[] <- lapply(PBResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-write.csv(PBResults, file = "Men_PBResults.csv", row.names = FALSE)
+# write.csv(PBResults, file = "Men_PBResults.csv", row.names = FALSE)
 
 
-PHResults <- aPH
+PHResults <- mPH
  # Convert all list columns in BBResults to character strings
 PHResults[] <- lapply(PHResults, function(x) {
   if (is.list(x)) {
@@ -545,10 +545,10 @@ PHResults[] <- lapply(PHResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-write.csv(PHResults, file = "Men_PHResults.csv", row.names = FALSE)
+# write.csv(PHResults, file = "Men_PHResults.csv", row.names = FALSE)
 
 
-SRResults <- aSR
+SRResults <- mSR
  # Convert all list columns in BBResults to character strings
 SRResults[] <- lapply(SRResults, function(x) {
   if (is.list(x)) {
@@ -559,10 +559,10 @@ SRResults[] <- lapply(SRResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-write.csv(SRResults, file = "Men_SRResults.csv", row.names = FALSE)
+# write.csv(SRResults, file = "Men_SRResults.csv", row.names = FALSE)
 
 
-VTResults <- aVT
+VTResults <- mVT
 VTResults[] <- lapply(VTResults, function(x) {
   if (is.list(x)) {
     sapply(x, toString)
@@ -572,7 +572,7 @@ VTResults[] <- lapply(VTResults, function(x) {
 })
 
 # Now save the modified data frame to a CSV file
-write.csv(VTResults, file = "Men_VTResults.csv", row.names = FALSE)
+# write.csv(VTResults, file = "Men_VTResults.csv", row.names = FALSE)
 
 ```
 
@@ -611,8 +611,7 @@ separate_columns <- function(data, list_column_name, num_columns) {
   result_data <- cbind(data[, -which(names(data) == list_column_name)], result_matrix)
   result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
   
-  result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
-  result_data$percentile_75_result <- apply(select(result_data, starts_with(list_column_name)), 1, function(x) quantile(x, 0.75))
+  result_datm$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
 
   
   return(result_data)
@@ -627,72 +626,72 @@ separate_columns <- function(data, list_column_name, num_columns) {
 ## calculating the top three potential people in each individual event 
 
 
-aHB_separated_data <- separate_columns(aHB, "SimulationResults",1000)
+mHB_separated_data <- separate_columns(mHB, "SimulationResults",1000)
 
-aHB_Top_Three <- aHB_separated_data %>%
+mHB_Top_Three <- mHB_separated_data %>%
   filter(Country == "USA") %>%
   arrange(desc(avg_result)) %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:3)
 
-write.csv(aHB_Top_Three, file = "men_aHB_Top_Three.csv")
+write.csv(mHB_Top_Three, file = "men_mHB_Top_Three.csv")
 
-aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
+mFX_separated_data <- separate_columns(mFX, "SimulationResults", 1000)
 
-aFX_Top_Three <- aFX_separated_data %>%
+mFX_Top_Three <- mFX_separated_data %>%
   filter(Country == "USA") %>%
   arrange(desc(avg_result)) %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:3)
 
-write.csv(aFX_Top_Three, file = "men_aFX_Top_Three.csv")
+write.csv(mFX_Top_Three, file = "men_mFX_Top_Three.csv")
 
 
 
 
-aPB_separated_data <- separate_columns(aPB, "SimulationResults", 1000)
+mPB_separated_data <- separate_columns(mPB, "SimulationResults", 1000)
 
-aPB_Top_Three <- aPB_separated_data %>% 
+mPB_Top_Three <- mPB_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:3)
 
-write.csv(aPB_Top_Three, file = "men_aPB_Top_Three.csv")
+write.csv(mPB_Top_Three, file = "men_mPB_Top_Three.csv")
 
 
-aPH_separated_data <- separate_columns(aPH, "SimulationResults", 1000)
+mPH_separated_data <- separate_columns(mPH, "SimulationResults", 1000)
 
-aPH_Top_Three <- aPH_separated_data %>% 
+mPH_Top_Three <- mPH_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:3)
 
-write.csv(aPH_Top_Three, file = "men_aPH_Top_Three.csv")
+write.csv(mPH_Top_Three, file = "men_mPH_Top_Three.csv")
 
 
-aSR_separated_data <- separate_columns(aSR, "SimulationResults", 1000)
+mSR_separated_data <- separate_columns(mSR, "SimulationResults", 1000)
 
-aSR_Top_Three <- aSR_separated_data %>% 
+mSR_Top_Three <- mSR_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:3)
 
-write.csv(aSR_Top_Three, file = "men_aSR_Top_Three.csv")
+write.csv(mSR_Top_Three, file = "men_mSR_Top_Three.csv")
 
 
-aVT_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
+mVT_separated_data <- separate_columns(mFX, "SimulationResults", 1000)
 
-aVT_Top_Three <- aVT_separated_data %>% 
+mVT_Top_Three <- mVT_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:3)
 
 
-write.csv(aVT_Top_Three, file = "men_aVT_Top_Three.csv")
+write.csv(mVT_Top_Three, file = "men_mVT_Top_Three.csv")
 
 
 ```
@@ -706,7 +705,7 @@ write.csv(aVT_Top_Three, file = "men_aVT_Top_Three.csv")
 ```{r}
 
 # List of all data frames
-data_frames <- list(aHB, aFX, aPB, aPH, aSR, aVT)
+data_frames <- list(mHB, mFX, mPB, mPH, mSR, mVT)
 
 # Function to select the relevant columns and rename 'mean' to a unique name
 prepare_df <- function(df, name) {
@@ -716,16 +715,16 @@ prepare_df <- function(df, name) {
 }
 
 # Prepare each data frame
-aHB_prepared <- prepare_df(aHB, 'meanHB')
-aFX_prepared <- prepare_df(aFX, 'meanFX')
-aPB_prepared <- prepare_df(aPB, 'meanPB')
-aPH_prepared <- prepare_df(aPH, 'meanPH')
-aSR_prepared <- prepare_df(aSR, 'meanSR')
-aVT_prepared <- prepare_df(aVT, 'meanVT')
+mHB_prepared <- prepare_df(mHB, 'meanHB')
+mFX_prepared <- prepare_df(mFX, 'meanFX')
+mPB_prepared <- prepare_df(mPB, 'meanPB')
+mPH_prepared <- prepare_df(mPH, 'meanPH')
+mSR_prepared <- prepare_df(mSR, 'meanSR')
+mVT_prepared <- prepare_df(mVT, 'meanVT')
 
 # Merge all data frames by 'Country' and 'FullName'
 all_around <- Reduce(function(x, y) merge(x, y, by = c('Country', 'FullName'), all = TRUE), 
-                     list(aHB_prepared, aFX_prepared, aPB_prepared, aPH_prepared, aSR_prepared, aVT_prepared))
+                     list(mHB_prepared, mFX_prepared, mPB_prepared, mPH_prepared, mSR_prepared, mVT_prepared))
 
 # Calculate the AllAroundScore by row-wise summing of the mean columns
 all_around$AllAroundScore <- rowSums(all_around[,c('meanHB', 'meanFX', 'meanPB', 'meanPH', 'meanSR', 'meanVT')], na.rm = TRUE)
@@ -764,12 +763,12 @@ all_aroud_finalists <- all_aroud_finalists %>%
 write.csv(all_aroud_finalists, file = "men_all_aroud_finalists_1000.csv")
 
 
-write.csv(aHB_prepared, file = "men_aHB_Weighted_Medals.csv")
-write.csv(aPB_prepared, file = "men_aPB_Weighted_Medals.csv")
-write.csv(aPH_prepared, file = "men_aPH_Weighted_Medals.csv")
-write.csv(aFX_prepared, file = "men_aFX_Weighted_Medals.csv")
-write.csv(aSR_prepared, file = "men_aSR_Weighted_Medals.csv")
-write.csv(aVT_prepared, file = "men_aVT_Weighted_Medals.csv")
+write.csv(mHB_prepared, file = "men_mHB_Weighted_Medals.csv")
+write.csv(mPB_prepared, file = "men_mPB_Weighted_Medals.csv")
+write.csv(mPH_prepared, file = "men_mPH_Weighted_Medals.csv")
+write.csv(mFX_prepared, file = "men_mFX_Weighted_Medals.csv")
+write.csv(mSR_prepared, file = "men_mSR_Weighted_Medals.csv")
+write.csv(mVT_prepared, file = "men_mVT_Weighted_Medals.csv")
 ```
 
 
