@@ -458,7 +458,7 @@ aBB_Top_Three <- aBB_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:10)
 
 
 aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
@@ -467,7 +467,7 @@ aFX_Top_Three <- aFX_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:10)
 
 aUB_separated_data <- separate_columns(aUB, "SimulationResults", 1000)
 
@@ -475,15 +475,15 @@ aUB_Top_Three <- aUB_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:10)
 
-aVT_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
+aVT_separated_data <- separate_columns(aVT, "SimulationResults", 1000)
 
 aVT_Top_Three <- aVT_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:3)
+  slice(1:10)
 
 
 ```
@@ -626,5 +626,8 @@ write.csv(VTResults, file = "women_VT_1000_EZ.csv")
 
 
 
+```{r}
+
+```
 
 
