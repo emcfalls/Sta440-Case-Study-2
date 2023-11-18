@@ -7,7 +7,7 @@ format:
     self-contained: true
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
 ```
 ## Setup - run this first to get the libraries
 ```{r setup, include=FALSE}
@@ -27,432 +27,213 @@ flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
 
 
 
-## THE SET-UP BEFORE THE ALGO -- make sure to replace read.csv with the correct file path -- RUN THIS CODE CHUNK BEFORE RUNNING ANY OF THE HELPER FUNCTION INITIATING CODE CHUNKS BELOW
+## Getting Simulation Data (don't need to run)
+
 ```{r}
-## Re-arranged data
-data_men_scores_2022_to_2023 <- read.csv("cleaned data/active_restricted_men_2023.csv") %>%  
-  select(Country, FullName, Apparatus, Score, type) %>% 
-  # first, making c(VT, VT1, VT2) all just VT, since they're all the same apparatus, just named different at different competitions
-  mutate(Apparatus = ifelse(Apparatus %in% c("VT1", "VT2"), "VT", Apparatus))  %>%
-  filter(!is.na(Score) & Score != 0) #dropping all NAs -- ask the team: should we also drop zeros? -> emily said yeah 11.13.2023 7 21pm
+fx_sim <- read.csv("EZ Simulation Exports/Men_FXResults_1000_EZ.csv")
+hb_sim <- read.csv("EZ Simulation Exports/Men_HBResults_1000_EZ.csv")
+pb_sim <- read.csv("EZ Simulation Exports/Men_PBResults_1000_EZ.csv")
+sr_sim <- read.csv("EZ Simulation Exports/Men_SRResults_1000_EZ.csv")
+ph_sim <- read.csv("EZ Simulation Exports/Men_PHResults_1000_EZ.csv")
+vt_sim <- read.csv("EZ Simulation Exports/Men_VTResults_1000_EZ.csv")
+```
+
+```{r}
+# need to add athlete type
+fx_sim <- fx_sim %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"),
+          SimulationResults = strsplit(SimulationResults, split = ","))
+
+hb_sim <- hb_sim %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"),
+          SimulationResults = strsplit(SimulationResults, split = ","))
+
+pb_sim <- pb_sim %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"),
+          SimulationResults = strsplit(SimulationResults, split = ","))
+
+sr_sim <- sr_sim %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"),
+          SimulationResults = strsplit(SimulationResults, split = ","))
+
+ph_sim <- ph_sim %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"),
+          SimulationResults = strsplit(SimulationResults, split = ","))
+
+vt_sim <- vt_sim %>%
+  mutate(type = case_when(Country %in% c("BRA", "KOR", "BEL") ~ "one person team" ,
+                          # should override "one person team" for individuals who qualified and have a country that qualified
+                          FullName %in%  c("KARIMI MILAD", "DOLGOPYAT ARTEM", "DAVTYAN ARTUR",
+                           "MESZAROS KRISZTOFER", "MUNTEAN ANDREI", "LEE JUHNO", 
+                          "JUHNO LEE", "KEYBUS LUKA", "VAN LUKA") ~ "individual",
+                          .default = "full team"),
+          SimulationResults = strsplit(SimulationResults, split = ","))
+```
+
+## Separating Dataframes (don't need to run)
+
+```{r}
+sims <- c()
+  for (i in 1:1000){
+    sims <- c(sims, sprintf("SimulationResults_%s", i))
+  }
+
+  df_HB_eligible <- hb_sim %>%
+    filter(type == "full team") %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = sims, names_to = "iteration")
+  
+  df_FX_eligible <- fx_sim %>%
+    filter(type == "full team") %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = sims, names_to = "iteration")
+  
+  df_PB_eligible <- pb_sim %>%
+    filter(type == "full team") %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = sims, names_to = "iteration")
+  
+  df_PH_eligible <-ph_sim %>%
+    filter(type == "full team") %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = sims, names_to = "iteration")
+    
+  df_SR_eligible <- sr_sim %>%
+    filter(type == "full team") %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = sims, names_to = "iteration")
+  
+  df_VT_eligible <- vt_sim %>%
+    filter(type == "full team") %>%
+    unnest_wider(SimulationResults, names_sep = "_") %>%
+    pivot_longer(cols = sims, names_to = "iteration")
+  
+```
+
+```{r}
+all <- rbind(df_HB_eligible, df_FX_eligible, df_PB_eligible, df_VT_eligible, df_PH_eligible, df_SR_eligible)
+```
+
+```{r}
+sims150 <- c()
+  for (i in 1:150){
+    sims150 <- c(sims150, sprintf("SimulationResults_%s", i))
+  }
+
+sims151_300 <- c()
+  for (i in 151:300){
+    sims151_300 <- c(sims151_300, sprintf("SimulationResults_%s", i))
+  }
+
+sims301_450 <- c()
+  for (i in 301:450){
+    sims301_450 <- c(sims301_450, sprintf("SimulationResults_%s", i))
+  }
+
+sims451_600 <- c()
+  for (i in 451:600){
+    sims451_600 <- c(sims451_600, sprintf("SimulationResults_%s", i))
+  }
+
+sims601_750 <- c()
+  for (i in 601:750){
+    sims601_750 <- c(sims601_750, sprintf("SimulationResults_%s", i))
+  }
+
+sims751_900 <- c()
+  for (i in 751:900){
+    sims751_900 <- c(sims751_900, sprintf("SimulationResults_%s", i))
+  }
+
+sims901 <- c()
+  for (i in 901:1000){
+    sims901 <- c(sims901, sprintf("SimulationResults_%s", i))
+  }
+
+data_150 <- all %>%
+  filter(iteration %in% sims150)
+
+data_151 <- all %>%
+  filter(iteration %in% sims151_300)
+
+data_301 <- all %>%
+  filter(iteration %in% sims301_450)
+
+data_451 <- all %>%
+  filter(iteration %in% sims451_600)
+
+data_601 <- all %>%
+  filter(iteration %in% sims601_750)
+
+data_751 <- all %>%
+  filter(iteration %in% sims751_900)
+
+data_901 <- all %>%
+  filter(iteration %in% sims901)
+
+```
+
+```{r}
+# saving dfs 
+write.csv(data_150, "cleaned data/mens_simulation_150.csv") # Emily
+write.csv(data_151, "cleaned data/mens_simulation_151_to_300.csv") # Evan
+write.csv(data_301, "cleaned data/mens_simulation_301_450.csv") # Elyse
+write.csv(data_451, "cleaned data/mens_simulation_451_to_600.csv") #Elyse
+write.csv(data_601, "cleaned data/mens_simulation_601_to_750.csv") # Young
+write.csv(data_751, "cleaned data/mens_simulation_751_to_900.csv") # Young
+write.csv(data_901, "cleaned data/mens_simulation_901_to_1000.csv") # Young
+```
 
 
-# this is the data that will feed into the algo
-data_ready_for_algo <- data_men_scores_2022_to_2023 %>%
-  group_by(Country, FullName, Apparatus, type) %>%
-  summarise(Scores = list(Score), .groups = 'drop')
+## *IMPORTANT* Splitting the data for the function (replace data_150 with your own df)
 
-
-
-
-## Global Fixed Integers
-minHBScoreIn_data_men_scores_2022_to_2023 <- min(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "HB"], na.rm = TRUE)
-maxHBScoreIn_data_men_scores_2022_to_2023 <- max(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "HB"], na.rm = TRUE)
-
-minFXScoreIn_data_men_scores_2022_to_2023 <- min(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "FX"], na.rm = TRUE)
-maxFXScoreIn_data_men_scores_2022_to_2023 <- max(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "FX"], na.rm = TRUE)
-
-minPBScoreIn_data_men_scores_2022_to_2023 <- min(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "PB"], na.rm = TRUE)
-maxPBScoreIn_data_men_scores_2022_to_2023 <- max(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "PB"], na.rm = TRUE)
-
-minPHScoreIn_data_men_scores_2022_to_2023 <- min(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "PH"], na.rm = TRUE)
-maxPHScoreIn_data_men_scores_2022_to_2023 <- max(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "PH"], na.rm = TRUE)
-
-minSRScoreIn_data_men_scores_2022_to_2023 <- min(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "SR"], na.rm = TRUE)
-maxSRScoreIn_data_men_scores_2022_to_2023 <- max(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "SR"], na.rm = TRUE)
-
-minVTScoreIn_data_men_scores_2022_to_2023 <- min(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "VT"], na.rm = TRUE)
-maxVTScoreIn_data_men_scores_2022_to_2023 <- max(data_men_scores_2022_to_2023$Score[data_men_scores_2022_to_2023$Apparatus == "VT"], na.rm = TRUE)
-
-## 2D Table of Global Fixed Integers
-minAndMaxScores2DTable <- list(
-    HB = list(
-        min = minHBScoreIn_data_men_scores_2022_to_2023,
-        max = maxHBScoreIn_data_men_scores_2022_to_2023
-    ),
-    FX = list(
-        min = minFXScoreIn_data_men_scores_2022_to_2023,
-        max = maxFXScoreIn_data_men_scores_2022_to_2023
-    ),
-    PB = list(
-        min = minPBScoreIn_data_men_scores_2022_to_2023,
-        max = maxPBScoreIn_data_men_scores_2022_to_2023
-    ),
-    PH = list(
-        min = minPHScoreIn_data_men_scores_2022_to_2023,
-        max = maxPHScoreIn_data_men_scores_2022_to_2023
-    ),
-    SR = list(
-        min = minSRScoreIn_data_men_scores_2022_to_2023,
-        max = maxSRScoreIn_data_men_scores_2022_to_2023
-    ),
-    VT = list(
-        min = minVTScoreIn_data_men_scores_2022_to_2023,
-        max = maxVTScoreIn_data_men_scores_2022_to_2023
-    )
-)
-
-
-## TO BE FED INTO runOlympicsNTimes
-allMenHBParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus, type) %>%
-  unique() %>% 
+```{r}
+hb <- data_150 %>%
   filter(Apparatus == "HB")
 
-allMenFXParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus, type) %>%
-  unique() %>% 
-  filter(Apparatus == "FX")
-
-allMenPBParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus, type) %>%
-  unique() %>% 
+pb <- data_150 %>%
   filter(Apparatus == "PB")
 
-allMenPHParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus, type) %>%
-  unique() %>% 
+ph <- data_150 %>%
   filter(Apparatus == "PH")
 
-
-allMenSRParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus, type) %>%
-  unique() %>% 
-  filter(Apparatus == "SR")
-
-allMenVTParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus, type) %>%
-  unique() %>% 
+vt <- data_150 %>%
   filter(Apparatus == "VT")
 
-allMenHBParticipants <- allMenHBParticipants %>%
-  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
+sr <- data_150 %>%
+  filter(Apparatus == "SR")
 
-allMenFXParticipants <- allMenFXParticipants %>%
-  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
-
-allMenPBParticipants <- allMenPBParticipants %>%
-  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
-
-allMenPHParticipants <- allMenPHParticipants %>%
-  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
-
-allMenSRParticipants <- allMenSRParticipants %>%
-  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
-
-allMenVTParticipants <- allMenVTParticipants %>%
-  mutate(SimulationResults = lapply(seq_along(FullName), function(x) list()))
-
-
-
-## SD of HB Scores of all atheletes in the data (that will be the "nugget" when the there are three or fewer scores in an athlete x apparatus combination; the nugget will be used in estimateKernelDensity)
-allHBScoresInTheData <- data_men_scores_2022_to_2023[data_men_scores_2022_to_2023$Apparatus == "HB", "Score"]
-nuggetHB <- sd(allHBScoresInTheData)
-
-
-## SD of FX Scores of all atheletes in the data (that will be the "nugget" when the there are three or fewer scores in an athlete x apparatus combination; the nugget will be used in estimateKernelDensity)
-allFXScoresInTheData <- data_men_scores_2022_to_2023[data_men_scores_2022_to_2023$Apparatus == "FX", "Score"]
-nuggetFX <- sd(allFXScoresInTheData)
-
-
-## SD of PB Scores of all atheletes in the data (that will be the "nugget" when the there are three or fewer scores in an athlete x apparatus combination; the nugget will be used in estimateKernelDensity)
-allPBScoresInTheData <- data_men_scores_2022_to_2023[data_men_scores_2022_to_2023$Apparatus == "PB", "Score"]
-nuggetPB <- sd(allPBScoresInTheData)
-
-
-## SD of PH Scores of all atheletes in the data (that will be the "nugget" when the there are three or fewer scores in an athlete x apparatus combination; the nugget will be used in estimateKernelDensity)
-allPHScoresInTheData <- data_men_scores_2022_to_2023[data_men_scores_2022_to_2023$Apparatus == "PH", "Score"]
-nuggetPH <- sd(allPHScoresInTheData)
-
-## SD of SR Scores of all atheletes in the data (that will be the "nugget" when the there are three or fewer scores in an athlete x apparatus combination; the nugget will be used in estimateKernelDensity)
-allSRScoresInTheData <- data_men_scores_2022_to_2023[data_men_scores_2022_to_2023$Apparatus == "SR", "Score"]
-nuggetSR <- sd(allSRScoresInTheData)
-
-
-## SD of VT Scores of all atheletes in the data (that will be the "nugget" when the there are three or fewer scores in an athlete x apparatus combination; the nugget will be used in estimateKernelDensity)
-allVTScoresInTheData <- data_men_scores_2022_to_2023[data_men_scores_2022_to_2023$Apparatus == "VT", "Score"]
-nuggetVT <- sd(allVTScoresInTheData)
+fx <- data_150 %>%
+  filter(Apparatus == "FX")
 ```
 
 
-## HELPER FUNCTION: createProperDataframe
-```{r}
-# Helper Function: createProperDataframe
-# inputs are: "country code", "Athlete Name", "Apparatus (the two letters, like FX")
-# output is a dataframe that is suitable for going in as input into the next step, aka creating estimated kernel densities
-
-createProperDataframe = function(countryCode, athleteName, apparatusInitials){
-  dataframeToReturn <- data_ready_for_algo %>% 
-    filter(Country == countryCode, FullName == athleteName, Apparatus == apparatusInitials) %>% 
-    select(Scores) %>% 
-    unnest(Scores) %>% 
-    unlist()
-  
-  apparatus <- apparatusInitials
-  
-  return(list(dataframeToReturn, apparatus))
-}
-```
-
-
-
-## HELPER FUNCTION: estimateKernelDensity
-```{r}
-# Helper Function: estimateKernelDensity
-
-# coming up with an estimate kernel density based on the inputs that are:
-# 1. output of createProperDataframe = list(properDataframeCreatedForAthleteAndApparatusCombination, apparatus)
-# 2. bandwidthValue (the bigger, the "smoother")
-
-# output:
-# dataframe of x and y coordinates --> coordinates of the estimated density function
-
-estimateKernelDensity <- function(outputOfCreateProperDataframe, bandwidthValue){
-  
-  apparatusOfInterestHere = outputOfCreateProperDataframe[[2]]
-  
-  howManyScoresWeHaveForThatAthleteXApparatusCombination = length(outputOfCreateProperDataframe[[1]])
-  
-  #setting up appropriate "nugget"
-  if (apparatusOfInterestHere == "HB"){
-    if (howManyScoresWeHaveForThatAthleteXApparatusCombination < 4){
-      nugget = nuggetHB*4
-    }
-    else{
-      nugget = nuggetHB*2
-    }
-  }
-  else if (apparatusOfInterestHere == "FX"){
-    if (howManyScoresWeHaveForThatAthleteXApparatusCombination < 4){
-      nugget = nuggetFX*4
-    }
-    else{
-      nugget = nuggetFX*2
-    }
-  }
-  else if (apparatusOfInterestHere == "PB"){
-    if (howManyScoresWeHaveForThatAthleteXApparatusCombination < 4){
-      nugget = nuggetPB*4
-    }
-    else{
-      nugget = nuggetPB*2
-    }
-  }
-  else if (apparatusOfInterestHere == "PH"){
-    if (howManyScoresWeHaveForThatAthleteXApparatusCombination < 4){
-      nugget = nuggetPH*4
-    }
-    else{
-      nugget = nuggetPH*2
-    }
-  }    
-  else if (apparatusOfInterestHere == "SR"){
-    if (howManyScoresWeHaveForThatAthleteXApparatusCombination < 4){
-      nugget = nuggetSR*4
-    }
-    else{
-      nugget = nuggetSR*2
-    }
-  }
-  else {
-    if (howManyScoresWeHaveForThatAthleteXApparatusCombination < 4){
-      nugget = nuggetVT*4
-    }
-    else{
-      nugget = nuggetVT*2
-    }
-  }
-
-  
-  kernelLowerLimit = max(minAndMaxScores2DTable$apparatusOfInterestHere$min - nugget, 0)
-  kernelUpperLimit = min(minAndMaxScores2DTable$apparatusOfInterestHere$max + nugget, 15.7)
-  
-  
-  almostToReturn <- bkde(x = outputOfCreateProperDataframe[[1]], kernel = "normal", canonical = FALSE, bandwidth = bandwidthValue, gridsize = 401L, range.x = c(kernelLowerLimit, kernelUpperLimit), truncate = TRUE)
-  #range.x = c(kernelLowerLimit, kernelUpperLimit)
-  dataframeToReturn <- data.frame(
-    x = almostToReturn$x, 
-    y = almostToReturn$y
-  )
-  
-  return(dataframeToReturn)
-}
-
-```
-
-
-
-
-## HELPER FUNCTION: createCDFfromKDEandDrawONEscore
-```{r}
-createCDFfromKDEandDrawONEscore <- function(dataframeReturnedByestimateKernelDensity){
-  # Create a CDF from the KDE
-  kde_y_cumsum <- cumsum(dataframeReturnedByestimateKernelDensity$y)
-  cdf <- kde_y_cumsum / max(kde_y_cumsum)
-  
-  
-  u <- runif(1)  # Generate uniform random number
-  sampled_value <- dataframeReturnedByestimateKernelDensity$x[which.min(abs(cdf - u))]
-  
-  return(sampled_value)
-  
-  
-}
-```
-
-
-
-## OVERALL ALGO: runOlympicsNTimes
-```{r}
-# OVERALL ALGO: runOlympicsNTimes
-# input: n
-# uses all sorts of helper functions
-
-
-runOlympicsNTimes <- function(n, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants){
-
-  # 1. running the Men's HB n times
-  HBParticipants_copied <- allMenHBParticipants
-  
-  HBParticipants_copied$SimulationResults <- lapply(1:nrow(HBParticipants_copied), function(x) vector("list", n))
-  for (nthOlympic in 1:n){
-    
-    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
-    for (i in 1:nrow(HBParticipants_copied)) {
-      row <- HBParticipants_copied[i, ]
-      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
-    
-      HBParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
-    }
-    print(paste(nthOlympic, "th olympic done for Men's HB"))
-    
-  }
-  
-  
-  
-  # 2. running the Men's FX n times
-  FXParticipants_copied <- allMenFXParticipants
-  
-  FXParticipants_copied$SimulationResults <- lapply(1:nrow(FXParticipants_copied), function(x) vector("list", n))
-  for (nthOlympic in 1:n){
-    
-    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
-    for (i in 1:nrow(FXParticipants_copied)) {
-      row <- FXParticipants_copied[i, ]
-      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
-    
-      FXParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
-    }
-    print(paste(nthOlympic, "th olympic done for Men's FX"))
-    
-  }
-  
-  #return(FXParticipants_copied)
-  
-  
-  
-  
-  # 3. running the Men's PB n times
-  PBParticipants_copied <- allMenPBParticipants
-  
-  PBParticipants_copied$SimulationResults <- lapply(1:nrow(PBParticipants_copied), function(x) vector("list", n))
-  for (nthOlympic in 1:n){
-    
-    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
-    for (i in 1:nrow(PBParticipants_copied)) {
-      row <- PBParticipants_copied[i, ]
-      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
-    
-      PBParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
-    }
-    print(paste(nthOlympic, "th olympic done for Men's PB"))
-    
-  }
-  
-  #return(PBParticipants_copied)
-  
-  
-  
-    # 4. running the Men's PH n times
-  PHParticipants_copied <- allMenPHParticipants
-  
-  PHParticipants_copied$SimulationResults <- lapply(1:nrow(PHParticipants_copied), function(x) vector("list", n))
-  for (nthOlympic in 1:n){
-    
-    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
-    for (i in 1:nrow(PHParticipants_copied)) {
-      row <- PHParticipants_copied[i, ]
-      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
-    
-      PHParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
-    }
-    print(paste(nthOlympic, "th olympic done for Men's PH"))
-    
-  }
-  
-    
-    # 5. running the Men's SR n times
-  SRParticipants_copied <- allMenSRParticipants
-  
-  SRParticipants_copied$SimulationResults <- lapply(1:nrow(SRParticipants_copied), function(x) vector("list", n))
-  for (nthOlympic in 1:n){
-    
-    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
-    for (i in 1:nrow(SRParticipants_copied)) {
-      row <- SRParticipants_copied[i, ]
-      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
-    
-      SRParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
-    }
-    print(paste(nthOlympic, "th olympic done for Men's SR"))
-    
-  }
-  
-  
-  
-  # 4. running the Men's VT n times
-  VTParticipants_copied <- allMenVTParticipants
-  
-  VTParticipants_copied$SimulationResults <- lapply(1:nrow(VTParticipants_copied), function(x) vector("list", n))
-  for (nthOlympic in 1:n){
-    
-    # each nthOlympic-iteration of the Olympics, this is filling out the nthOlympic-index of each athlete's SimulationResults vector
-    for (i in 1:nrow(VTParticipants_copied)) {
-      row <- VTParticipants_copied[i, ]
-      toAdd <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
-    
-      VTParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- toAdd
-    }
-    print(paste(nthOlympic, "th olympic done for Men's VT"))
-    
-  }
-  
-  #return(VTParticipants_copied)
-  
-  
-  
-  
-  # RETURN A LIST CONTAINING FOUR DATAFRAMES
-  return(list(HBResults = HBParticipants_copied, FXResults = FXParticipants_copied, PBResults = PBParticipants_copied, PHResults = PHParticipants_copied, SRResults = SRParticipants_copied, VTResults = VTParticipants_copied))
-  
-  
-}
-
-
-```
-
-
-
-
-## EXAMPLE WAY OF UTILIZING runOlympicsNTimes (all commented out below)
-```{r}
-# sanityCheck: runOlympicsNTimes
-set.seed(1)
-test_samples = runOlympicsNTimes(1, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants)
-```
-
-
-## Team All-Around Function
+## Team All-Around Function (run this)
 
 *Function*
 
@@ -566,11 +347,45 @@ team_scores <- function(teams, country_data){
   # collect best score for each team
   best_scores <- c()
   
+   # checking if all apparatuses are in the data, if not -> add
+  cols <- colnames(country_data)
+ 
+  if(!("PB" %in% cols)){
+    country_data <- country_data %>%
+      mutate(PB = 0)
+  } 
+  
+  if(!("PH" %in% cols)){
+    country_data <- country_data %>%
+      mutate(PH = 0)
+  } 
+  
+  if(!("FX" %in% cols)){
+    country_data <- country_data %>%
+      mutate(FX = 0)
+  } 
+  
+  if(!("VT" %in% cols)){
+    country_data <- country_data %>%
+      mutate(VT = 0)
+  } 
+  
+  if(!("HB" %in% cols)){
+    country_data <- country_data %>%
+      mutate(HB = 0)
+  } 
+  
+  if(!("SR" %in% cols)){
+    country_data <- country_data %>%
+      mutate(SR = 0)
+  } 
+  
   for (i in 1:nrow(teams)){
     
     # sum of best 3 HB scores
     HB_score <- country_data %>%
       filter(FullName %in% teams[i,]) %>%
+      mutate(HB = as.numeric(HB)) %>%
       arrange(desc(HB)) %>%
       slice(1:3) %>%
       summarise(total = sum(HB)) %>%
@@ -579,6 +394,7 @@ team_scores <- function(teams, country_data){
     # sum of best 3 FX scores
     FX_score <- country_data %>%
       filter(FullName %in% teams[i,]) %>%
+      mutate(FX = as.numeric(FX)) %>%
       arrange(desc(FX)) %>%
       slice(1:3) %>%
       summarise(total = sum(FX)) %>%
@@ -587,6 +403,7 @@ team_scores <- function(teams, country_data){
     # sum of best 3 PB scores
     PB_score <- country_data %>%
       filter(FullName %in% teams[i,]) %>%
+      mutate(PB = as.numeric(PB)) %>%
       arrange(desc(PB)) %>%
       slice(1:3) %>%
       summarise(total = sum(PB)) %>%
@@ -595,6 +412,7 @@ team_scores <- function(teams, country_data){
         # sum of best 3 PH scores
     PH_score <- country_data %>%
       filter(FullName %in% teams[i,]) %>%
+      mutate(PH = as.numeric(PH)) %>%
       arrange(desc(PH)) %>%
       slice(1:3) %>%
       summarise(total = sum(PH)) %>%
@@ -603,6 +421,7 @@ team_scores <- function(teams, country_data){
             # sum of best 3 SR scores
     SR_score <- country_data %>%
       filter(FullName %in% teams[i,]) %>%
+      mutate(SR = as.numeric(SR)) %>%
       arrange(desc(SR)) %>%
       slice(1:3) %>%
       summarise(total = sum(SR)) %>%
@@ -611,6 +430,7 @@ team_scores <- function(teams, country_data){
     # sum of best 3 VT scores
     VT_score <- country_data %>%
       filter(FullName %in% teams[i,]) %>%
+      mutate(VT = as.numeric(VT)) %>%
       arrange(desc(VT)) %>%
       slice(1:3) %>%
       summarise(total = sum(VT)) %>%
@@ -625,77 +445,16 @@ team_scores <- function(teams, country_data){
 
 ```{r}
 # main function: return a list of data frames with the best score for each possible teams for each country. Each element in the list is a new iteration 
-get_team_scores <- function(iter, samples){
+get_team_scores <- function(iter, hb, fx, pb, ph, sr, vt){
+  print("function started")
   all_team_scores <- c()
   
-  # 0. get simulation names
-  sims <- c()
-  for (i in 1:iter){
-    sims <- c(sims, sprintf("SimulationResults_%s", i))
-  }
-  
-  print("just got names")
-  
-  # 1. filter by eligible athletes 
-  df_HB_eligible <- samples$HBResults %>%
-    filter(type == "full team")
-  
-  df_FX_eligible <- samples$FXResults %>%
-    filter(type == "full team")
-  
-  df_PB_eligible <- samples$PBResults %>%
-    filter(type == "full team")
-  
-  df_PH_eligible <- samples$PHResults %>%
-    filter(type == "full team")
-    
-  df_SR_eligible <- samples$SRResults %>%
-    filter(type == "full team")
-  
-  df_VT_eligible <- samples$VTResults %>%
-    filter(type == "full team")
-  
-  # 2. Remake data frames so they are easier to work with 
-  df_HB_eligible <- df_HB_eligible %>%
-    unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = sims, names_to = "iteration")
-  
-  df_FX_eligible <- df_FX_eligible %>%
-    unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = sims, names_to = "iteration")
-  
-  df_PB_eligible <- df_PB_eligible %>%
-    unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = sims, names_to = "iteration")
-  
-  df_PH_eligible <- df_PH_eligible %>%
-    unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = sims, names_to = "iteration")
-  
-    
-  df_SR_eligible <- df_SR_eligible %>%
-    unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = sims, names_to = "iteration")
-  
-    
-  df_VT_eligible <- df_VT_eligible %>%
-    unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = sims, names_to = "iteration")
-  
   # 2a. add all of the data frames together
-  all_eligible <- rbind(df_HB_eligible, df_PB_eligible, df_PH_eligible, df_FX_eligible, df_SR_eligible, df_VT_eligible)
+  all_eligible <- rbind(hb, fx, pb, ph, sr, vt)
   
   # 3. Find top candidates for each team by country (top 3 for each apparatus)
-  print("just getting candidates")
-  top_candidates <- candidates(iter, all_eligible, df_HB_eligible, df_PB_eligible, df_PH_eligible, df_FX_eligible, df_SR_eligible, df_VT_eligible)
-  print("have candidates")
-  
-  ss <- top_candidates$sim1 %>%
-    group_by(Country) %>%
-    distinct(FullName) %>%
-    summarise(n = n())
-  
-  view(ss)
+  top_candidates <- candidates(iter, all_eligible, hb, fx, pb, ph, sr, vt)
+
   
   # 4. Get team scores for each country, for each iteration
   for (i in 1:iter){
@@ -710,12 +469,36 @@ get_team_scores <- function(iter, samples){
         filter(Country == country) %>%
         pivot_wider(names_from = Apparatus, values_from = value)
       
+      # checking for countries that have less than 5 people
+      n_athletes <- df_country %>%
+        distinct(FullName) %>%
+        summarise(n = n()) %>%
+        pull()
+    
+      
+      team_size = 5
+      
+      if(n_athletes<5){
+        team_size = n_athletes
+      }
+  
       # 4b. get all possible teams
-      print(country)
-      possible_teams <-  data.frame(t(combn(df_country$FullName, 5)))
+      possible_teams <-  data.frame(t(combn(unique(df_country$FullName),  team_size)))
       possible_teams$Country <- country
       
-      print("here")
+      if (n_athletes < 5){
+        
+        if(n_athletes == 4){
+          possible_teams <- possible_teams %>%
+            mutate(X5 = NaN)
+        }
+        
+        else {
+          possible_teams <- possible_teams %>%
+            mutate(X4 = NaN, X5 = NaN)
+        }
+      }
+      
       
       # 4c. get scores for each team
       scores <- team_scores(possible_teams, df_country)
@@ -737,6 +520,7 @@ get_team_scores <- function(iter, samples){
     
     # 4f. add simulation to list
     all_team_scores[[sprintf("sim%s", i)]] <- results
+    print(sprintf("added simulation #%s", i))
     
   }
   
@@ -782,29 +566,21 @@ get_sim_results <- function(iter, scores, country){
 
 
 
-
-## Example
-
-```{r}
-data_ready_for_algo %>%
-  filter(Country == 'NED') %>%
-  distinct(FullName)
-```
-
+ 
+## Example (run this)
 
 ```{r}
-all_team_scores <- get_team_scores(1, test_samples)
+# once you break up the dfs by apparatus, just run thi
+all_team_scores <- get_team_scores(1000, hb, fx, pb, ph, sr, vt)
 ```
 
 ```{r}
+# example of result from sim1
 all_team_scores$sim1  
 ```
 
 
 ```{r}
+# run and save sim results from USA to csv under folder "simulaiton results"
 get_sim_results(1, all_team_scores, "USA")
-```
-
-```{r}
-all_team_scores
 ```
