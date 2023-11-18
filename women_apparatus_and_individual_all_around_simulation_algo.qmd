@@ -17,14 +17,42 @@ library(ggplot2)
 library(purrr)
 library(dplyr)
 library(KernSmooth)
+library(parallel)
+
 
 ## LOG INTO https://hypatia.stat.duke.edu USING NET ID AND PW AND THEN CLONE OUR REPO THERE AND THEN RUN THESE SIMULATION .QMD FILES
 
 #flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
-#  flexiblas::flexiblas_switch()
-#  flexiblas::flexiblas_set_num_threads(8)
+ # flexiblas::flexiblas_switch()
+  #flexiblas::flexiblas_set_num_threads(8)
 ```
 
+```{r}
+library(parallel)
+library(iterators)
+library(foreach)
+library(doParallel)
+library(future)
+library(future.apply)
+
+# Use detectCores() to find out how many cores your system has
+no_cores <- detectCores() - 1  # Leave one core free for system processes
+# Use mclapply to apply a function over a list in parallel
+result <- mclapply(1:100, function(x) x^2, mc.cores = no_cores)
+
+no_cores <- detectCores() - 1
+registerDoParallel(cores = no_cores)
+result <- foreach(i = 1:100) %dopar% {
+  i^2
+}
+
+plan(multisession, workers = no_cores)
+result <- future_lapply(1:100, function(x) x^2)
+
+
+
+
+```
 
 
 ## THE SET-UP BEFORE THE ALGO -- make sure to replace read.csv with the correct file path -- RUN THIS CODE CHUNK BEFORE RUNNING ANY OF THE HELPER FUNCTION INITIATING CODE CHUNKS BELOW
@@ -356,6 +384,75 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
   
 }
 
+```
+
+```{r}
+runOlympicsNTimesParallel <- function(n, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants){
+  
+  # Register the parallel backend to use multicore, with one less than the number of cores available
+  no_cores <- detectCores() - 1
+  cl <- makeCluster(no_cores)
+  registerDoParallel(cl)
+
+  # Export custom functions to each worker
+  clusterExport(cl, varlist = c("createCDFfromKDEandDrawONEscore", "estimateKernelDensity", "createProperDataframe"))
+
+  # Parallelized version of the Women's BB loop
+  BBParticipants_copied <- allWomenBBParticipants
+  BBParticipants_copied$SimulationResults <- lapply(1:nrow(BBParticipants_copied), function(x) vector("list", n))
+  
+  foreach(nthOlympic = 1:n, .combine = 'c', .multicombine = TRUE, .inorder = FALSE, .export = c("createCDFfromKDEandDrawONEscore", "estimateKernelDensity", "createProperDataframe")) %dopar% {
+    for (i in 1:nrow(BBParticipants_copied)) {
+      row <- BBParticipants_copied[i, ]
+      BBParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    }
+    cat(paste(nthOlympic, "th Olympic done for Women's BB\n"))
+  }
+  
+  # 2. Parallelized version of the Women's FX loop
+  FXParticipants_copied <- allWomenFXParticipants
+  FXParticipants_copied$SimulationResults <- lapply(1:nrow(FXParticipants_copied), function(x) vector("list", n))
+  
+  foreach(nthOlympic = 1:n, .packages = c("packageNeededForFunctions")) %dopar% {
+    for (i in 1:nrow(FXParticipants_copied)) {
+      row <- FXParticipants_copied[i, ]
+      FXParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    }
+    cat(paste(nthOlympic, "th Olympic done for Women's FX\n"))
+  }
+  
+  # 3. Parallelized version of the Women's UB loop
+  UBParticipants_copied <- allWomenUBParticipants
+  UBParticipants_copied$SimulationResults <- lapply(1:nrow(UBParticipants_copied), function(x) vector("list", n))
+  
+  foreach(nthOlympic = 1:n, .packages = c("packageNeededForFunctions")) %dopar% {
+    for (i in 1:nrow(UBParticipants_copied)) {
+      row <- UBParticipants_copied[i, ]
+      UBParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    }
+    cat(paste(nthOlympic, "th Olympic done for Women's UB\n"))
+  }
+  
+  # 4. Parallelized version of the Women's VT loop
+  VTParticipants_copied <- allWomenVTParticipants
+  VTParticipants_copied$SimulationResults <- lapply(1:nrow(VTParticipants_copied), function(x) vector("list", n))
+  
+  foreach(nthOlympic = 1:n, .packages = c("packageNeededForFunctions")) %dopar% {
+    for (i in 1:nrow(VTParticipants_copied)) {
+      row <- VTParticipants_copied[i, ]
+      VTParticipants_copied[i, ]$SimulationResults[[1]][[nthOlympic]] <- createCDFfromKDEandDrawONEscore(estimateKernelDensity(createProperDataframe(countryCode = row$Country, athleteName = row$FullName, apparatusInitials = row$Apparatus), 0.25))
+    }
+    cat(paste(nthOlympic, "th Olympic done for Women's VT\n"))
+  }
+  
+  # Make sure to unregister the parallel backend after your function is done
+  stopImplicitCluster()
+  
+  # RETURN A LIST CONTAINING FOUR DATAFRAMES
+  return(list(BBResults = BBParticipants_copied, FXResults = FXParticipants_copied, UBResults = UBParticipants_copied, VTResults = VTParticipants_copied))
+}
+
+
 
 ```
 
@@ -363,13 +460,18 @@ runOlympicsNTimes <- function(n, allWomenBBParticipants, allWomenFXParticipants,
 
 
 ## Running the simulation
-```{r}
+## Do not run this code, this code will run the simulations again
 
+```{r}
 
 # sanityCheck: runOlympicsNTimes
 set.seed(120)
 a = runOlympicsNTimes(1000, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
 
+
+```
+```{r}
+stopImplicitCluster()
 
 ```
 
@@ -401,6 +503,115 @@ aVT <- aVT %>%
 
 
 ```
+
+## Code to load previous simulations
+
+```{r}
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_BB_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+aBB <- df
+
+aBB <- aBB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_UB_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+
+aUB <- df
+
+aUB <- aUB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_FX_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+
+aFX <- df
+
+aFX <- aFX %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_VT_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+
+aVT <- df
+
+aVT <- aVT %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+```
+
+### Creating a new dataframe of AllAround results 
+
+```{r}
+# Using left_join to ensure all names are included from each dataframe.
+
+merged_df <- aBB %>%
+  left_join(aUB, by = "FullName") %>%
+  left_join(aFX, by = "FullName") %>%
+  left_join(aVT, by = "FullName")
+
+# Rename the SimulationResults columns to avoid name clashes
+names(merged_df)[names(merged_df) == 'SimulationResults.x'] <- 'SimulationResultsBB'
+names(merged_df)[names(merged_df) == 'SimulationResults.y'] <- 'SimulationResultsUB'
+names(merged_df)[names(merged_df) == 'SimulationResults.x.x'] <- 'SimulationResultsFX'
+names(merged_df)[names(merged_df) == 'SimulationResults.y.y'] <- 'SimulationResultsVT'
+
+# create a new SimulationResults column which is a list of sums of corresponding elements.
+
+# Function to sum the elements of the simulation results
+sum_simulation_results <- function(bb, ub, fx, vt) {
+  mapply(sum, bb, ub, fx, vt) # Sum corresponding elements
+}
+
+# Apply the function to each row using rowwise and then mutate to create the new column
+merged_df <- merged_df %>%
+  rowwise() %>%
+  mutate(SimulationResults = list(sum_simulation_results(SimulationResultsBB, SimulationResultsUB, 
+                                                         SimulationResultsFX, SimulationResultsVT)))
+
+# Create the final dataframe with required columns
+aAllAround <- merged_df %>%
+  select(Country = Country.x, FullName, Apparatus = Apparatus.x, mean = mean.x, SimulationResults)
+
+# Set Apparatus to 'All-Around'
+aAllAround$Apparatus <- 'All-Around'
+
+# Display the resulting dataframe
+
+
+
+```
+
+
+
+```{r}
+aAllAround <- aAllAround %>%
+  filter(length(SimulationResults) > 0)
+
+aAllAround$mean <- sapply(aAllAround$SimulationResults, mean)
+
+```
+
 
 
 
@@ -447,10 +658,7 @@ separate_columns <- function(data, list_column_name, num_columns) {
 
 
 ```{r}
-
-
 ## calculating the top three potential people in each individual event 
-
 
 aBB_separated_data <- separate_columns(aBB, "SimulationResults", 1000)
 
@@ -485,9 +693,65 @@ aVT_Top_Three <- aVT_separated_data %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
   slice(1:10)
 
+aAllAround_separated_data <- separate_columns(aAllAround, "SimulationResults", 1000)
+
+aAllAround_Top_Three <- aAllAround_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
 
 ```
 
+
+## Finding the best number of medals/combination of athletes
+
+```{r}
+
+# Create a vector of all unique FullNames across the dataframes
+all_fullnames <- unique(c(aBB_Top_Three$FullName, aFX_Top_Three$FullName, aUB_Top_Three$FullName, aVT_Top_Three$FullName, aAllAround_Top_Three$FullName))
+
+# Initialize an empty dataframe to store the combinations and results
+result_df <- data.frame()
+
+# Iterate through all combinations of 5 FullName values
+for (i in 1:length(all_fullnames)) {
+  for (j in (i+1):length(all_fullnames)) {
+    for (k in (j+1):length(all_fullnames)) {
+      for (l in (k+1):length(all_fullnames)) {
+        for (m in (l+1):length(all_fullnames)) {
+          # Extract the FullName values for the combination
+          combo <- c(all_fullnames[i], all_fullnames[j], all_fullnames[k], all_fullnames[l], all_fullnames[m])
+          
+          # Filter the dataframes for the specific FullNames
+          bb_result <- sum(subset(aBB_Top_Three, FullName %in% combo)$avg_result)
+          fx_result <- sum(subset(aFX_Top_Three, FullName %in% combo)$avg_result)
+          ub_result <- sum(subset(aUB_Top_Three, FullName %in% combo)$avg_result)
+          vt_result <- sum(subset(aVT_Top_Three, FullName %in% combo)$avg_result)
+          allaround_result <- sum(subset(aAllAround_Top_Three, FullName %in% combo)$avg_result)
+          
+          # Create a new row with the combination and results
+          new_row <- data.frame(Combo = paste(combo, collapse = ", "),
+                                BB_Result = bb_result,
+                                FX_Result = fx_result,
+                                UB_Result = ub_result,
+                                VT_Result = vt_result,
+                                AllAround_Result = allaround_result)
+          
+          # Append the new row to the result dataframe
+          result_df <- rbind(result_df, new_row)
+        }
+      }
+    }
+  }
+}
+
+# Display the resulting dataframe with all combinations and results
+result_df$Total_Result <- rowSums(result_df[, c("BB_Result", "FX_Result", "UB_Result", "VT_Result", "AllAround_Result")])
+
+
+```
 
 
 ## Getting the aggregate scores
@@ -510,6 +774,7 @@ aUB_prepared <- prepare_df(aUB, 'meanUB')
 aFX_prepared <- prepare_df(aFX, 'meanFX')
 aVT_prepared <- prepare_df(aVT, 'meanVT')
 
+
 # Merge all data frames by 'Country' and 'FullName'
 all_around <- Reduce(function(x, y) merge(x, y, by = c('Country', 'FullName'), all = TRUE), 
                      list(aBB_prepared, aUB_prepared, aFX_prepared, aVT_prepared))
@@ -524,9 +789,9 @@ all_around <- all_around[, c('Country', 'FullName', 'AllAroundScore')]
 all_around
 
 
-
-
 ```
+
+
 ## Choosing top two atheletes from each nation
 ```{r}
 
@@ -547,7 +812,7 @@ all_aroud_finalists <- all_aroud_finalists %>%
 ```
 
 
-Convert list to string type
+## Convert list to string type
 ```{r}
 BBResults <- aBB
 #Convert all list columns in BBResults to character strings
@@ -593,25 +858,33 @@ VTResults[] <- lapply(VTResults, function(x) {
 })
 
 ```
+
+
+```{r}
+write.csv(result_df, file = "simluation_results_young/women_medal_expectation.csv")
+
+write.csv(aBB_Top_Three, file = "simluation_results_young/women_aBB_Top_Three.csv")
+write.csv(aUB_Top_Three, file = "simluation_results_young/women_aUB_Top_Three.csv")
+write.csv(aFX_Top_Three, file = "simluation_results_young/women_aFX_Top_Three.csv")
+write.csv(aVT_Top_Three, file = "simluation_results_young/women_aVT_Top_Three.csv")
+write.csv(aAllAround_Top_Three, file = "simluation_results_young/women_aAllAround_Top_Three.csv")
+
+
 ```
-
-
-
 ## Save Simulation Results
 
 ```{r}
 
 
-write.csv(all_aroud_finalists, file = "women_all_around_finalists_1000_EZ.csv")
+write.csv(all_aroud_finalists, file = "/simulation_results/women_all_around_finalists_1000_EZ.csv")
 
-write.csv(aBB_Top_Three, file = "women_aBB_Top_Three_EZ.csv")
-write.csv(aUB_Top_Three, file = "women_aUB_Top_Three_EZ.csv")
-write.csv(aFX_Top_Three, file = "women_aFX_Top_Three_EZ.csv")
-write.csv(aVT_Top_Three, file = "women_aVT_Top_Three_EZ.csv")
+
+
 
 write.csv(aBB_separated_data, file = "women_aBB_Weighted_Medals.csv")
 write.csv(aUB_separated_data, file = "women_aUB_Weighted_Medals.csv")
 write.csv(aFX_separated_data, file = "women_aFX_Weighted_Medals.csv")
+write.csv(aVT_separated_data, file = "women_aVT_Weighted_Medals.csv")
 write.csv(aVT_separated_data, file = "women_aVT_Weighted_Medals.csv")
 
 
@@ -619,15 +892,11 @@ write.csv(BBResults, file = "women_BB_1000_EZ.csv")
 write.csv(UBResults, file = "women_UB_1000_EZ.csv")
 write.csv(FXResults, file = "women_FX_1000_EZ.csv")
 write.csv(VTResults, file = "women_VT_1000_EZ.csv")
+write.csv(VTResults, file = "women_VT_1000_EZ.csv")
 
 
 
 ```
 
-
-
-```{r}
-
-```
 
 
