@@ -460,6 +460,8 @@ runOlympicsNTimesParallel <- function(n, allWomenBBParticipants, allWomenFXParti
 
 
 ## Running the simulation
+## Do not run this code, this code will run the simulations again
+
 ```{r}
 
 # sanityCheck: runOlympicsNTimes
@@ -502,7 +504,63 @@ aVT <- aVT %>%
 
 ```
 
-Creating a new dataframe of AllAround results 
+## Code to load previous simulations
+
+```{r}
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_BB_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+aBB <- df
+
+aBB <- aBB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_UB_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+
+aUB <- df
+
+aUB <- aUB %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_FX_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+
+aFX <- df
+
+aFX <- aFX %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/women_VT_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+
+aVT <- df
+
+aVT <- aVT %>% 
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+```
+
+### Creating a new dataframe of AllAround results 
 
 ```{r}
 # Using left_join to ensure all names are included from each dataframe.
@@ -650,6 +708,7 @@ aAllAround_Top_Three <- aAllAround_separated_data %>%
 ## Finding the best number of medals/combination of athletes
 
 ```{r}
+
 # Create a vector of all unique FullNames across the dataframes
 all_fullnames <- unique(c(aBB_Top_Three$FullName, aFX_Top_Three$FullName, aUB_Top_Three$FullName, aVT_Top_Three$FullName, aAllAround_Top_Three$FullName))
 
@@ -838,7 +897,6 @@ write.csv(VTResults, file = "women_VT_1000_EZ.csv")
 
 
 ```
-
 
 
 
