@@ -515,7 +515,7 @@ get_team_scores <- function(iter, hb, fx, pb, ph, sr, vt){
       mutate(rank = row_number(),
              weight = case_when(rank == 1 ~ 3,
                                 rank == 3 ~ 1,
-                                .default = rank))
+                                .default = 0))
     
     # 4f. add simulation to list
     all_team_scores[[sprintf("sim%s", i)]] <- results
