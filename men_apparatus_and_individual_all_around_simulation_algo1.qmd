@@ -491,6 +491,80 @@ mVT <- mVT %>%
 ```
 
 
+```{r}
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/Men_HBResults_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+mHB <- df
+
+mHB <- mHB %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/Men_FXResults_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+mFX <- df
+
+mFX <- mFX %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/Men_PBResults_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+mPB <- df
+
+mPB <- mPB %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/Men_PHResults_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+mPH <- df
+
+mPH <- mPH %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/Men_SRResults_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+mSR <- df
+
+mSR <- mSR %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
+# Read the CSV file into a dataframe
+df <- read.csv("EZ Simulation Exports/Men_VTResults_1000_EZ.csv", stringsAsFactors = FALSE)
+
+# Convert the SimulationResults string to a list of numeric values
+df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
+
+mVT <- df
+
+mVT <- mVT %>%
+  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+mAllAround
+
+```
+
 ## converting into character strings for export 
 ```{r}
 HBResults <- mHB
@@ -695,6 +769,82 @@ write.csv(mVT_Top_Three, file = "men_mVT_Top_Three.csv")
 
 ```
 
+## Creating a new dataframe of AllAround results 
+
+```{r}
+# Get the unique list of FullNames from all dataframes
+all_names <- unique(c(mHB$FullName, mFX$FullName, mPB$FullName, mVT$FullName, mPH$FullName, mSR$FullName))
+
+# Function to add missing entries
+add_missing_entries <- function(df, names, apparatus) {
+  # Names that are missing in the dataframe
+  missing_names <- setdiff(names, df$FullName)
+  
+  # Create missing entries with the specified values
+  missing_entries <- data.frame(
+    Country = rep('USA', length(missing_names)),
+    FullName = missing_names,
+    Apparatus = rep(apparatus, length(missing_names)),
+    SimulationResults = I(replicate(length(missing_names), list(rep(0, 1000)))),
+    mean = rep(0, length(missing_names))
+
+  )
+  
+  # Combine the original dataframe with the missing entries
+  rbind(df, missing_entries)
+}
+
+
+
+# Add missing entries to each dataframe
+mVT <- add_missing_entries(mVT, all_names, 'VT')
+mFX <- add_missing_entries(mFX, all_names, 'FX')
+mHB <- add_missing_entries(mHB, all_names, 'HB')
+mPB <- add_missing_entries(mPB, all_names, 'PB')
+mPH <- add_missing_entries(mPH, all_names, 'PH')
+mSR <- add_missing_entries(mSR, all_names, 'SR')
+
+```
+
+```{r}
+# Using left_join to ensure all names are included from each dataframe.
+merged_df <- mVT %>%
+  left_join(mHB, by = "FullName") %>%
+  left_join(mFX, by = "FullName") %>%
+  left_join(mPB, by = "FullName") %>%
+  left_join(mPH, by = "FullName") %>%
+  left_join(mSR, by = "FullName") 
+
+# Rename the SimulationResults columns to avoid name clashes
+names(merged_df)[names(merged_df) == 'SimulationResults.x'] <- 'SimulationResultsVT'
+names(merged_df)[names(merged_df) == 'SimulationResults.y'] <- 'SimulationResultsHB'
+names(merged_df)[names(merged_df) == 'SimulationResults.x.x'] <- 'SimulationResultsFX'
+names(merged_df)[names(merged_df) == 'SimulationResults.y.y'] <- 'SimulationResultsPB'
+names(merged_df)[names(merged_df) == 'SimulationResults.x.x.x'] <- 'SimulationResultsPH'
+names(merged_df)[names(merged_df) == 'SimulationResults.y.y.y'] <- 'SimulationResultsSR'
+
+# Function to sum the elements of the simulation results
+sum_simulation_results <- function(vt, hb, fx, pb, ph, sr) {
+  mapply(sum, vt, hb, fx, pb, ph, sr) # Sum corresponding elements
+}
+
+# Apply the function to each row using row-wise and then mutate to create the new column
+merged_df <- merged_df %>%
+  rowwise() %>%
+  mutate(SimulationResults = list(sum_simulation_results(SimulationResultsVT, SimulationResultsHB, SimulationResultsFX, SimulationResultsPB, SimulationResultsPH, SimulationResultsSR)))
+
+
+# Create the final dataframe with required columns
+mAllAround <- merged_df %>%
+  select(Country = Country.x, FullName, Apparatus = Apparatus.x, mean = mean.x, SimulationResults)
+
+# Set Apparatus to 'All-Around'
+mAllAround$Apparatus <- 'All-Around'
+
+mAllAround$mean <- sapply(mAllAround$SimulationResults, mean)
+
+
+```
 
 
 ## ignore this, hasn't been adapted completely yet 

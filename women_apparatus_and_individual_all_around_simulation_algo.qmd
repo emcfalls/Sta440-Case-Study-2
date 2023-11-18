@@ -470,10 +470,7 @@ a = runOlympicsNTimes(1000, allWomenBBParticipants, allWomenFXParticipants, allW
 
 
 ```
-```{r}
-stopImplicitCluster()
 
-```
 
 ## Code to get the mean from all simulations 
 
@@ -513,10 +510,12 @@ df <- read.csv("EZ Simulation Exports/women_BB_1000_EZ.csv", stringsAsFactors = 
 # Convert the SimulationResults string to a list of numeric values
 df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
 
-aBB <- df
+aBB <- select(df, Country, FullName, Apparatus, SimulationResults, mean)
 
 aBB <- aBB %>% 
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+
+
 
 
 # Read the CSV file into a dataframe
@@ -526,7 +525,7 @@ df <- read.csv("EZ Simulation Exports/women_UB_1000_EZ.csv", stringsAsFactors = 
 df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
 
 
-aUB <- df
+aUB <- select(df, Country, FullName, Apparatus, SimulationResults, mean)
 
 aUB <- aUB %>% 
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
@@ -539,7 +538,7 @@ df <- read.csv("EZ Simulation Exports/women_FX_1000_EZ.csv", stringsAsFactors = 
 df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
 
 
-aFX <- df
+aFX <- select(df, Country, FullName, Apparatus, SimulationResults, mean)
 
 aFX <- aFX %>% 
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
@@ -552,7 +551,7 @@ df <- read.csv("EZ Simulation Exports/women_VT_1000_EZ.csv", stringsAsFactors = 
 df$SimulationResults <- lapply(strsplit(df$SimulationResults, ",\\s*"), as.numeric)
 
 
-aVT <- df
+aVT <- select(df, Country, FullName, Apparatus, SimulationResults, mean)
 
 aVT <- aVT %>% 
   mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
@@ -561,6 +560,38 @@ aVT <- aVT %>%
 ```
 
 ### Creating a new dataframe of AllAround results 
+
+```{r}
+# Get the unique list of FullNames from all dataframes
+all_names <- unique(c(aBB$FullName, aUB$FullName, aFX$FullName, aVT$FullName))
+
+# Function to add missing entries
+add_missing_entries <- function(df, names, apparatus) {
+  # Names that are missing in the dataframe
+  missing_names <- setdiff(names, df$FullName)
+  
+  # Create missing entries with the specified values
+  missing_entries <- data.frame(
+    Country = rep('USA', length(missing_names)),
+    FullName = missing_names,
+    Apparatus = rep(apparatus, length(missing_names)),
+    SimulationResults = I(replicate(length(missing_names), list(rep(0, 1000)))),
+    mean = rep(0, length(missing_names))
+
+  )
+  
+  # Combine the original dataframe with the missing entries
+  rbind(df, missing_entries)
+}
+
+# Add missing entries to each dataframe
+aBB <- add_missing_entries(aBB, all_names, 'BB')
+aUB <- add_missing_entries(aUB, all_names, 'UB')
+aFX <- add_missing_entries(aFX, all_names, 'FX')
+aVT <- add_missing_entries(aVT, all_names, 'VT')
+
+```
+
 
 ```{r}
 # Using left_join to ensure all names are included from each dataframe.
@@ -698,8 +729,9 @@ aAllAround_separated_data <- separate_columns(aAllAround, "SimulationResults", 1
 aAllAround_Top_Three <- aAllAround_separated_data %>% 
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:10)
+
 
 
 ```
