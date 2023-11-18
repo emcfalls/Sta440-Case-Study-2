@@ -730,8 +730,6 @@ all_around <- all_around[, c('Country', 'FullName', 'AllAroundScore')]
 all_around
 
 
-
-
 ```
 
 
@@ -801,25 +799,33 @@ VTResults[] <- lapply(VTResults, function(x) {
 })
 
 ```
+
+
+```{r}
+write.csv(result_df, file = "simluation_results_young/women_medal_expectation.csv")
+
+write.csv(aBB_Top_Three, file = "simluation_results_young/women_aBB_Top_Three.csv")
+write.csv(aUB_Top_Three, file = "simluation_results_young/women_aUB_Top_Three.csv")
+write.csv(aFX_Top_Three, file = "simluation_results_young/women_aFX_Top_Three.csv")
+write.csv(aVT_Top_Three, file = "simluation_results_young/women_aVT_Top_Three.csv")
+write.csv(aAllAround_Top_Three, file = "simluation_results_young/women_aAllAround_Top_Three.csv")
+
+
 ```
-
-
-
 ## Save Simulation Results
 
 ```{r}
 
 
-write.csv(all_aroud_finalists, file = "women_all_around_finalists_1000_EZ.csv")
+write.csv(all_aroud_finalists, file = "/simulation_results/women_all_around_finalists_1000_EZ.csv")
 
-write.csv(aBB_Top_Three, file = "women_aBB_Top_Three_EZ.csv")
-write.csv(aUB_Top_Three, file = "women_aUB_Top_Three_EZ.csv")
-write.csv(aFX_Top_Three, file = "women_aFX_Top_Three_EZ.csv")
-write.csv(aVT_Top_Three, file = "women_aVT_Top_Three_EZ.csv")
+
+
 
 write.csv(aBB_separated_data, file = "women_aBB_Weighted_Medals.csv")
 write.csv(aUB_separated_data, file = "women_aUB_Weighted_Medals.csv")
 write.csv(aFX_separated_data, file = "women_aFX_Weighted_Medals.csv")
+write.csv(aVT_separated_data, file = "women_aVT_Weighted_Medals.csv")
 write.csv(aVT_separated_data, file = "women_aVT_Weighted_Medals.csv")
 
 
@@ -827,15 +833,12 @@ write.csv(BBResults, file = "women_BB_1000_EZ.csv")
 write.csv(UBResults, file = "women_UB_1000_EZ.csv")
 write.csv(FXResults, file = "women_FX_1000_EZ.csv")
 write.csv(VTResults, file = "women_VT_1000_EZ.csv")
+write.csv(VTResults, file = "women_VT_1000_EZ.csv")
 
 
 
 ```
 
 
-
-```{r}
-
-```
 
 
