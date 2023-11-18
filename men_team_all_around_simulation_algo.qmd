@@ -31,7 +31,7 @@ flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
 ```{r}
 ## Re-arranged data
 data_men_scores_2022_to_2023 <- read.csv("cleaned data/active_restricted_men_2023.csv") %>%  
-  select(Country, FullName, Apparatus, Score) %>% 
+  select(Country, FullName, Apparatus, Score, type) %>% 
   # first, making c(VT, VT1, VT2) all just VT, since they're all the same apparatus, just named different at different competitions
   mutate(Apparatus = ifelse(Apparatus %in% c("VT1", "VT2"), "VT", Apparatus))  %>%
   filter(!is.na(Score) & Score != 0) #dropping all NAs -- ask the team: should we also drop zeros? -> emily said yeah 11.13.2023 7 21pm
@@ -39,7 +39,7 @@ data_men_scores_2022_to_2023 <- read.csv("cleaned data/active_restricted_men_202
 
 # this is the data that will feed into the algo
 data_ready_for_algo <- data_men_scores_2022_to_2023 %>%
-  group_by(Country, FullName, Apparatus) %>%
+  group_by(Country, FullName, Apparatus, type) %>%
   summarise(Scores = list(Score), .groups = 'drop')
 
 
@@ -95,33 +95,33 @@ minAndMaxScores2DTable <- list(
 
 ## TO BE FED INTO runOlympicsNTimes
 allMenHBParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus) %>%
+  select(Country, FullName, Apparatus, type) %>%
   unique() %>% 
   filter(Apparatus == "HB")
 
 allMenFXParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus) %>%
+  select(Country, FullName, Apparatus, type) %>%
   unique() %>% 
   filter(Apparatus == "FX")
 
 allMenPBParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus) %>%
+  select(Country, FullName, Apparatus, type) %>%
   unique() %>% 
   filter(Apparatus == "PB")
 
 allMenPHParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus) %>%
+  select(Country, FullName, Apparatus, type) %>%
   unique() %>% 
   filter(Apparatus == "PH")
 
 
 allMenSRParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus) %>%
+  select(Country, FullName, Apparatus, type) %>%
   unique() %>% 
   filter(Apparatus == "SR")
 
 allMenVTParticipants <- data_ready_for_algo %>%
-  select(Country, FullName, Apparatus) %>%
+  select(Country, FullName, Apparatus, type) %>%
   unique() %>% 
   filter(Apparatus == "VT")
 
@@ -447,39 +447,11 @@ runOlympicsNTimes <- function(n, allMenHBParticipants, allMenFXParticipants, all
 ## EXAMPLE WAY OF UTILIZING runOlympicsNTimes (all commented out below)
 ```{r}
 # sanityCheck: runOlympicsNTimes
-#set.seed(1)
-#a = runOlympicsNTimes(5, allWomenBBParticipants, allWomenFXParticipants, allWomenUBParticipants, allWomenVTParticipants)
-
-#a <- a %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
+set.seed(1)
+test_samples = runOlympicsNTimes(1, allMenHBParticipants, allMenFXParticipants, allMenPBParticipants, allMenPHParticipants, allMenSRParticipants, allMenVTParticipants)
 ```
 
 
-```{r}
-#aBB <- a$BBResults
-
-#aBB <- aBB %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
-
-
-#aUB <- a$UBResults
-
-#aUB <- aUB %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
-
-
-#aFX <- a$FXResults
-
-#aFX <- aFX %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
-
-
-#aVT <- a$VTResults
-
-#aVT <- aVT %>% 
-#  mutate(mean = sapply(SimulationResults, function(x) mean(unlist(x))))
-
-```
 ## Team All-Around Function
 
 *Function*
@@ -587,6 +559,7 @@ candidates <- function(iter, main_df, HB, FX, PB, PH, SR, VT){
 ```
 
 
+
 ```{r}
 # helper: function to get best scores for each team for each country
 team_scores <- function(teams, country_data){
@@ -655,6 +628,14 @@ team_scores <- function(teams, country_data){
 get_team_scores <- function(iter, samples){
   all_team_scores <- c()
   
+  # 0. get simulation names
+  sims <- c()
+  for (i in 1:iter){
+    sims <- c(sims, sprintf("SimulationResults_%s", i))
+  }
+  
+  print("just got names")
+  
   # 1. filter by eligible athletes 
   df_HB_eligible <- samples$HBResults %>%
     filter(type == "full team")
@@ -665,7 +646,7 @@ get_team_scores <- function(iter, samples){
   df_PB_eligible <- samples$PBResults %>%
     filter(type == "full team")
   
-  df_PB_eligible <- samples$PHResults %>%
+  df_PH_eligible <- samples$PHResults %>%
     filter(type == "full team")
     
   df_SR_eligible <- samples$SRResults %>%
@@ -677,42 +658,51 @@ get_team_scores <- function(iter, samples){
   # 2. Remake data frames so they are easier to work with 
   df_HB_eligible <- df_HB_eligible %>%
     unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+    pivot_longer(cols = sims, names_to = "iteration")
   
   df_FX_eligible <- df_FX_eligible %>%
     unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+    pivot_longer(cols = sims, names_to = "iteration")
   
   df_PB_eligible <- df_PB_eligible %>%
     unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+    pivot_longer(cols = sims, names_to = "iteration")
   
   df_PH_eligible <- df_PH_eligible %>%
     unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+    pivot_longer(cols = sims, names_to = "iteration")
   
     
   df_SR_eligible <- df_SR_eligible %>%
     unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+    pivot_longer(cols = sims, names_to = "iteration")
   
     
   df_VT_eligible <- df_VT_eligible %>%
     unnest_wider(SimulationResults, names_sep = "_") %>%
-    pivot_longer(cols = SimulationResults_1:SimulationResults_2, names_to = "iteration")
+    pivot_longer(cols = sims, names_to = "iteration")
   
   # 2a. add all of the data frames together
   all_eligible <- rbind(df_HB_eligible, df_PB_eligible, df_PH_eligible, df_FX_eligible, df_SR_eligible, df_VT_eligible)
   
   # 3. Find top candidates for each team by country (top 3 for each apparatus)
+  print("just getting candidates")
   top_candidates <- candidates(iter, all_eligible, df_HB_eligible, df_PB_eligible, df_PH_eligible, df_FX_eligible, df_SR_eligible, df_VT_eligible)
+  print("have candidates")
+  
+  ss <- top_candidates$sim1 %>%
+    group_by(Country) %>%
+    distinct(FullName) %>%
+    summarise(n = n())
+  
+  view(ss)
   
   # 4. Get team scores for each country, for each iteration
   for (i in 1:iter){
     # 4a. get iteration
     olympics <- top_candidates[[sprintf("sim%s", i)]]
     olympics_data <- data.frame()
-    countries = c("USA", "GBR", "CAN", "CHN", "ITA", "NED", "JPN", "GER", "TUR", "SUI", "UKR", "ESP"
+    countries = c("USA", "GBR", "CAN", "CHN", "ITA", "JPN", "GER", "TUR", "SUI", "UKR", "ESP"
                       )
     
     for (country in countries){
@@ -721,8 +711,11 @@ get_team_scores <- function(iter, samples){
         pivot_wider(names_from = Apparatus, values_from = value)
       
       # 4b. get all possible teams
+      print(country)
       possible_teams <-  data.frame(t(combn(df_country$FullName, 5)))
       possible_teams$Country <- country
+      
+      print("here")
       
       # 4c. get scores for each team
       scores <- team_scores(possible_teams, df_country)
@@ -732,8 +725,18 @@ get_team_scores <- function(iter, samples){
       olympics_data <- rbind(olympics_data, data.frame(possible_teams))
     }
     
-    # 4e. add simulation to list
-    all_team_scores[[sprintf("sim%s", i)]] <- olympics_data
+    # 4e. get results
+    results <- olympics_data %>%
+      arrange(desc(score)) %>%
+      distinct(Country, .keep_all = T) %>%
+      mutate(rank = case_when(row_number() %in% c(1:3) ~ row_number(),
+                              .default = 0),
+             weight = case_when(rank == 1 ~ 3,
+                                rank == 3 ~ 1,
+                                .default = rank))
+    
+    # 4f. add simulation to list
+    all_team_scores[[sprintf("sim%s", i)]] <- results
     
   }
   
@@ -746,6 +749,62 @@ get_team_scores <- function(iter, samples){
 
 
 ```{r}
+get_sim_results <- function(iter, scores, country){
+  # 1. make final df
+  sim_results = c()
+  
+  # 2. get data for each simulation
+  for (i in 1:iter){
+    sim <- scores[[sprintf("sim%s", i)]]
+    
+    country_df <- sim %>%
+      filter(Country == country)
+    
+    view(country_df)
+    
+    data =  c(Simulation = sprintf("sim%s", i), 
+                        Member1 = country_df[,c('X1')], 
+                        Member2 = country_df[,c('X2')], 
+                        Member3 = country_df[,c('X3')], 
+                        Member4 = country_df[,c('X4')], 
+                        Member5 = country_df[,c('X5')], 
+                        Score = country_df$score,
+                        Rank = country_df$rank,
+                        Weight = country_df$weight)
+    
 
+    sim_results = rbind(sim_results, data)
+  }
+  
+  return(as.data.frame(sim_results))
+}
 ```
 
+
+
+
+## Example
+
+```{r}
+data_ready_for_algo %>%
+  filter(Country == 'NED') %>%
+  distinct(FullName)
+```
+
+
+```{r}
+all_team_scores <- get_team_scores(1, test_samples)
+```
+
+```{r}
+all_team_scores$sim1  
+```
+
+
+```{r}
+get_sim_results(1, all_team_scores, "USA")
+```
+
+```{r}
+all_team_scores
+```
