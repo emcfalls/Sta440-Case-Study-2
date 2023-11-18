@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## text is done, need to put in sources consistent w what's in google doc
 ```
 
-<div style="margin-left: 20px;"> Gymnastics has swiftly risen to become one of America's cherished pastimes, with recent polls revealing it to be the most anticipated Olympic event among Americans (source). This heightened enthusiasm is largely attributed to the historical success the U.S. has enjoyed in the Olympics, particularly in women's artistic gymnastics. Dominant performances by teams like the Final Five in 2016 and athletes like Simone Biles (active 2011 - current) have brought immense prominence to the sport and its athletes (source).While the U.S. men's rhythmic gymnastics team may not be as dominant, they have consistently secured top-five placements in team events at the Olympics and have bolstered decorated athletes like Khoi Young (active 2018 - current) in recent years (source). </div> 
+&nbsp;&nbsp;&nbsp;&nbsp; Gymnastics has swiftly risen to become one of America's cherished pastimes, with recent polls revealing it to be the most anticipated Olympic event among Americans.$^1$ This heightened enthusiasm is largely attributed to the historical success the U.S. has enjoyed in the Olympics, particularly in women's artistic gymnastics. Dominant performances by teams like the Final Five in 2016 and athletes like Simone Biles (active 2011 - current) have brought immense prominence to the sport and its athletes (source).While the U.S. men's rhythmic gymnastics team may not be as dominant, they have consistently secured top-five placements in team events at the Olympics and have bolstered decorated athletes like Khoi Young (active 2018 - current) in recent years (source).
 
 We expect that millions of Americans are anticipating the gymnastics events at the 2024 Olympic Games in Paris, France (source). This anticipation is coupled with an expectation of U.S. dominance at the Olympics, mirroring the success we have seen in the past. One may ask then: How can we ensure that the U.S. reigns supreme? The answer lies in assembling formidable teams capable of winning the most medals.
 Historically, U.S. Olympic team rosters are shaped by the results of the U.S. Olympic Team Trials. The trials will be hosted in June, 2024, for this upcoming cycle (source). Here, each invited athlete's performance determines their spot on the team. Athletes are required to complete all apparatuses twice (4 for women, 6 for men), and scores from each event (8 for women, 12 for men) are combined to generate a final score. The selection committee then uses a combination of the competition results and the teams’ needs to decide on the final rosters. In the last olympic cycle, the top two performers for women and the top performer for men secured automatic spots, while the remaining slots were determined by the selection committee (source). Given this meticulous process, it will be some time before the U.S. Olympic gymnastics teams are unveiled, and even longer before we can assess how they will perform on the big stage. The selection committee also faces the arduous task of determining the optimal team makeup. This season, the challenge is particularly difficult for the women's team given the abundance of strong candidates (source).
@@ -48,4 +48,7 @@ In this paper, we present a simulation-based way to determine the best U.S. Olym
 
 ## Appendix
 
-## Works Cited
+\newpage
+
+## Sources
+1. Paris 2024 - Artistic Gymnastics. https://www.paris2024.org/en/sport/artistic-gymnastics/
