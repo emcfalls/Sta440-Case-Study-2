@@ -14,10 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-```{r}
-## text is done, need to put in sources consistent w what's in google doc
-```
-
 &nbsp;&nbsp;&nbsp;&nbsp; Gymnastics has swiftly risen to become one of America's cherished pastimes, with recent polls revealing it to be the most anticipated Olympic event among Americans.$^1$ This heightened enthusiasm is largely attributed to the historical success the U.S. has enjoyed in the Olympics, particularly in women's artistic gymnastics. Dominant performances by teams like the Final Five in 2016 and athletes like Simone Biles (active 2011 - current) have brought immense prominence to the sport and its athletes.$^2$ While the U.S. men's rhythmic gymnastics team may not be as dominant, they have consistently secured top-five placements in team events at the Olympics and have bolstered decorated athletes like Khoi Young (active 2018 - current) in recent years.$^3$
 
 &nbsp;&nbsp;&nbsp;&nbsp; We expect that millions of Americans are anticipating the gymnastics events at the 2024 Olympic Games in Paris, France.$^4$ This anticipation is coupled with the expectation of U.S. dominance at the Olympics, mirroring the success we have seen in the past. One may ask then: How can we ensure that the U.S. reigns supreme? The answer lies in assembling formidable teams capable of winning the most medals.
