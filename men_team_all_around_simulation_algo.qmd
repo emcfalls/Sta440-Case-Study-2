@@ -213,22 +213,27 @@ write.csv(data_901, "cleaned data/mens_simulation_901_to_1000.csv") # Young
 ## *IMPORTANT* Splitting the data for the function (replace data_150 with your own df)
 
 ```{r}
-hb <- data_150 %>%
+main <- rbind(data_301, data_451)
+```
+
+
+```{r}
+hb <- main %>%
   filter(Apparatus == "HB")
 
-pb <- data_150 %>%
+pb <- main %>%
   filter(Apparatus == "PB")
 
-ph <- data_150 %>%
+ph <- main %>%
   filter(Apparatus == "PH")
 
-vt <- data_150 %>%
+vt <- main %>%
   filter(Apparatus == "VT")
 
-sr <- data_150 %>%
+sr <- main %>%
   filter(Apparatus == "SR")
 
-fx <- data_150 %>%
+fx <- main %>%
   filter(Apparatus == "FX")
 ```
 
@@ -241,11 +246,11 @@ fx <- data_150 %>%
 
 ```{r}
 # helper: function for finding top 5 athletes in each apparatus by Country
-candidates <- function(iter, main_df, HB, FX, PB, PH, SR, VT){
+candidates <- function(start_iter, stop_iter, main_df, HB, FX, PB, PH, SR, VT){
   olympics = list()
   all = rbind(HB, FX, PB, PH, SR, VT)
   
-  for (i in 1:iter){
+  for (i in start_iter:stop_iter){
     # high bar
     HB_candids_names <- HB %>%
       filter(iteration == sprintf("SimulationResults_%s", i)) %>%
@@ -445,7 +450,7 @@ team_scores <- function(teams, country_data){
 
 ```{r}
 # main function: return a list of data frames with the best score for each possible teams for each country. Each element in the list is a new iteration 
-get_team_scores <- function(iter, hb, fx, pb, ph, sr, vt){
+get_team_scores <- function(start_iter, stop_iter, hb, fx, pb, ph, sr, vt){
   print("function started")
   all_team_scores <- c()
   
@@ -453,11 +458,11 @@ get_team_scores <- function(iter, hb, fx, pb, ph, sr, vt){
   all_eligible <- rbind(hb, fx, pb, ph, sr, vt)
   
   # 3. Find top candidates for each team by country (top 3 for each apparatus)
-  top_candidates <- candidates(iter, all_eligible, hb, fx, pb, ph, sr, vt)
+  top_candidates <- candidates(start_iter, stop_iter, all_eligible, hb, fx, pb, ph, sr, vt)
 
   
   # 4. Get team scores for each country, for each iteration
-  for (i in 1:iter){
+  for (i in start_iter:stop_iter){
     # 4a. get iteration
     olympics <- top_candidates[[sprintf("sim%s", i)]]
     olympics_data <- data.frame()
@@ -533,12 +538,12 @@ get_team_scores <- function(iter, hb, fx, pb, ph, sr, vt){
 
 
 ```{r}
-get_sim_results <- function(iter, scores, country){
+get_sim_results <- function(start_iter, stop_iter, scores, country){
   # 1. make final df
   sim_results = c()
   
   # 2. get data for each simulation
-  for (i in 1:iter){
+  for (i in start_iter:stop_iter){
     sim <- scores[[sprintf("sim%s", i)]]
     
     country_df <- sim %>%
@@ -570,8 +575,8 @@ get_sim_results <- function(iter, scores, country){
 ## Example (run this)
 
 ```{r}
-# once you break up the dfs by apparatus, just run thi
-all_team_scores <- get_team_scores(1000, hb, fx, pb, ph, sr, vt)
+# once you break up the dfs by apparatus, just run this
+all_team_scores <- get_team_scores(301, 450, hb, fx, pb, ph, sr, vt)
 ```
 
 ```{r}
@@ -582,5 +587,5 @@ all_team_scores$sim1
 
 ```{r}
 # run and save sim results from USA to csv under folder "simulaiton results"
-get_sim_results(1, all_team_scores, "USA")
+get_sim_results(301, 450, all_team_scores, "USA")
 ```
