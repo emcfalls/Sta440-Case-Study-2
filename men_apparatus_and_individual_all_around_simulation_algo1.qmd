@@ -565,6 +565,84 @@ mAllAround
 
 ```
 
+## Creating a new dataframe of AllAround results 
+
+```{r}
+# Get the unique list of FullNames from all dataframes
+all_names <- unique(c(mHB$FullName, mFX$FullName, mPB$FullName, mVT$FullName, mPH$FullName, mSR$FullName))
+
+# Function to add missing entries
+add_missing_entries <- function(df, names, apparatus) {
+  # Names that are missing in the dataframe
+  missing_names <- setdiff(names, df$FullName)
+  
+  # Create missing entries with the specified values
+  missing_entries <- data.frame(
+    Country = rep('USA', length(missing_names)),
+    FullName = missing_names,
+    Apparatus = rep(apparatus, length(missing_names)),
+    SimulationResults = I(replicate(length(missing_names), list(rep(0, 1000)))),
+    mean = rep(0, length(missing_names))
+
+  )
+  
+  # Combine the original dataframe with the missing entries
+  rbind(df, missing_entries)
+}
+
+
+
+# Add missing entries to each dataframe
+mVT <- add_missing_entries(mVT, all_names, 'VT')
+mFX <- add_missing_entries(mFX, all_names, 'FX')
+mHB <- add_missing_entries(mHB, all_names, 'HB')
+mPB <- add_missing_entries(mPB, all_names, 'PB')
+mPH <- add_missing_entries(mPH, all_names, 'PH')
+mSR <- add_missing_entries(mSR, all_names, 'SR')
+
+```
+
+```{r}
+# Using left_join to ensure all names are included from each dataframe.
+merged_df <- mVT %>%
+  left_join(mHB, by = "FullName") %>%
+  left_join(mFX, by = "FullName") %>%
+  left_join(mPB, by = "FullName") %>%
+  left_join(mPH, by = "FullName") %>%
+  left_join(mSR, by = "FullName") 
+
+# Rename the SimulationResults columns to avoid name clashes
+names(merged_df)[names(merged_df) == 'SimulationResults.x'] <- 'SimulationResultsVT'
+names(merged_df)[names(merged_df) == 'SimulationResults.y'] <- 'SimulationResultsHB'
+names(merged_df)[names(merged_df) == 'SimulationResults.x.x'] <- 'SimulationResultsFX'
+names(merged_df)[names(merged_df) == 'SimulationResults.y.y'] <- 'SimulationResultsPB'
+names(merged_df)[names(merged_df) == 'SimulationResults.x.x.x'] <- 'SimulationResultsPH'
+names(merged_df)[names(merged_df) == 'SimulationResults.y.y.y'] <- 'SimulationResultsSR'
+
+# Function to sum the elements of the simulation results
+sum_simulation_results <- function(vt, hb, fx, pb, ph, sr) {
+  mapply(sum, vt, hb, fx, pb, ph, sr) # Sum corresponding elements
+}
+
+# Apply the function to each row using row-wise and then mutate to create the new column
+merged_df <- merged_df %>%
+  rowwise() %>%
+  mutate(SimulationResults = list(sum_simulation_results(SimulationResultsVT, SimulationResultsHB, SimulationResultsFX, SimulationResultsPB, SimulationResultsPH, SimulationResultsSR)))
+
+
+# Create the final dataframe with required columns
+mAllAround <- merged_df %>%
+  select(Country = Country.x, FullName, Apparatus = Apparatus.x, mean = mean.x, SimulationResults)
+
+# Set Apparatus to 'All-Around'
+mAllAround$Apparatus <- 'All-Around'
+
+mAllAround$mean <- sapply(mAllAround$SimulationResults, mean)
+
+
+```
+
+
 ## converting into character strings for export 
 ```{r}
 HBResults <- mHB
@@ -652,6 +730,8 @@ write.csv(VTResults, file = "Men_VTResults_1000_EZ.csv", row.names = FALSE)
 ```
 
 
+## Expected Medal 
+
 ```{r}
 
 ## helper function to transform scores into relevant medals
@@ -709,7 +789,6 @@ mHB_Top_Three <- mHB_separated_data %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:10)
 
-write.csv(mHB_Top_Three, file = "men_mHB_Top_Three.csv")
 
 mFX_separated_data <- separate_columns(mFX, "SimulationResults", 1000)
 
@@ -717,9 +796,8 @@ mFX_Top_Three <- mFX_separated_data %>%
   filter(Country == "USA") %>%
   arrange(desc(avg_result)) %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
-  slice(1:20)
+  slice(1:10)
 
-write.csv(mFX_Top_Three, file = "men_mFX_Top_Three.csv")
 
 
 mPB_separated_data <- separate_columns(mPB, "SimulationResults", 1000)
@@ -728,9 +806,8 @@ mPB_Top_Three <- mPB_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:14)
+  slice(1:10)
 
-write.csv(mPB_Top_Three, file = "men_mPB_Top_Three.csv")
 
 
 mPH_separated_data <- separate_columns(mPH, "SimulationResults", 1000)
@@ -739,9 +816,8 @@ mPH_Top_Three <- mPH_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:12)
+  slice(1:10)
 
-write.csv(mPH_Top_Three, file = "men_mPH_Top_Three.csv")
 
 
 mSR_separated_data <- separate_columns(mSR, "SimulationResults", 1000)
@@ -750,9 +826,8 @@ mSR_Top_Three <- mSR_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:8)
+  slice(1:10)
 
-write.csv(mSR_Top_Three, file = "men_mSR_Top_Three.csv")
 
 
 mVT_separated_data <- separate_columns(mVT, "SimulationResults", 1000)
@@ -761,91 +836,80 @@ mVT_Top_Three <- mVT_separated_data %>%
   filter(Country == "USA") %>% 
   arrange(desc(avg_result)) %>% 
   select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:21)
-
-
-write.csv(mVT_Top_Three, file = "men_mVT_Top_Three.csv")
-
-
-```
-
-## Creating a new dataframe of AllAround results 
-
-```{r}
-# Get the unique list of FullNames from all dataframes
-all_names <- unique(c(mHB$FullName, mFX$FullName, mPB$FullName, mVT$FullName, mPH$FullName, mSR$FullName))
-
-# Function to add missing entries
-add_missing_entries <- function(df, names, apparatus) {
-  # Names that are missing in the dataframe
-  missing_names <- setdiff(names, df$FullName)
-  
-  # Create missing entries with the specified values
-  missing_entries <- data.frame(
-    Country = rep('USA', length(missing_names)),
-    FullName = missing_names,
-    Apparatus = rep(apparatus, length(missing_names)),
-    SimulationResults = I(replicate(length(missing_names), list(rep(0, 1000)))),
-    mean = rep(0, length(missing_names))
-
-  )
-  
-  # Combine the original dataframe with the missing entries
-  rbind(df, missing_entries)
-}
+  slice(1:10)
 
 
 
-# Add missing entries to each dataframe
-mVT <- add_missing_entries(mVT, all_names, 'VT')
-mFX <- add_missing_entries(mFX, all_names, 'FX')
-mHB <- add_missing_entries(mHB, all_names, 'HB')
-mPB <- add_missing_entries(mPB, all_names, 'PB')
-mPH <- add_missing_entries(mPH, all_names, 'PH')
-mSR <- add_missing_entries(mSR, all_names, 'SR')
+mAllAround_separated_data <- separate_columns(mAllAround, "SimulationResults", 1000)
+
+mAllAround_Top_Three <- mAllAround_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
+  slice(1:10)
+
 
 ```
 
 ```{r}
-# Using left_join to ensure all names are included from each dataframe.
-merged_df <- mVT %>%
-  left_join(mHB, by = "FullName") %>%
-  left_join(mFX, by = "FullName") %>%
-  left_join(mPB, by = "FullName") %>%
-  left_join(mPH, by = "FullName") %>%
-  left_join(mSR, by = "FullName") 
+# Create a vector of all unique FullNames across the dataframes
+all_fullnames <- unique(c(mHB_Top_Three$FullName, mFX_Top_Three$FullName, mPB_Top_Three$FullName, mPH_Top_Three$FullName, mSR_Top_Three$FullName, mVT_Top_Three$FullName, mAllAround_Top_Three$FullName))
 
-# Rename the SimulationResults columns to avoid name clashes
-names(merged_df)[names(merged_df) == 'SimulationResults.x'] <- 'SimulationResultsVT'
-names(merged_df)[names(merged_df) == 'SimulationResults.y'] <- 'SimulationResultsHB'
-names(merged_df)[names(merged_df) == 'SimulationResults.x.x'] <- 'SimulationResultsFX'
-names(merged_df)[names(merged_df) == 'SimulationResults.y.y'] <- 'SimulationResultsPB'
-names(merged_df)[names(merged_df) == 'SimulationResults.x.x.x'] <- 'SimulationResultsPH'
-names(merged_df)[names(merged_df) == 'SimulationResults.y.y.y'] <- 'SimulationResultsSR'
+all_fullnames
+```
 
-# Function to sum the elements of the simulation results
-sum_simulation_results <- function(vt, hb, fx, pb, ph, sr) {
-  mapply(sum, vt, hb, fx, pb, ph, sr) # Sum corresponding elements
+```{r}
+# Create a vector of all unique FullNames across the dataframes
+all_fullnames <- unique(c(mHB_Top_Three$FullName, mFX_Top_Three$FullName, mPB_Top_Three$FullName, mPH_Top_Three$FullName, mSR_Top_Three$FullName, mVT_Top_Three$FullName, mAllAround_Top_Three$FullName))
+# Initialize an empty dataframe to store the combinations and results
+m_result_df <- data.frame()
+
+# Iterate through all combinations of 5 FullName values
+for (i in 1:length(all_fullnames)) {
+  for (j in (i+1):length(all_fullnames)) {
+    for (k in (j+1):length(all_fullnames)) {
+      for (l in (k+1):length(all_fullnames)) {
+        for (m in (l+1):length(all_fullnames)) {
+          # Extract the FullName values for the combination
+          combo <- c(all_fullnames[i], all_fullnames[j], all_fullnames[k], all_fullnames[l], all_fullnames[m])
+          
+          # Filter the dataframes for the specific FullNames
+          hb_result <- sum(subset(mHB_Top_Three, FullName %in% combo)$avg_result)
+          fx_result <- sum(subset(mFX_Top_Three, FullName %in% combo)$avg_result)
+          pb_result <- sum(subset(mPB_Top_Three, FullName %in% combo)$avg_result)
+          ph_result <- sum(subset(mPH_Top_Three, FullName %in% combo)$avg_result)
+          sr_result <- sum(subset(mSR_Top_Three, FullName %in% combo)$avg_result)
+          vt_result <- sum(subset(mVT_Top_Three, FullName %in% combo)$avg_result)
+          allaround_result <- sum(subset(mAllAround_Top_Three, FullName %in% combo)$avg_result)
+          
+          
+          # Create a new row with the combination and results
+          new_row <- data.frame(Combo = paste(combo, collapse = ", "),
+                                HB_Result = hb_result,
+                                FX_Result = fx_result,
+                                PB_Result = pb_result,
+                                PH_Result = ph_result,
+                                SR_Result = sr_result,
+                                VT_Result = vt_result,
+                                AllAround_Result = allaround_result)
+          
+          # Append the new row to the result dataframe
+          m_result_df <- rbind(m_result_df, new_row)
+        }
+      }
+    }
+  }
 }
 
-# Apply the function to each row using row-wise and then mutate to create the new column
-merged_df <- merged_df %>%
-  rowwise() %>%
-  mutate(SimulationResults = list(sum_simulation_results(SimulationResultsVT, SimulationResultsHB, SimulationResultsFX, SimulationResultsPB, SimulationResultsPH, SimulationResultsSR)))
 
-
-# Create the final dataframe with required columns
-mAllAround <- merged_df %>%
-  select(Country = Country.x, FullName, Apparatus = Apparatus.x, mean = mean.x, SimulationResults)
-
-# Set Apparatus to 'All-Around'
-mAllAround$Apparatus <- 'All-Around'
-
-mAllAround$mean <- sapply(mAllAround$SimulationResults, mean)
 
 
 ```
 
+```{r}
+# Display the resulting dataframe with all combinations and results
+m_result_df$Total_Result <- rowSums(m_result_df[, c("HB_Result", "FX_Result", "PB_Result", "PH_Result", "SR_Result","VT_Result", "AllAround_Result")])
+```
 
 ## ignore this, hasn't been adapted completely yet 
 
@@ -907,17 +971,20 @@ all_aroud_finalists <- all_aroud_finalists %>%
 
 ```
 
+
 ```{r}
 
-write.csv(all_aroud_finalists, file = "men_all_aroud_finalists_1000.csv")
+
+write.csv(mHB_Top_Three, file = "simluation_results_young/men_mHB_Weighted_Medals.csv")
+write.csv(mFX_Top_Three, file = "simluation_results_young/men_mPB_Weighted_Medals.csv")
+write.csv(mPB_Top_Three, file = "simluation_results_young/men_mPH_Weighted_Medals.csv")
+write.csv(mPH_Top_Three, file = "simluation_results_young/men_mFX_Weighted_Medals.csv")
+write.csv(mSR_Top_Three, file = "simluation_results_young/men_mSR_Weighted_Medals.csv")
+write.csv(mVT_Top_Three, file = "simluation_results_young/men_mVT_Weighted_Medals.csv")
+write.csv(mAllAround_Top_Three, file = "simluation_results_young/men_All_Aroung_Weighted_Medals.csv")
+write.csv(m_result_df, file = "simluation_results_young/men_Total_Weighted_Medals.csv")
 
 
-write.csv(mHB_prepared, file = "men_mHB_Weighted_Medals.csv")
-write.csv(mPB_prepared, file = "men_mPB_Weighted_Medals.csv")
-write.csv(mPH_prepared, file = "men_mPH_Weighted_Medals.csv")
-write.csv(mFX_prepared, file = "men_mFX_Weighted_Medals.csv")
-write.csv(mSR_prepared, file = "men_mSR_Weighted_Medals.csv")
-write.csv(mVT_prepared, file = "men_mVT_Weighted_Medals.csv")
 ```
 
 
