@@ -84,9 +84,13 @@ aBB_top10 <- aBB_top10 %>%
   mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aBB_top10))) 
 
 aBB_top10_chart <-ggplot(aBB_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 Women for Balance Beam", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free')
+#  scale_x_continuous(limits=c(0, 3), breaks = c(0, 1, 2, 3), labels = c("", "Bronze", "Silver", "Gold")) + 
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Balance Beam", x = "Average Medal Score", y = "", fill = "Top 3 Average Scores") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free')+
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
 aBB_top10_chart
 ```
@@ -96,9 +100,12 @@ aFX_top10 <- aFX_top10 %>%
   mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aFX_top10))) 
 
 aFX_top10_chart <-ggplot(aFX_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 Women For Floor Exercise", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') 
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Floor Exercise", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
 aFX_top10_chart
 ```
@@ -108,9 +115,12 @@ aUB_top10 <- aUB_top10 %>%
   mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aUB_top10)))
 
 aUB_top10_chart <- ggplot(aUB_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 Female Athletes For Uneven Bars", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') 
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Uneven Bars", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
 aUB_top10_chart
 ```
@@ -120,29 +130,24 @@ aVT_top10 <- aVT_top10 %>%
   mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aVT_top10)))
 
 aVT_top10_chart <- ggplot(aVT_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 Female Athletes For Vault", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') 
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Vault", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 ```
 
-```{r}
+```{r, fig.width = 8, fig.height = 8}
 
 
 combined <- aBB_top10_chart + aFX_top10_chart + aUB_top10_chart + aVT_top10_chart & theme(legend.position = "bottom")
 
-combined + plot_layout(guides = "collect") + plot_annotation('Charts of Top 10 Women by Apparatus and Country',theme=theme(plot.title=element_text(hjust=0.5)))
+combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Women by Apparatus and Country',theme=theme(plot.title=element_text(hjust=0.5)))
 
 ```
 
 
-```{r, fig.size = 10}
-top10s %>% 
-  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(top10s))) %>% 
-  ggplot(aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
-  geom_col() +
-  labs(title = "Top 10 Female Athletes For Each Event by Country (2022-2023)") +
-  facet_grid(Country ~ Apparatus, scales = "free", space = "free") 
-```
 
 
 
@@ -233,45 +238,68 @@ mVT_top10 <- mVT_top10 %>%
 
 ```
 
+
 ```{r}
-# For mHB
+# Assuming mHB_top10 is the data frame for Men's Horizontal Bar apparatus
 mHB_top10_chart <- ggplot(mHB_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 mHB Athletes", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free')
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Horizontal Bar", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-# For mFX
 mFX_top10_chart <- ggplot(mFX_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 mFX Athletes", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free')
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Floor Exercise", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-# For mPB
 mPB_top10_chart <- ggplot(mPB_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 mPB Athletes", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free')
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Parallel Bars", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-# For mPH
 mPH_top10_chart <- ggplot(mPH_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 mPH Athletes", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free')
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Pommel Horse", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-# For mSR
 mSR_top10_chart <- ggplot(mSR_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 mSR Athletes", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free')
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Still Rings", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-# For mVT
 mVT_top10_chart <- ggplot(mVT_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
   geom_col() +
-  labs(title = "Top 10 mVT Athletes", y = "Gymnast", x = "Average Medal Score", fill = "Top 3 Average Scores") +
-  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free')
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Vault", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
 ```
 
+
+```{r, fig.width = 8, fig.height = 15}
+
+
+combined <- mHB_top10_chart + mFX_top10_chart + mPB_top10_chart + mPH_top10_chart + mSR_top10_chart + mVT_top10_chart & theme(legend.position = "bottom")
+
+combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Men by Apparatus and Country',theme=theme(plot.title=element_text(hjust=0.5))) + plot_layout(ncol = 2)
+
+```
 
 ## Misc Visualizations
 
@@ -282,5 +310,10 @@ ggplot(df_usaw_vt_bestscore, mapping = aes(x = Score, y = FullName, fill = Year)
   geom_text(aes(label=Score), size = 3.5,  hjust = 1.1) +
   facet_wrap(~Round)
 
+```
+
+
+```{r}
+Men_Team_sim_1 <- all_team_scores$sim1  
 ```
 
