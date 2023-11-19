@@ -873,14 +873,14 @@ for (i in 1:length(all_fullnames)) {
           # Extract the FullName values for the combination
           combo <- c(all_fullnames[i], all_fullnames[j], all_fullnames[k], all_fullnames[l], all_fullnames[m])
           
-          # Filter the dataframes for the specific FullNames
-          hb_result <- sum(subset(mHB_Top_Three, FullName %in% combo)$avg_result)
-          fx_result <- sum(subset(mFX_Top_Three, FullName %in% combo)$avg_result)
-          pb_result <- sum(subset(mPB_Top_Three, FullName %in% combo)$avg_result)
-          ph_result <- sum(subset(mPH_Top_Three, FullName %in% combo)$avg_result)
-          sr_result <- sum(subset(mSR_Top_Three, FullName %in% combo)$avg_result)
-          vt_result <- sum(subset(mVT_Top_Three, FullName %in% combo)$avg_result)
-          allaround_result <- sum(subset(mAllAround_Top_Three, FullName %in% combo)$avg_result)
+          hb_result <- sum(head(subset(mHB_Top_Three, FullName %in% combo)[order(-subset(mHB_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          fx_result <- sum(head(subset(mFX_Top_Three, FullName %in% combo)[order(-subset(mFX_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          pb_result <- sum(head(subset(mPB_Top_Three, FullName %in% combo)[order(-subset(mPB_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          ph_result <- sum(head(subset(mPH_Top_Three, FullName %in% combo)[order(-subset(mPH_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          sr_result <- sum(head(subset(mSR_Top_Three, FullName %in% combo)[order(-subset(mSR_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          vt_result <- sum(head(subset(mVT_Top_Three, FullName %in% combo)[order(-subset(mVT_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          allaround_result <- sum(head(subset(mAllAround_Top_Three, FullName %in% combo)[order(-subset(mAllAround_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+
           
           
           # Create a new row with the combination and results

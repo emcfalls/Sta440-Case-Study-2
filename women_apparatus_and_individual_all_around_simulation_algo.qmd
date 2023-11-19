@@ -736,6 +736,12 @@ aAllAround_Top_Three <- aAllAround_separated_data %>%
 
 ```
 
+```{r}
+# Create a vector of all unique FullNames across the dataframes
+all_fullnames <- unique(c(aBB_Top_Three$FullName, aFX_Top_Three$FullName, aUB_Top_Three$FullName, aVT_Top_Three$FullName, aAllAround_Top_Three$FullName))
+
+all_fullnames
+```
 
 ## Finding the best number of medals/combination of athletes
 
@@ -757,12 +763,12 @@ for (i in 1:length(all_fullnames)) {
           combo <- c(all_fullnames[i], all_fullnames[j], all_fullnames[k], all_fullnames[l], all_fullnames[m])
           
           # Filter the dataframes for the specific FullNames
-          bb_result <- sum(subset(aBB_Top_Three, FullName %in% combo)$avg_result)
-          fx_result <- sum(subset(aFX_Top_Three, FullName %in% combo)$avg_result)
-          ub_result <- sum(subset(aUB_Top_Three, FullName %in% combo)$avg_result)
-          vt_result <- sum(subset(aVT_Top_Three, FullName %in% combo)$avg_result)
-          allaround_result <- sum(subset(aAllAround_Top_Three, FullName %in% combo)$avg_result)
-          
+          bb_result <- sum(head(subset(aBB_Top_Three, FullName %in% combo)[order(-subset(aBB_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          fx_result <- sum(head(subset(aFX_Top_Three, FullName %in% combo)[order(-subset(aFX_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          ub_result <- sum(head(subset(aUB_Top_Three, FullName %in% combo)[order(-subset(aUB_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          vt_result <- sum(head(subset(aVT_Top_Three, FullName %in% combo)[order(-subset(aVT_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+          allaround_result <- sum(head(subset(aAllAround_Top_Three, FullName %in% combo)[order(-subset(aAllAround_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
+
           # Create a new row with the combination and results
           new_row <- data.frame(Combo = paste(combo, collapse = ", "),
                                 BB_Result = bb_result,
