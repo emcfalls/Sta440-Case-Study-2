@@ -160,20 +160,27 @@ sims451_600 <- c()
     sims451_600 <- c(sims451_600, sprintf("SimulationResults_%s", i))
   }
 
-sims601_750 <- c()
-  for (i in 601:750){
-    sims601_750 <- c(sims601_750, sprintf("SimulationResults_%s", i))
+
+sims601_700 <- c()
+  for (i in 601:700){
+    sims601_700 <- c(sims601_700, sprintf("SimulationResults_%s", i))
   }
 
-sims751_900 <- c()
-  for (i in 751:900){
-    sims751_900 <- c(sims751_900, sprintf("SimulationResults_%s", i))
+sims701_800 <- c()
+  for (i in 701:800){
+    sims701_800 <- c(sims701_800, sprintf("SimulationResults_%s", i))
   }
 
-sims901 <- c()
+sims801_900 <- c()
+  for (i in 801:900){
+    sims801_900 <- c(sims801_900, sprintf("SimulationResults_%s", i))
+  }
+
+sims901_1000 <- c()
   for (i in 901:1000){
-    sims901 <- c(sims901, sprintf("SimulationResults_%s", i))
+    sims901_1000 <- c(sims901_1000, sprintf("SimulationResults_%s", i))
   }
+
 
 data_150 <- all %>%
   filter(iteration %in% sims150)
@@ -188,13 +195,16 @@ data_451 <- all %>%
   filter(iteration %in% sims451_600)
 
 data_601 <- all %>%
-  filter(iteration %in% sims601_750)
+  filter(iteration %in% sims601_700)
 
-data_751 <- all %>%
-  filter(iteration %in% sims751_900)
+data_701 <- all %>%
+  filter(iteration %in% sims701_800)
+
+data_801 <- all %>%
+  filter(iteration %in% sims801_900)
 
 data_901 <- all %>%
-  filter(iteration %in% sims901)
+  filter(iteration %in% sims901_1000)
 
 ```
 
@@ -213,7 +223,7 @@ write.csv(data_901, "cleaned data/mens_simulation_901_to_1000.csv") # Young
 ## *IMPORTANT* Splitting the data for the function (replace data_150 with your own df)
 
 ```{r}
-main <- rbind(data_301, data_451)
+main <- rbind(data_301, data_601)
 ```
 
 
@@ -576,16 +586,19 @@ get_sim_results <- function(start_iter, stop_iter, scores, country){
 
 ```{r}
 # once you break up the dfs by apparatus, just run this
-all_team_scores <- get_team_scores(301, 450, hb, fx, pb, ph, sr, vt)
+#all_team_scores <- get_team_scores(301, 450, hb, fx, pb, ph, sr, vt)
+all_team_scores <- get_team_scores(601, 700, hb, fx, pb, ph, sr, vt)
 ```
 
 ```{r}
 # example of result from sim1
-all_team_scores$sim1  
+all_team_scores$sim601
 ```
 
 
 ```{r}
 # run and save sim results from USA to csv under folder "simulaiton results"
-get_sim_results(301, 450, all_team_scores, "USA")
+df <- get_sim_results(601, 700, all_team_scores, "USA")
+
+write.csv(df, "simulation_data_elyse/mens_simulation_601_to_700.csv") # Young
 ```
