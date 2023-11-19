@@ -13,6 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+```{r}
+library(ggh4x)
+```
+
 ## Questions/Comments
 1. How can we tell what apparatus each all-around score relates to?
 2. How will we create a model to predict the past competitions? The data we have from the newest set only contains 2022-2023 data and the older dataset only has data from the 2021 Olympics for women (only 4 have played/placed in top 5 in 2022/2023)
@@ -70,6 +74,362 @@ df23 <- df23 %>%
 ```{r}
 # saving full dataframe
 write.csv(df23, "cleaned data/full_data_2023.csv")
+```
+
+
+
+## Main graph (Women)
+
+You only need to run this to make the graph
+
+```{r}
+library(ggpubr)
+```
+
+```{r adding round type and stage to women data - EDA by round}
+women <- read.csv("cleaned data/active_restricted_women_2023.csv")
+women <- women %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+```
+
+*getting data for graphs*
+```{r getting top 3 women for vt - EDA by round}
+top_vt_women_names <- women %>%
+  filter(stringr::str_like(Apparatus,'VT%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+
+top_vt_women_avg <- women %>%
+  filter(stringr::str_like(Apparatus,'VT%')) %>%
+  filter(FullName %in% top_vt_women_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 women for bb - EDA by round}
+top_bb_women_names <- women %>%
+  filter(stringr::str_like(Apparatus,'BB%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+
+top_bb_women_avg <- women %>%
+  filter(stringr::str_like(Apparatus,'BB%')) %>%
+  filter(FullName %in% top_bb_women_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 women for ub - EDA by round}
+top_ub_women_names <- women %>%
+  filter(stringr::str_like(Apparatus,'UB%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+
+top_ub_women_avg <- women %>%
+  filter(stringr::str_like(Apparatus,'UB%')) %>%
+  filter(FullName %in% top_ub_women_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 women for fx - EDA by round}
+top_fx_women_names <- women %>%
+  filter(stringr::str_like(Apparatus,'FX%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+
+top_fx_women_avg <- women %>%
+  filter(stringr::str_like(Apparatus,'FX%')) %>%
+  filter(FullName %in% top_fx_women_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r making graphs for EDA by round}
+pvt <- ggplot(top_vt_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Vault Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Vault Score",
+       x = "Average Score by Round", y = "")
+
+pbb <- ggplot(top_bb_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Balance Beam Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Balance Beam Score",
+       x = "Average Score by Round", y = "")
+
+pub <- ggplot(top_ub_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Uneven Bar Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Uneven Bar Score",
+       x = "Average Score by Round", y = "")
+
+pfx <- ggplot(top_fx_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Floor Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Floor Score",
+       x = "Average Score by Round", y = "")
+```
+
+
+```{r fig.width = 15}
+ggarrange(pvt, pbb, pub, pfx)
+```
+
+## Main graph (MEN)
+
+You only need to run this part to make the graph
+
+```{r getting active restricted df for men}
+men <- read.csv("cleaned data/active_restricted_men_2023.csv")
+```
+
+
+```{r adding round type and round stage for men}
+# adding round stage and type
+men <- men %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+```
+
+*getting data for graphs*
+```{r getting top 3 men for HB - EDA by round}
+top_hb_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'HB%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_hb_men_avg <- men %>%
+  filter(FullName %in% top_hb_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 men for PH - EDA by round}
+top_ph_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'PH%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_ph_men_avg <- men %>%
+  filter(stringr::str_like(Apparatus,'PH%')) %>%
+  filter(FullName %in% top_ph_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 men for SR - EDA by round}
+top_sr_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'SR%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_sr_men_avg <- men %>%
+  filter(stringr::str_like(Apparatus,'SR%')) %>%
+  filter(FullName %in% top_sr_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 men for FX - EDA by round}
+top_fx_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'FX%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_fx_men_avg <- men %>%
+  filter(stringr::str_like(Apparatus,'FX%')) %>%
+  filter(FullName %in% top_fx_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 men for VT - EDA by round}
+top_vt_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'VT%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_vt_men_avg <- men %>%
+  filter(stringr::str_like(Apparatus,'VT%')) %>%
+  filter(FullName %in% top_vt_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 men for PB - EDA by round}
+top_pb_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'PB%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_pb_men_avg <- men %>%
+  filter(stringr::str_like(Apparatus,'PB%')) %>%
+  filter(FullName %in% top_pb_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting top 3 men for VT - EDA by round}
+top_vt_men_names <- men %>%
+  filter(stringr::str_like(Apparatus,'VT%')) %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>% 
+  pull(FullName)
+
+top_vt_men_avg <- men %>%
+  filter(stringr::str_like(Apparatus,'VT%')) %>%
+  filter(FullName %in% top_vt_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r getting all graphs - EDA by round}
+pvt <- ggplot(top_vt_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Vault Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Vault Score",
+       x = "Average Score by Round", y = "")
+
+pph <- ggplot(top_ph_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Pommel Horse Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Pommel Horse Score",
+       x = "Average Score by Round", y = "")
+
+psr <- ggplot(top_sr_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Still Rings Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Still Rings Score",
+       x = "Average Score by Round", y = "")
+
+pfx <- ggplot(top_fx_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Floor Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Floor Score",
+       x = "Average Score by Round", y = "")
+
+ppb <- ggplot(top_pb_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Parallel Bars Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Parallel Bars Score",
+       x = "Average Score by Round", y = "")
+
+phb <- ggplot(top_hb_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Horizontal Bar Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Horizontal Bar Score",
+       x = "Average Score by Round", y = "")
+```
+
+
+```{r fig.width = 20 EDA by round}
+ggarrange(pvt, pph, phb, ppb, psr, pfx)
 ```
 
 
@@ -188,6 +548,14 @@ df_old_usa %>%
 ```
 
 
+## Loading active restricted data
+
+```{r}
+men <- read.csv("cleaned data/active_restricted_men_2023.csv")
+women <- read.csv("cleaned data/active_restricted_women_2023.csv")
+```
+
+
 ## Scoring Trends for Female US Athletes
 
 ```{r}
@@ -246,103 +614,545 @@ Idk how to check
 ```
 
 
+```{r}
+women <- women %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+```
+
+```{r}
+women %>%
+  distinct(RoundType)
+```
+
+
 ### Vault
 
 ```{r}
-# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
-df_usaw_vt <- df_usaw %>%
+# looking at score range 
+vt_women <- women %>%
   filter(stringr::str_like(Apparatus,'VT%'))
 
-df_usaw_vt_bestscore <- df_usaw_vt %>%
-  arrange(desc(Score)) %>%
-  distinct(FullName, Round, .keep_all = TRUE)
+vt_women %>%
+  select(FullName, Round, RoundType, Score)
 ```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_women))
+```
+
+```{r}
+top3_vt_women_names <- vt_women %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_vt_women_avg <- vt_women %>%
+  filter(FullName %in% top3_vt_women_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
 
 
 ```{r}
-ggplot(df_usaw_vt_bestscore, aes(x = Score))+
-  geom_histogram()
-```
-
-
-```{r fig.width = 10}
-ggplot(df_usaw_vt_bestscore, mapping = aes(x = Score, y = FullName, fill = Year)) +
+pvt <- ggplot(top_vt_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label=Score), size = 3.5,  hjust = 1.1) +
-  facet_wrap(~Round)
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Vault Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Vault Score",
+       x = "Average Score by Round", y = "")
 ```
 
-Looking at difficulty trends
-```{r}
-df_usaw_vt_scores <- df_usaw_vt %>%
-  select(FullName, Date, D_Score, E_Score, Score)
-```
 
-```{r}
-ggplot(df_usaw_vt_scores, aes(x = Date, y = D_Score, color = FullName)) + 
-  geom_point(alpha = 0.5, size = 3)
-```
 
-```{r}
-ggplot(df_usaw_vt_scores, aes(x = Date, y = E_Score, color = FullName)) + 
-  geom_point(alpha = 0.5, size = 3)
-```
 
 ### Balance Beam
 
 ```{r}
-# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
-df_usaw_bb <- df_usaw %>%
-  filter(stringr::str_like(Apparatus,'BB%') & Rank <= 5) %>%
-  arrange(desc(Score)) %>%
-  distinct(FullName, Round, .keep_all = TRUE)
+# looking at score range 
+bb_women <- women %>%
+  filter(stringr::str_like(Apparatus,'BB%'))
+
+bb_women %>%
+  select(FullName, Round, RoundStage, RoundType, Score)
 ```
 
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = bb_women))
+```
 
-```{r fig.width = 10}
-ggplot(df_usaw_bb, mapping = aes(x = Score, y = FullName, fill = Year)) +
+```{r}
+top5_bb_women_names <- bb_women %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_bb_women_avg <- bb_women %>%
+  filter(FullName %in% top5_bb_women_names) %>%
+  group_by(FullName, Round, RoundStage, RoundType, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r}
+pbb <- ggplot(top_bb_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label=Score), size = 3.5,  hjust = 1.1) +
-  facet_wrap(~Round)
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Balance Beam Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Balance Beam Score",
+       x = "Average Score by Round", y = "")
 ```
 
 
 ### Uneven Bars
 
 ```{r}
-# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
-df_usaw_ub <- df_usaw %>%
-  filter(stringr::str_like(Apparatus,'UB%') & Rank <= 5) %>%
-  arrange(desc(Score)) %>%
-  distinct(FullName, Round, .keep_all = TRUE)
+# looking at score range 
+ub_women <- women %>%
+  filter(stringr::str_like(Apparatus,'UB%'))
+
+ub_women %>%
+  select(FullName, Round, RoundStage, RoundType, Score)
 ```
 
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ub_women))
+```
 
-```{r fig.width = 10}
-ggplot(df_usaw_ub, mapping = aes(x = Score, y = FullName, fill = Year)) +
+```{r}
+top5_ub_women_names <- ub_women %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_ub_women_avg <- ub_women %>%
+  filter(FullName %in% top5_ub_women_names) %>%
+  group_by(FullName, Round, RoundStage, RoundType, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r}
+pub <- ggplot(top_ub_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label=Score), size = 3.5, hjust = 1.1) +
-  facet_wrap(~Round)
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Uneven Bar Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Uneven Bar Score",
+       x = "Average Score by Round", y = "")
 ```
-
 
 ### Floor Exercise
 
 ```{r}
-# selecting athletes that had won 5th place or higher at least once, selecting highest score across competitions 
-df_usaw_fx <- df_usaw %>%
-  filter(stringr::str_like(Apparatus,'FX%') & Rank <= 5) %>%
-  arrange(desc(Score)) %>%
-  distinct(FullName, Round, .keep_all = TRUE)
+# looking at score range 
+fx_women <- women %>%
+  filter(stringr::str_like(Apparatus,'FX%'))
+
+fx_women %>%
+  select(FullName, Round, RoundStage, RoundType, Score)
 ```
 
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_women))
+```
 
-```{r fig.width = 10}
-ggplot(df_usaw_fx, mapping = aes(x = Score, y = FullName, fill = Year)) +
+```{r}
+top5_fx_women_names <- fx_women %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_fx_women_avg <- fx_women %>%
+  filter(FullName %in% top5_fx_women_names) %>%
+  group_by(FullName, Round, RoundStage, RoundType, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+```{r}
+pfx <- ggplot(top_fx_women_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label=Score), size = 3.5, hjust = 1.1) +
-  facet_wrap(~Round)
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Women's Floor Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Floor Score",
+       x = "Average Score by Round", y = "")
 ```
+
+
+
+
+
+## Men
+
+```{r}
+men <- 
+```
+
+
+```{r }
+men <- men %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+```
+
+
+### Vault
+
+```{r}
+# looking at score range 
+vt_men <- men %>%
+  filter(stringr::str_like(Apparatus,'VT%'))
+
+vt_men %>%
+  select(FullName, Round, RoundStage, RoundType, Score)
+```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_men))
+```
+
+```{r}
+top3_vt_men_names <- vt_men %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_vt_men_avg <- vt_men %>%
+  filter(FullName %in% top3_vt_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+
+
+```{r}
+pvt <- ggplot(top_vt_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Vault Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Vault Score",
+       x = "Average Score by Round", y = "")
+```
+
+```{r}
+pvt
+```
+
+
+### Pommel Horse
+
+```{r}
+# looking at score range 
+ph_men <- men %>%
+  filter(stringr::str_like(Apparatus,'PH%'))
+
+ph_men %>%
+  select(FullName, Apparatus, Round, RoundStage, RoundType, Score)
+```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ph_men))
+```
+
+```{r}
+top3_ph_men_names <- ph_men %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_ph_men_avg <- ph_men %>%
+  filter(FullName %in% top3_ph_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+
+
+```{r}
+pph <- ggplot(top_ph_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Pommel Horse Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Pommel Horse Score",
+       x = "Average Score by Round", y = "")
+```
+
+```{r}
+pph
+```
+
+### Still Rings
+
+```{r}
+# looking at score range 
+sr_men <- men %>%
+  filter(stringr::str_like(Apparatus,'SR%'))
+
+sr_men %>%
+  select(FullName, Apparatus, Round, RoundStage, RoundType, Score)
+```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = sr_men))
+```
+
+```{r}
+top3_sr_men_names <- sr_men %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_sr_men_avg <- sr_men %>%
+  filter(FullName %in% top3_sr_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+
+
+```{r}
+psr <- ggplot(top_sr_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Still Rings Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Still Rings Score",
+       x = "Average Score by Round", y = "")
+```
+
+```{r}
+psr
+```
+
+
+### Floor
+
+```{r}
+# looking at score range 
+fx_men <- men %>%
+  filter(stringr::str_like(Apparatus,'FX%'))
+
+fx_men %>%
+  select(FullName, Apparatus, Round, RoundStage, RoundType, Score)
+```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_men))
+```
+
+```{r}
+top3_fx_men_names <- fx_men %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_fx_men_avg <- fx_men %>%
+  filter(FullName %in% top3_fx_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+
+
+```{r}
+pfx <- ggplot(top_fx_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Floor Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Floor Score",
+       x = "Average Score by Round", y = "")
+```
+
+```{r}
+pfx
+```
+
+
+
+### Parallel Bars
+
+```{r}
+# looking at score range 
+pb_men <- men %>%
+  filter(stringr::str_like(Apparatus,'PB%'))
+
+pb_men %>%
+  select(FullName, Apparatus, Round, RoundStage, RoundType, Score)
+```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = pb_men))
+```
+
+```{r}
+top3_pb_men_names <- pb_men %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_pb_men_avg <- pb_men %>%
+  filter(FullName %in% top3_pb_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+
+
+```{r}
+ppb <- ggplot(top_pb_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Parallel Bars Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Parallel Bars Score",
+       x = "Average Score by Round", y = "")
+```
+
+```{r}
+ppb
+```
+
+
+### Horizontal Bars
+
+
+```{r}
+# looking at score range 
+hb_men <- men %>%
+  filter(stringr::str_like(Apparatus,'HB%'))
+
+hb_men %>%
+  select(FullName, Apparatus, Round, RoundStage, RoundType, Score)
+```
+
+```{r}
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = hb_men))
+```
+
+```{r}
+top3_hb_men_names <- hb_men %>%
+  group_by(FullName) %>%
+  summarise(avg_score = mean(Score, na.rm = T)) %>%
+  ungroup () %>%
+  arrange(desc(avg_score)) %>%
+  distinct(FullName, .keep_all = T) %>%
+  slice(1:3) %>%
+  pull(FullName)
+```
+
+```{r}
+top_hb_men_avg <- hb_men %>%
+  filter(FullName %in% top3_hb_men_names) %>%
+  group_by(FullName, Round, RoundType, RoundStage, Country) %>%
+  summarise(avg_score = round(mean(Score, na.rm = T), 1)) %>%
+  ungroup() %>%
+  arrange(desc(avg_score))
+```
+
+
+
+```{r}
+phb <- ggplot(top_hb_men_avg, mapping = aes(x = avg_score, y = FullName, fill = Country)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label=avg_score), size = 3.5,  hjust = 1.1) +
+  facet_nested_wrap(~RoundStage + RoundType, nrow = 1) +
+  labs(title = "Average Men's Horizontal Bar Scores by Round", 
+       subtitle = "For the Top 3 Athletes by Overall Average Horizontal Bar Score",
+       x = "Average Score by Round", y = "")
+```
+
+```{r}
+phb
+```
+
+
+
+
 
 
 
