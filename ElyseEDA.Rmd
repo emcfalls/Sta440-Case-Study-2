@@ -217,6 +217,52 @@ pfx <- ggplot(top_fx_women_avg, mapping = aes(x = avg_score, y = FullName, fill 
 ggarrange(pvt, pbb, pub, pfx)
 ```
 
+
+## ANOVAs (Women)
+
+```{r getting active restricted df for men - again}
+women <- read.csv("cleaned data/active_restricted_women_2023.csv")
+
+# adding round stage and type
+women <- women %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+```
+
+```{r anova women bb}
+bb_women <- women %>%
+  filter(stringr::str_like(Apparatus,'BB%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = bb_women))
+```
+
+```{r anova women ub}
+ub_women <- women %>%
+  filter(stringr::str_like(Apparatus,'UB%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ub_women))
+```
+
+```{r anova women fx}
+fx_women <- women %>%
+  filter(stringr::str_like(Apparatus,'FX%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_women))
+```
+
+```{r anova women vt}
+vt_women <- women %>%
+  filter(stringr::str_like(Apparatus,'VT%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_women))
+```
+
+
+
 ## Main graph (MEN)
 
 You only need to run this part to make the graph
@@ -432,6 +478,65 @@ phb <- ggplot(top_hb_men_avg, mapping = aes(x = avg_score, y = FullName, fill = 
 ggarrange(pvt, pph, phb, ppb, psr, pfx)
 ```
 
+
+
+
+## ANOVAs (Men)
+
+```{r getting active restricted df for men - again}
+men <- read.csv("cleaned data/active_restricted_men_2023.csv")
+
+# adding round stage and type
+men <- men %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+```
+
+```{r anova men ph}
+ph_men <- men %>%
+  filter(stringr::str_like(Apparatus,'PH%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ph_men))
+```
+
+```{r anova men pb}
+pb_men <- men %>%
+  filter(stringr::str_like(Apparatus,'PB%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = pb_men))
+```
+
+```{r anova men hb}
+hb_men <- men %>%
+  filter(stringr::str_like(Apparatus,'HB%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = hb_men))
+```
+
+```{r anova men sr}
+sr_men <- men %>%
+  filter(stringr::str_like(Apparatus,'SR%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = sr_men))
+```
+
+```{r anova men fx}
+fx_men <- men %>%
+  filter(stringr::str_like(Apparatus,'FX%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_men))
+```
+
+```{r anova men vt}
+vt_men <- men %>%
+  filter(stringr::str_like(Apparatus,'VT%'))
+
+summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_men))
+```
 
 ## Loading Data and Data Cleaning 
 
