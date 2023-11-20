@@ -19,10 +19,12 @@ library(dplyr)
 library(KernSmooth)
 
 ## LOG INTO https://hypatia.stat.duke.edu USING NET ID AND PW AND THEN CLONE OUR REPO THERE AND THEN RUN THESE SIMULATION .QMD FILES
+```
 
+```{r}
 flexiblas::flexiblas_load_backend("OPENBLAS-THREADS") |>
   flexiblas::flexiblas_switch()
-  flexiblas::flexiblas_set_num_threads(8)
+  flexiblas::flexiblas_set_num_threads(100)
 ```
 
 
@@ -140,6 +142,18 @@ all <- rbind(df_HB_eligible, df_FX_eligible, df_PB_eligible, df_VT_eligible, df_
 ```
 
 ```{r}
+# filtering US athletes
+non_usa <- all %>%
+  filter(Country != 'USA')
+
+usa_filtered <- all %>%
+  filter(FullName %in% c("PHILLIPS CURRAN", "NEDOROSCIK STEPHEN", "YOUNG KHOI", "MALONE BRODY", "WALKER COLT", "WHITTENBURG DONNELL", "HONG ASHER", "SUN BLAKE", "JUDA PAUL")) 
+
+all <- rbind(non_usa, usa_filtered)
+```
+
+
+```{r}
 sims150 <- c()
   for (i in 1:150){
     sims150 <- c(sims150, sprintf("SimulationResults_%s", i))
@@ -200,13 +214,13 @@ data_901 <- all %>%
 
 ```{r}
 # saving dfs 
-write.csv(data_150, "cleaned data/mens_simulation_150.csv") # Emily
-write.csv(data_151, "cleaned data/mens_simulation_151_to_300.csv") # Evan
-write.csv(data_301, "cleaned data/mens_simulation_301_450.csv") # Elyse
-write.csv(data_451, "cleaned data/mens_simulation_451_to_600.csv") #Elyse
-write.csv(data_601, "cleaned data/mens_simulation_601_to_750.csv") # Young
-write.csv(data_751, "cleaned data/mens_simulation_751_to_900.csv") # Young
-write.csv(data_901, "cleaned data/mens_simulation_901_to_1000.csv") # Young
+write.csv(data_150, "cleaned data/mens_simulation_150_filtered.csv") # Emily
+write.csv(data_151, "cleaned data/mens_simulation_151_to_300_filtered.csv") # Emily
+write.csv(data_301, "cleaned data/mens_simulation_301_450_filtered.csv") # Elyse
+write.csv(data_451, "cleaned data/mens_simulation_451_to_600_filtered.csv") #Elyse
+write.csv(data_601, "cleaned data/mens_simulation_601_to_750_filtered.csv") # Young
+write.csv(data_751, "cleaned data/mens_simulation_751_to_900_filtered.csv") # Young
+write.csv(data_901, "cleaned data/mens_simulation_901_to_1000_filtered.csv") # Young
 ```
 
 
@@ -466,8 +480,7 @@ get_team_scores <- function(start_iter, stop_iter, hb, fx, pb, ph, sr, vt){
     # 4a. get iteration
     olympics <- top_candidates[[sprintf("sim%s", i)]]
     olympics_data <- data.frame()
-    countries = c("USA", "GBR", "CAN", "CHN", "ITA", "JPN", "GER", "TUR", "SUI", "UKR", "ESP"
-                      )
+    countries = c("USA", "GBR", "CHN", "ITA", "JPN", "TUR")
     
     for (country in countries){
       df_country <- olympics %>%
@@ -515,13 +528,13 @@ get_team_scores <- function(start_iter, stop_iter, hb, fx, pb, ph, sr, vt){
     
     # 4e. get results
     results <- olympics_data %>%
-      arrange(desc(score)) %>%
-      distinct(Country, .keep_all = T) %>%
-      mutate(rank = row_number(),
-             weight = case_when(rank == 1 ~ 3,
-                                rank == 2 ~ 2,
-                                rank == 3 ~ 1,
-                                .default = 0))
+      arrange(desc(score)) 
+      #distinct(Country, .keep_all = T) %>%
+      #mutate(rank = row_number(),
+      #       weight = case_when(rank == 1 ~ 3,
+      #                          rank == 2 ~ 2,
+      #                          rank == 3 ~ 1,
+      #                          .default = 0))
     
     # 4f. add simulation to list
     all_team_scores[[sprintf("sim%s", i)]] <- results
@@ -590,3 +603,7 @@ all_team_scores$sim308
 # run and save sim results from USA to csv under folder "simulaiton results"
 sim_results <- get_sim_results(301, 600, all_team_scores, "USA")
 ```
+
+
+
+
