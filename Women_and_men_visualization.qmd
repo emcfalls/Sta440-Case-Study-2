@@ -69,6 +69,10 @@ aVT_top10 <- separate_columns(aVT_column_data) %>%
   select(FullName, Apparatus, Country, avg_result) %>% 
     arrange(desc(avg_result)) %>% 
   slice(1:10)
+
+
+aAA_top10 <- read.csv("EZ Simulation Exports/Women_All_Around_Top.csv") %>% 
+  slice(1:10)
 ```
 
 
@@ -135,12 +139,29 @@ aVT_top10_chart <- ggplot(aVT_top10, aes(y= reorder(FullName, avg_result), x = a
   scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 ```
 
-```{r, fig.width = 8, fig.height = 8}
+```{r}
+aAA_top10 <- aAA_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aAA_top10)))
 
 
-combined <- aBB_top10_chart + aFX_top10_chart + aUB_top10_chart + aVT_top10_chart & theme(legend.position = "bottom")
+aAA_top10_chart <- ggplot(aAA_top10, aes(y= reorder(FullName, avg_result_allAround), x = avg_result_allAround, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "All-Around", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Women by Apparatus and Country',theme=theme(plot.title=element_text(hjust=0.5)))
+
+```
+
+
+```{r, fig.width = 8, fig.height = 10}
+
+
+combined <- aBB_top10_chart + aFX_top10_chart + aUB_top10_chart + aVT_top10_chart + aAA_top10_chart & theme(legend.position = "bottom")
+
+FINAL_VIS_WOMEN <- combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Simulated Weighted Medal Scores by Apparatus',theme=theme(plot.title=element_text(hjust=0.5))) + plot_layout(ncol = 2)
 
 ```
 
@@ -233,6 +254,12 @@ mVT_top10 <- separate_columns(mVT_column_data) %>%
 mVT_top10 <- mVT_top10 %>% 
   mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mVT_top10)))
 
+mAA_top10 <- read.csv("EZ Simulation Exports/Men_All_Around_Top.csv") %>% 
+  slice(1:10)
+mAA_top10 <- mAA_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mAA_top10)))
+
+
 ```
 
 
@@ -286,13 +313,21 @@ mVT_top10_chart <- ggplot(mVT_top10, aes(y = reorder(FullName, avg_result), x = 
   facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
   scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
+mAA_top10_chart <- ggplot(mAA_top10, aes(y = reorder(FullName, avg_result_allAround), x = avg_result_allAround, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "All-Around", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
 ```
 
 
-```{r, fig.width = 8, fig.height = 15}
+```{r, fig.width = 8, fig.height = 12}
 
 
-combined <- mHB_top10_chart + mFX_top10_chart + mPB_top10_chart + mPH_top10_chart + mSR_top10_chart + mVT_top10_chart & theme(legend.position = "bottom")
+combined <- mHB_top10_chart + mFX_top10_chart + mPB_top10_chart + mPH_top10_chart + mSR_top10_chart + mVT_top10_chart + mAA_top10_chart & theme(legend.position = "bottom")
 
 combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Men by Apparatus and Country',theme=theme(plot.title=element_text(hjust=0.5))) + plot_layout(ncol = 2)
 
