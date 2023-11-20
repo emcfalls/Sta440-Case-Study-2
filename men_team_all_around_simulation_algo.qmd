@@ -576,16 +576,17 @@ get_sim_results <- function(start_iter, stop_iter, scores, country){
 
 ```{r}
 # once you break up the dfs by apparatus, just run this
-all_team_scores <- get_team_scores(301, 450, hb, fx, pb, ph, sr, vt)
+all_team_scores <- get_team_scores(301, 600, hb, fx, pb, ph, sr, vt)
 ```
 
 ```{r}
 # example of result from sim1
-all_team_scores$sim1  
+# top is always japan, china, then switch between USA and BGR
+all_team_scores$sim308  
 ```
 
 
 ```{r}
 # run and save sim results from USA to csv under folder "simulaiton results"
-get_sim_results(301, 450, all_team_scores, "USA")
+sim_results <- get_sim_results(301, 600, all_team_scores, "USA")
 ```
