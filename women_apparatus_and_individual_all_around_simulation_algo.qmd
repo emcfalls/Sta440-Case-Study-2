@@ -501,6 +501,9 @@ aVT <- aVT %>%
 
 ```
 
+
+## START OF ALL AROUND CODE 
+
 ## Code to load previous simulations
 
 ```{r}
@@ -558,6 +561,49 @@ aVT <- aVT %>%
 
 
 ```
+
+## CALCULATING TOP 10 FOR EACH INDIVIDUAL APPARATUS
+
+```{r}
+## calculating the top three potential people in each individual event 
+
+aBB_separated_data <- separate_columns(aBB, "SimulationResults", 1000)
+
+aBB_Top_Three <- aBB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+
+aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
+
+aFX_Top_Three <- aFX_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+aUB_separated_data <- separate_columns(aUB, "SimulationResults", 1000)
+
+aUB_Top_Three <- aUB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+aVT_separated_data <- separate_columns(aVT, "SimulationResults", 1000)
+
+aVT_Top_Three <- aVT_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+
+```
+
+## CALCULATING TOP 5 FOR ALL AROUND
 
 ### Creating a new dataframe of AllAround results 
 
@@ -617,31 +663,148 @@ sum_simulation_results <- function(bb, ub, fx, vt) {
 # Apply the function to each row using rowwise and then mutate to create the new column
 merged_df <- merged_df %>%
   rowwise() %>%
-  mutate(SimulationResults = list(sum_simulation_results(SimulationResultsBB, SimulationResultsUB, 
-                                                         SimulationResultsFX, SimulationResultsVT)))
+  mutate(BB = list(SimulationResultsBB), UB = list(SimulationResultsUB), FX = list(SimulationResultsFX), VT = list(SimulationResultsVT))
 
 # Create the final dataframe with required columns
 aAllAround <- merged_df %>%
-  select(Country = Country.x, FullName, Apparatus = Apparatus.x, mean = mean.x, SimulationResults)
+  select(Country = Country.x, FullName, BB, UB, FX, VT) %>% 
+  filter(!all(sapply(BB, function(x) all(x == 0)))) %>% 
+    filter(!all(sapply(UB, function(x) all(x == 0)))) %>% 
+    filter(!all(sapply(FX, function(x) all(x == 0)))) %>% 
+    filter(!all(sapply(VT, function(x) all(x == 0))))
 
-# Set Apparatus to 'All-Around'
-aAllAround$Apparatus <- 'All-Around'
+calculate_all_around <- function(data) {
+  # Use rowwise to apply the function to each row
+  AllAround <- data %>%
+    rowwise() %>%
+    mutate(
+      # Use purrr::pmap_dbl to sum the nth element of each list column
+      AllAround = list(pmap_dbl(list(BB, UB, FX, VT), ~sum(c(...))))
+    )
+  
+  return(AllAround)
+}
 
-# Display the resulting dataframe
+aAllAround1 <- calculate_all_around(aAllAround) 
 
+aAllAround1 <- aAllAround1 %>% 
+  unnest_wider(AllAround, names_sep = "_")
+  
 
+## helper function to transform scores into relevant medals
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  return(result)
+}
 
+separate_columns <- function(data, list_column_name, num_columns) {
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- mutate_at(data, vars(starts_with(list_column_name)), transform_values)
+  
+  result_data$avg_result_allAround <- rowMeans(select(result_data, starts_with(list_column_name)))
+
+  return(result_data)
+}
 ```
 
 
 
 ```{r}
-aAllAround <- aAllAround %>%
-  filter(length(SimulationResults) > 0)
+aAllAround2 <- separate_columns(aAllAround1, "AllAround", 1000)
 
-aAllAround$mean <- sapply(aAllAround$SimulationResults, mean)
+aAllAround2 <- aAllAround2 %>% 
+  select(Country, FullName, avg_result_allAround) %>% 
+  arrange(desc(avg_result_allAround)) %>% 
+  slice(1:26)
+
+write.csv(aAllAround2, "Women_All_Around_Top.csv")
+
+aAllAround_TopUSA <- aAllAround2 %>% 
+  select(Country, FullName, avg_result_allAround) %>% 
+  arrange(desc(avg_result_allAround)) %>% 
+  filter(Country == "USA")
+
+# write.csv(aAllAround_TopUSA, "Women_aAllAround_TopUSA.csv")
 
 ```
+
+
+## USING A DATA FRAME THAT COMPILED THE ABOVE TOP PERFORMER DATAFRAMES
+
+```{r}
+
+Competitors <- read.csv("EZ Simulation Exports/Women_Top7_MedalScores.csv")
+
+# Create a vector of all unique FullNames across the dataframes
+all_fullnames <- unique(Competitors$Name)
+
+# Initialize an empty dataframe to store the combinations and results
+result_df <- data.frame()
+
+# Iterate through all combinations of 5 FullName values
+for (i in 1:length(all_fullnames)) {
+  for (j in (i+1):length(all_fullnames)) {
+    for (k in (j+1):length(all_fullnames)) {
+      for (l in (k+1):length(all_fullnames)) {
+        for (m in (l+1):length(all_fullnames)) {
+          # Extract the FullName values for the combination
+          combo <- c(all_fullnames[i], all_fullnames[j], all_fullnames[k], all_fullnames[l], all_fullnames[m])
+          
+          # Filter the dataframes for the specific 
+          bb_result <- sum(head(subset(Competitors, Name %in% combo)[order(-subset(Competitors, Name %in% combo)$BB), ]$BB, 2))
+          fx_result <- sum(head(subset(Competitors, Name %in% combo)[order(-subset(Competitors, Name %in% combo)$FX), ]$FX, 2))
+          ub_result <- sum(head(subset(Competitors, Name %in% combo)[order(-subset(Competitors, Name %in% combo)$UB), ]$UB, 2))
+          vt_result <- sum(head(subset(Competitors, Name %in% combo)[order(-subset(Competitors, Name %in% combo)$VT), ]$VT, 2))
+          aa_result <- sum(head(subset(Competitors, Name %in% combo)[order(-subset(Competitors, Name %in% combo)$AA), ]$AA, 2))
+
+          # Create a new row with the combination and results
+          new_row <- data.frame(Combo = paste(combo, collapse = ", "),
+                                BB_Result = bb_result,
+                                FX_Result = fx_result,
+                                UB_Result = ub_result,
+                                VT_Result = vt_result,
+                                AA_Result = aa_result)
+          
+          # Append the new row to the result dataframe
+          result_df <- rbind(result_df, new_row)
+        }
+      }
+    }
+  }
+}
+
+# Display the resulting dataframe with all combinations and results
+result_df$Total_Result <- rowSums(result_df[, c("BB_Result", "FX_Result", "UB_Result", "VT_Result", "AA_Result")])
+
+results_top5 <- result_df %>% 
+  arrange(desc(Total_Result)) %>% 
+  slice(1:5)
+
+#write.csv(results_top5, "EZ Simulation Exports/Women_Final_Team_Config.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### INDIVIDUAL EVENTS START HERE
 
 
 
@@ -688,166 +851,9 @@ separate_columns <- function(data, list_column_name, num_columns) {
 
 
 
-```{r}
-## calculating the top three potential people in each individual event 
-
-aBB_separated_data <- separate_columns(aBB, "SimulationResults", 1000)
-
-aBB_Top_Three <- aBB_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:10)
-
-
-aFX_separated_data <- separate_columns(aFX, "SimulationResults", 1000)
-
-aFX_Top_Three <- aFX_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:10)
-
-aUB_separated_data <- separate_columns(aUB, "SimulationResults", 1000)
-
-aUB_Top_Three <- aUB_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:10)
-
-aVT_separated_data <- separate_columns(aVT, "SimulationResults", 1000)
-
-aVT_Top_Three <- aVT_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>% 
-  slice(1:10)
-
-aAllAround_separated_data <- separate_columns(aAllAround, "SimulationResults", 1000)
-
-aAllAround_Top_Three <- aAllAround_separated_data %>% 
-  filter(Country == "USA") %>% 
-  arrange(desc(avg_result)) %>% 
-  select(Country, FullName, mean, avg_result, Apparatus) %>%
-  slice(1:10)
 
 
 
-```
-
-```{r}
-# Create a vector of all unique FullNames across the dataframes
-all_fullnames <- unique(c(aBB_Top_Three$FullName, aFX_Top_Three$FullName, aUB_Top_Three$FullName, aVT_Top_Three$FullName, aAllAround_Top_Three$FullName))
-
-all_fullnames
-```
-
-## Finding the best number of medals/combination of athletes
-
-```{r}
-
-# Create a vector of all unique FullNames across the dataframes
-all_fullnames <- unique(c(aBB_Top_Three$FullName, aFX_Top_Three$FullName, aUB_Top_Three$FullName, aVT_Top_Three$FullName, aAllAround_Top_Three$FullName))
-
-# Initialize an empty dataframe to store the combinations and results
-result_df <- data.frame()
-
-# Iterate through all combinations of 5 FullName values
-for (i in 1:length(all_fullnames)) {
-  for (j in (i+1):length(all_fullnames)) {
-    for (k in (j+1):length(all_fullnames)) {
-      for (l in (k+1):length(all_fullnames)) {
-        for (m in (l+1):length(all_fullnames)) {
-          # Extract the FullName values for the combination
-          combo <- c(all_fullnames[i], all_fullnames[j], all_fullnames[k], all_fullnames[l], all_fullnames[m])
-          
-          # Filter the dataframes for the specific FullNames
-          bb_result <- sum(head(subset(aBB_Top_Three, FullName %in% combo)[order(-subset(aBB_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
-          fx_result <- sum(head(subset(aFX_Top_Three, FullName %in% combo)[order(-subset(aFX_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
-          ub_result <- sum(head(subset(aUB_Top_Three, FullName %in% combo)[order(-subset(aUB_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
-          vt_result <- sum(head(subset(aVT_Top_Three, FullName %in% combo)[order(-subset(aVT_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
-          allaround_result <- sum(head(subset(aAllAround_Top_Three, FullName %in% combo)[order(-subset(aAllAround_Top_Three, FullName %in% combo)$avg_result), ]$avg_result, 2))
-
-          # Create a new row with the combination and results
-          new_row <- data.frame(Combo = paste(combo, collapse = ", "),
-                                BB_Result = bb_result,
-                                FX_Result = fx_result,
-                                UB_Result = ub_result,
-                                VT_Result = vt_result,
-                                AllAround_Result = allaround_result)
-          
-          # Append the new row to the result dataframe
-          result_df <- rbind(result_df, new_row)
-        }
-      }
-    }
-  }
-}
-
-# Display the resulting dataframe with all combinations and results
-result_df$Total_Result <- rowSums(result_df[, c("BB_Result", "FX_Result", "UB_Result", "VT_Result", "AllAround_Result")])
-
-
-```
-
-
-## Getting the aggregate scores
-
-```{r}
-
-# List of all data frames
-data_frames <- list(aBB, aUB, aFX, aVT)
-
-# Function to select the relevant columns and rename 'mean' to a unique name
-prepare_df <- function(df, name) {
-  df <- df[, c('Country', 'FullName', 'mean')]
-  colnames(df)[3] <- name
-  return(df)
-}
-
-# Prepare each data frame
-aBB_prepared <- prepare_df(aBB, 'meanBB')
-aUB_prepared <- prepare_df(aUB, 'meanUB')
-aFX_prepared <- prepare_df(aFX, 'meanFX')
-aVT_prepared <- prepare_df(aVT, 'meanVT')
-
-
-# Merge all data frames by 'Country' and 'FullName'
-all_around <- Reduce(function(x, y) merge(x, y, by = c('Country', 'FullName'), all = TRUE), 
-                     list(aBB_prepared, aUB_prepared, aFX_prepared, aVT_prepared))
-
-# Calculate the AllAroundScore by row-wise summing of the mean columns
-all_around$AllAroundScore <- rowSums(all_around[,c('meanBB', 'meanUB', 'meanFX', 'meanVT')], na.rm = TRUE)
-
-# Select only the Country, FullName, and AllAroundScore columns
-all_around <- all_around[, c('Country', 'FullName', 'AllAroundScore')]
-
-# Output the final data frame
-all_around
-
-
-```
-
-
-## Choosing top two atheletes from each nation
-```{r}
-
-# Arrange the data by Country and descending AllAroundScore
-all_around <- all_around %>%
-  arrange(Country, desc(AllAroundScore))
-
-# Filter out the top two individuals from each country
-all_aroud_finalists <- all_around %>% 
-  group_by(Country) %>% 
-  slice_max(AllAroundScore, n = 2)
-
-# Now, sort the top individuals by AllAroundScore in descending order
-all_aroud_finalists <- all_aroud_finalists %>% 
-  ungroup() %>% 
-  arrange(desc(AllAroundScore))
-
-```
 
 
 ## Convert list to string type

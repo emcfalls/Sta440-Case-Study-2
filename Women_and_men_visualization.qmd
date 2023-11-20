@@ -92,7 +92,6 @@ aBB_top10_chart <-ggplot(aBB_top10, aes(y= reorder(FullName, avg_result), x = av
   facet_grid(factor(Country, unique(Country))~., scales = "free", space='free')+
   scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-aBB_top10_chart
 ```
 
 ```{r}
@@ -107,7 +106,6 @@ aFX_top10_chart <-ggplot(aFX_top10, aes(y= reorder(FullName, avg_result), x = av
   facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
   scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-aFX_top10_chart
 ```
 
 ```{r}
@@ -122,7 +120,6 @@ aUB_top10_chart <- ggplot(aUB_top10, aes(y= reorder(FullName, avg_result), x = a
   facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
   scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
 
-aUB_top10_chart
 ```
 
 ```{r}
