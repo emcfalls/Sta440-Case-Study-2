@@ -255,7 +255,7 @@ ggplot() +
 
 \vspace{20mm} 
 
-**Figure 2. ** Below is a table summary of the p-values for Three-way ANOVA for women, where each row represents a particular apparatus. "Round", as written in the table below, is short for Round Stage (final vs. qual); "Type" is short for Round Type (team, all-around, individual); The symbol 'x' indicates an interaction term. As expected, every test showed a significant relationship between athlete and score, controlling all else, indicating that at least one athlete has a different score than all the others for each apparatus. (Significance level of 0.0125 was set to give a Type I error rate of 5% with Bonferroni's correction)
+**Figure 2. ** Below is a table summary of the p-values for Three-way ANOVA for women, where each row represents a particular apparatus. "Round", as written in the table below, is short for Round Stage (final vs. qual); "Type" is short for Round Type (team, all-around, individual); The symbol 'x' indicates an interaction term. As expected, every test showed a significant relationship between athlete and score, controlling all else, indicating that at least one athlete has a different score than all the others for each apparatus. (*Significance level of 0.0125 was set to give a Type I error rate of 5% with Bonferroni's correction)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # THIS IS FOR FIGURE 2 = women ANOVA
 women <- read.csv("filesForWriteup/active_restricted_women_2023.csv")
@@ -349,13 +349,13 @@ kable(women_anova_summary,
 ```
 
 \newpage
-**Figure 3. ** men ANOVA
+**Figure 3. ** Below is a table summary of the p-values for Three-way ANOVA for men, where each row represents a particular apparatus. "Round", as written in the table below, is short for Round Stage (final vs. qual); "Type" is short for Round Type (team, all-around, individual); The symbol 'x' indicates an interaction term. As expected, every test showed a significant relationship between athlete and score, controlling all else, indicating that at least one athlete has a different score than all the others for each apparatus. (*Significance level of 0.0083 was set to give a Type I error rate of 5% with Bonferroni's correction)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # THIS IS FOR FIGURE 3 = men ANOVA
-women <- read.csv("filesForWriteup/active_restricted_men_2023.csv")
+men <- read.csv("filesForWriteup/active_restricted_men_2023.csv")
 
 # adding round stage and type
-women <- women %>%
+men <- men %>%
   mutate(Round = tolower(Round),
          RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
                            stringr::str_like(Round,'%qual%') ~ "qual"),
@@ -364,40 +364,50 @@ women <- women %>%
                            .default = "individual"))
 
 
-bb_women <- women %>%
-  filter(stringr::str_like(Apparatus,'BB%'))
-summary_bb_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = bb_women))
-#summary_bb_women
+ph_men <- men %>%
+  filter(stringr::str_like(Apparatus,'PH%'))
+summary_ph_men <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ph_men))
+#summary_ph_men
 
-ub_women <- women %>%
-  filter(stringr::str_like(Apparatus,'UB%'))
-summary_ub_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ub_women))
-#summary_ub_women
+pb_men <- men %>%
+  filter(stringr::str_like(Apparatus,'PB%'))
+summary_pb_men <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = pb_men))
+#summary_pb_men
 
-fx_women <- women %>%
+hb_men <- men %>%
+  filter(stringr::str_like(Apparatus,'HB%'))
+summary_hb_men <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = hb_men))
+#summary_hb_men
+  
+sr_men <- men %>%
+  filter(stringr::str_like(Apparatus,'SR%'))
+summary_sr_men <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = sr_men))
+#summary_sr_men
+
+fx_men <- men %>%
   filter(stringr::str_like(Apparatus,'FX%'))
-summary_fx_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_women))
-#summary_fx_women
+summary_fx_men <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_men))
+#summary_fx_men
 
-vt_women <- women %>%
+vt_men <- men %>%
   filter(stringr::str_like(Apparatus,'VT%'))
-summary_vt_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_women))
-#summary_vt_women
-
+summary_vt_men <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_men))
+#summary_vt_men
 
 
 library(knitr)
 library(dplyr)
 library(purrr)
 
-women_anova_summary <- data.frame(
-  Apparatus = c("Balance Beam", "Uneven Bars", "Floor Exercises", "Vault"),
-  Athlete = c(summary_bb_women[[1]][["Pr(>F)"]][1],summary_ub_women[[1]][["Pr(>F)"]][1],summary_fx_women[[1]][["Pr(>F)"]][1],summary_vt_women[[1]][["Pr(>F)"]][1]),
-  `Round Stage (final vs. qual)` = c(summary_bb_women[[1]][["Pr(>F)"]][2],summary_ub_women[[1]][["Pr(>F)"]][2],summary_fx_women[[1]][["Pr(>F)"]][2],summary_vt_women[[1]][["Pr(>F)"]][2]),
-  `Round Type (team, all around, individual)` = c(summary_bb_women[[1]][["Pr(>F)"]][3],summary_ub_women[[1]][["Pr(>F)"]][3],summary_fx_women[[1]][["Pr(>F)"]][3],summary_vt_women[[1]][["Pr(>F)"]][3]),
-  `Athlete and Round Stage Interaction` = c(summary_bb_women[[1]][["Pr(>F)"]][5],summary_ub_women[[1]][["Pr(>F)"]][5],summary_fx_women[[1]][["Pr(>F)"]][5],summary_vt_women[[1]][["Pr(>F)"]][5]),
-  `Athlete and Round Type Interaction` = c(summary_bb_women[[1]][["Pr(>F)"]][4],summary_ub_women[[1]][["Pr(>F)"]][4],summary_fx_women[[1]][["Pr(>F)"]][4],summary_vt_women[[1]][["Pr(>F)"]][4]),
-  `Round Stage and Round Type Interaction` = c(summary_bb_women[[1]][["Pr(>F)"]][6],summary_ub_women[[1]][["Pr(>F)"]][6],summary_fx_women[[1]][["Pr(>F)"]][6],summary_vt_women[[1]][["Pr(>F)"]][6])
+men_anova_summary <- data.frame(
+  Apparatus = c("Horizontal Bar", "Parallel Bars", "Floor", "Still Rings", "Pommel Horse", "Vault"),
+  Athlete = c(summary_hb_men[[1]][["Pr(>F)"]][1],summary_pb_men[[1]][["Pr(>F)"]][1],summary_fx_men[[1]][["Pr(>F)"]][1],summary_sr_men[[1]][["Pr(>F)"]][1],summary_ph_men[[1]][["Pr(>F)"]][1], summary_vt_men[[1]][["Pr(>F)"]][1]),
+  
+  `Round Stage (final vs. qual)` = c(summary_hb_men[[1]][["Pr(>F)"]][2],summary_pb_men[[1]][["Pr(>F)"]][2],summary_fx_men[[1]][["Pr(>F)"]][2],summary_sr_men[[1]][["Pr(>F)"]][2],summary_ph_men[[1]][["Pr(>F)"]][2], summary_vt_men[[1]][["Pr(>F)"]][2]),
+  `Round Type (team, all around, individual)` = c(summary_hb_men[[1]][["Pr(>F)"]][3],summary_pb_men[[1]][["Pr(>F)"]][3],summary_fx_men[[1]][["Pr(>F)"]][3],summary_sr_men[[1]][["Pr(>F)"]][3],summary_ph_men[[1]][["Pr(>F)"]][3], summary_vt_men[[1]][["Pr(>F)"]][3]),
+  `Athlete and Round Stage Interaction` = c(summary_hb_men[[1]][["Pr(>F)"]][5],summary_pb_men[[1]][["Pr(>F)"]][5],summary_fx_men[[1]][["Pr(>F)"]][5],summary_sr_men[[1]][["Pr(>F)"]][5],summary_ph_men[[1]][["Pr(>F)"]][5], summary_vt_men[[1]][["Pr(>F)"]][5]),
+  `Athlete and Round Type Interaction` = c(summary_hb_men[[1]][["Pr(>F)"]][4],summary_pb_men[[1]][["Pr(>F)"]][4],summary_fx_men[[1]][["Pr(>F)"]][4],summary_sr_men[[1]][["Pr(>F)"]][4],summary_ph_men[[1]][["Pr(>F)"]][4], summary_vt_men[[1]][["Pr(>F)"]][4]),
+  `Round Stage and Round Type Interaction` = c(summary_hb_men[[1]][["Pr(>F)"]][6],summary_pb_men[[1]][["Pr(>F)"]][6],summary_fx_men[[1]][["Pr(>F)"]][6],summary_sr_men[[1]][["Pr(>F)"]][6],summary_ph_men[[1]][["Pr(>F)"]][6], summary_vt_men[[1]][["Pr(>F)"]][6])
 )
 
 
@@ -412,7 +422,7 @@ format_p_values <- function(p_value) {
   # Apply conditions
   if (rounded_p < 0.001) {
     return("<0.001*")
-  } else if (rounded_p >= 0.001 & rounded_p < 0.0125) {
+  } else if (rounded_p >= 0.001 & rounded_p < 0.0083) {
     return(paste0(formatted_p, "*"))
   } else {
     return(formatted_p)
@@ -421,12 +431,15 @@ format_p_values <- function(p_value) {
 
 
 
-women_anova_summary <- women_anova_summary %>%
+
+
+men_anova_summary <- men_anova_summary %>%
   mutate(across(-Apparatus, ~map_chr(.x, format_p_values)))
 
 
 
-kable(women_anova_summary, 
+
+kable(men_anova_summary, 
       col.names = c("Apparatus", 
                     "Athlete", 
                     "Stage", 
