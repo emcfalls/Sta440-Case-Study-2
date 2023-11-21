@@ -7,10 +7,13 @@ title: |
   | Somersaulting to Gold:
   | Optimizing USA’s Artistic Gymnastics Team Selection Strategy
 author: "Emily Zhao, Elyse McFalls, Young Jun, Evan Kim"
-geometry: "left=1.8cm,right=1.8cm,top=2cm,bottom=2cm"
+geometry: "left=1.8cm,right=1.8cm,top=1.8cm,bottom=1.8cm"
 fontsize: 11pt
 date: "2023-11-20"
-output: pdf_document
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
 ---
 
 ```{r setup, include=FALSE}
@@ -64,17 +67,196 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 
 ## III. Results
 **_Individual Events - Top USA Women_**
+
 \text{ }\text{ }\text{ }\text{ } A total of 180 female athletes were each simulated 4,000 times to generate 1,000 performances in each of the four apparatus events in women's gymnastics. After conducting four simulations reporting for the four events, we generated an aggregated group of seven athletes where all athletes ranked in the Top 3 Americans for any event. In the calculations of success, we used the metric “weighted medal score” to represent their weighted medal contribution to Team USA. As mentioned earlier, bronze represents 1, silver 2, and gold 3. This score does not indicate how many medals each athlete earns but rather the “value” of their medals earned.\newline
 \text{ }\text{ }\text{ }\text{ } In the table below, each event column has three yellow-highlighted cells, indicating the athletes with the top 3 medal scores, and one blue-highlighted cell, indicating the fourth highest medal score. Simon Biles emerged from the simulation as having a top 3 medal score in all five events (BB: 1.515, FX: 2.747, UB: 0.064, VT: 1.94, AA: 2.962). Shilese Jones posted top 3 medal scores for UB, VT, and AA and also fourth place scores in BB and FX (BB: 0.034, FX: 0.195, UB: 0.567, VT: 0.260, AA: 0.595). For the rest of the gymnasts, they either placed in the top 3 scores for one or two events. (See Figure 4 below)\newline
 \text{ }\text{ }\text{ }\text{ } From the total weighted medal scores, assuming each athlete competes in all events, Biles emerges as the clear strongest contributor to the weighted medal scores (9.228). Konnor McClain posts the second highest total weighted medal score (2.016). The gap between Biles and the rest of the women candidates is wide, expectedly as most gymnasts only show weighted medal scores above 0.1 for one or two events.\newline
 
+```{r, echo=FALSE}
+womenIndividualResultsSummary <- read.csv("filesForWriteup/individualWomenResultsSummary.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+highlightCellYellowWomenIndividual <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customyellow}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+highlightCellBlueWomenIndividual <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customblue}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
 
 
-```{r}
+
+# Apply the function to all cells in the dataframe
+highlightYellowWomenIndividual <- c("1.515", "2.747", "0.064", "1.940", "2.962", "0.567", "0.260", "0.595", "0.233", "0.779", "1.246", "0.503", "0.049", "0.401", "0.354")
+
+highlightBlueWomenIndividual <- c("0.034", "0.195", "0.039", "0.180", "0.091")
+
+
+womenIndividualResultsSummary[, 1:(ncol(womenIndividualResultsSummary) - 1)] <- as.data.frame(lapply(womenIndividualResultsSummary[, 1:(ncol(womenIndividualResultsSummary) - 1)], function(column) {
+  sapply(column, highlightCellYellowWomenIndividual, specified_values = highlightYellowWomenIndividual)
+}))
+
+womenIndividualResultsSummary[, 1:(ncol(womenIndividualResultsSummary) - 1)] <- as.data.frame(lapply(womenIndividualResultsSummary[, 1:(ncol(womenIndividualResultsSummary) - 1)], function(column) {
+  sapply(column, highlightCellBlueWomenIndividual, specified_values = highlightBlueWomenIndividual)
+}))
+
+# Generate the table with kable for LaTeX output
+kable(womenIndividualResultsSummary, 
+      col.names = c("Athlete", 
+                    "BB", 
+                    "FX", 
+                    "UB", 
+                    "VT", 
+                    "AA", 
+                    "Total Weighted Medal Score"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
 
 ```
+_Figure 4: Top 7 US Female Gymnasts’ Simulated Weighted Individual Medal Scores by Event_\newline
 
 
+\text{ }\text{ }\text{ }\text{ } Relative to our international competitors, the US has a varying number of gymnasts in the Top 10 weighted medal scores (BB: 3, FX: 6, UB: 2, VT: 6, AA: 6). Broadly, the US team has more strong competitors for FX, VT, and AA while other countries, such as China, Algeria, and Brazil, have stronger competitors in BB and UB. UB is the only event where the US claimed none of the Top 3 weighted medal scores. In terms of determining the strongest individual non-US competitor, Brazil’s Rebeca Andrade obtains one of the Top 3 weighted medal scores in three events - FX, VT, and AA. (See Appendix, Figure 5)\newline
+
+
+
+
+**_Team Event - Top USA Women_**
+
+\text{ }\text{ }\text{ }\text{ } After 1,000 iterations where the scores of all combinations of top athletes in team-qualifying countries are calculated and the top-scoring team from each country is ranked, we discovered that in every simulation, the top-scoring US generated team always earns gold and therefore earns an average weighted medal score of 3. With that baseline success, we then considered the frequency in which each team was selected as the top-scoring U.S. team in the simulation and their average simulation total team score. From these calculations, we determined the following teams as having the highest average simulation total scores, ordered by number of occurrences. \newline
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+womenTeamResultsSummary <- read.csv("filesForWriteup/women_top3_USA_teams.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+
+kable(womenTeamResultsSummary, 
+      col.names = c("", 
+                    "Team", 
+                    "Avg. Score", 
+                    "Occurrences", 
+                    "Avg. Weighted Medal Score"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+
+```
+_Figure 6: Top 3 Women’s Team Configurations and Average Score ordered by number of times selected as highest ranked US team._\newline
+
+\text{ }\text{ }\text{ }\text{ } The team - Simone Biles, Konnor McClain, Jade Carey, Shilese Jones, and Zoe Miller - were most consistently selected as the highest-scoring US team across simulations (29), which is an indication of their reliability in performance. The second most consistently selected team was Simone Biles, Sky Blakely, Konnor McClain, Jade Carey, and Shilese Jones, which in fact had a marginally higher average simulation score (173.649) but less occurrences than the former team (27). All three top scoring teams had Simone Biles, Konnor McClain, and Shilese Jones, designating each athlete’s vital contribution to high team scores. All highest-potential team configurations, as noted in the figure above, had an average weighted medal score of 3.\newline
+\text{ }\text{ }\text{ }\text{ } By generating every combination of the 7-high scoring women above, we generated our final medal calculations, including the top 2 expected weighted medal scores by individual apparatus and the expected team weighted medal score.. The Top 3 teams with the highest expected total weighted medal scores listed all include Simone Biles, Shilese Jones, Jade Carey, and Konnor McClain. In the top three team combinations, the options for the fifth member are Zoe Miller, Kaliya Lincoln, and Skye Blakely. The first team - Simone Biles, Jade Carey, Shilese Jones, Konnor McClain, Zoe Miller - had the highest expected total weighted medal score (15.938) with Miller boosting the UB total score (0.921). The second team - Simone Biles, Jade Carey, Shilese Jones, Konnor McClain, Kaliya Lincoln - had the second highest total weighted score (15.816) with Lincoln boosting the FX total score (3.148).\newline
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+womenTeamConfigurations <- read.csv("filesForWriteup/top_3_women_team_configurations.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+
+kable(womenTeamConfigurations, 
+      col.names = c("Team Combination", 
+                    "BB", 
+                    "FX", 
+                    "UB", 
+                    "VT",
+                    "AA",
+                    "Team",
+                    "ETW Medal Score"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE)
+
+```
+_Figure 7: Top 3 Women’s Team Configurations from Individual Event Weighted Medal Optimization. (ETW: Expected Total Weighted)_\newline
+
+
+**_Individual Events - Top USA Men_**
+
+\text{ }\text{ }\text{ }\text{ } A total of 194 male athletes were each simulated 6,000 times to generate 1,000 performances in each of the six apparatus events for men. After finding the top 3 US athletes for each apparatus by weighted medal score, we created an aggregated group of 13 athletes. In the table below, each event column has three yellow-highlighted cells, indicating the athletes with the top 3 medal scores, and one blue-highlighted cell, indicating the fourth highest medal score. Brody Malone has a top 3 weighted medal score in four events (HB: 0.669, FX: 0.206, SR: 0.006, AA: 0.456) and one fourth place weighted medal score (PH: 0.035). For the rest of the gymnasts, they either achieved one or two top 3 weighted medal score placements. \newline
+\text{ }\text{ }\text{ }\text{ } From the sum of weighted medal scores across events, assuming each athlete competes in all events, Malone (1.468), Khoi Young (0.834), Curran Phillips (0.733), and Stephen Nedoroscik (0.698) have total scores above 0.5.\newline
+
+```{r, echo=FALSE}
+menIndividualResultsSummary <- read.csv("filesForWriteup/individualMenResultsSummary.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+highlightCellYellowMenIndividual <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customyellow}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+highlightCellBlueMenIndividual <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customblue}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+
+
+# Apply the function to all cells in the dataframe
+highlightYellowMenIndividual <- c("0.669", "0.206", "0.006", "0.457", "0.388", "0.329", "0.033", "0.585", "0.042", "0.296", "0.257", "0.264", "0.064", "0.152", "0.698", "0.375", "0.308")
+
+highlightBlueMenIndividual <- c("0.035", "0.135", "0.119", "0.012", "0.169")
+
+
+menIndividualResultsSummary[, 1:(ncol(menIndividualResultsSummary) - 1)] <- as.data.frame(lapply(menIndividualResultsSummary[, 1:(ncol(menIndividualResultsSummary) - 1)], function(column) {
+  sapply(column, highlightCellYellowMenIndividual, specified_values = highlightYellowMenIndividual)
+}))
+
+menIndividualResultsSummary[, 1:(ncol(menIndividualResultsSummary) - 1)] <- as.data.frame(lapply(menIndividualResultsSummary[, 1:(ncol(menIndividualResultsSummary) - 1)], function(column) {
+  sapply(column, highlightCellBlueMenIndividual, specified_values = highlightBlueMenIndividual)
+}))
+
+# Generate the table with kable for LaTeX output
+kable(menIndividualResultsSummary, 
+      col.names = c("Athlete", 
+                    "HB", 
+                    "FX", 
+                    "PB", 
+                    "PH", 
+                    "SR", 
+                    "VT",
+                    "AA",
+                    "Total Weighted Medal Score"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+
+```
+_Figure 8: Top 7 U.S. Mens’ Simulated Weighted Individual Medal Scores by Event_\newline
 
 
 ## IV. Discussion
@@ -467,6 +649,8 @@ kable(men_anova_summary,
 
 ```
 
+
+**Figure 5. ** women top ten
 
 \newpage
 ## VI. Sources Cited
