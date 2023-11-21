@@ -38,7 +38,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 
 **_Developing the Simulation:_**
 
-\text{ }\text{ }\text{ }\text{ } For the purpose of our analysis, we have fine-tuned the `KernSmooth::bkde()` function to our data set's specific characteristics. We selected the Gaussian kernel for its efficacy in creating a smooth, continuous approximation of the underlying score distributions, while deliberately forgoing the scale normalization which is typically associated with canonical kernels to maintain the natural scale of gymnastics scores.$^10$ Also, the `bandwidth` is set as 0.25 all throughout, which yields the optimal empirical balance between over-smoothing and under-smoothing for our aggregated data set. (See Appendix, Figure 1) \newline
+\text{ }\text{ }\text{ }\text{ } For the purpose of our analysis, we have fine-tuned the `KernSmooth::bkde()` function to our data set's specific characteristics. We selected the Gaussian kernel for its efficacy in creating a smooth, continuous approximation of the underlying score distributions, while deliberately forgoing the scale normalization which is typically associated with canonical kernels to maintain the natural scale of gymnastics scores.$^{10}$ Also, the `bandwidth` is set as 0.25 all throughout, which yields the optimal empirical balance between over-smoothing and under-smoothing for our aggregated data set. (See Appendix, Figure 1) \newline
 \text{ }\text{ }\text{ }\text{ } Furthermore, for the range of scores we should estimate for each athlete-apparatus combination, we incorporated a `nugget` metric to allow extra variability for athlete-apparatus combinations with fewer than four observations. For example, if the minimum score for an athlete-apparatus combination is initially 4.3, and the nugget adjustment brings it down to 2.3, we re-calibrate the lower limit of the range from 4.3 to 2.3 before proceeding with the kernel density estimation, while ensuring that the lower limit never reaches below 0, a logical baseline for gymnastics scores. This facet provides a buffer that accommodates the potential for higher variability in sparser data. Our methodology is grounded in the principle that past performance can be a predictor of future results, but with a recognition of the stochastic nature of athletic performance. The nugget is calibrated using the standard deviation of all scores for a given apparatus, rewarding consistent high-level performance over time rather than exceptional one-off performances.\newline
 \text{ }\text{ }\text{ }\text{ } Incorporating our fine-tuned `KernSmooth` function with our own simulation algorithm, we conducted a total of 1,000 iterations for the following: 4 women’s individual apparatuses — Balance Beam (BB), Floor Exercise (FX), Uneven Bars (UB), Vault (VT) — and 6 men’s individual apparatuses — Horizontal Bar (HB), Floor Exercise (FX), Parallel Bars (PB), Pommel Horse (PH), Still Rings (SR), and Vault (VT). By conducting a total of 1,000 iterations of simulated Olympic events separately for both men and women, we generated a robust collection of data sets reflecting the potential range of scores for each athlete-apparatus combination, assuming all athletes compete in the events they have historic data for. The aggregation of these results facilitated a comprehensive analysis of the top performers for each apparatus and potential team compositions for both the US and other team-qualifying countries. 
 
@@ -50,14 +50,15 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 
 **_Weighted Team Medal Contributions:_**
 
-\text{ }\text{ }\text{ }\text{ } To obtain the weighted team medal contributions, we first filtered for the countries that qualified for a full team. Then, from the individual event simulations, we selected the top three athletes in each apparatus per country to generate a group of top-performing women and men. From this group, we created all possible combinations of 5 athletes from the groups of top performers per country. This left us with all of the possible teams for all of the qualified countries given our criteria. Following the team all-around rules and using the top three scores for each event, we generated all of the scores for each team.$^11$ The team with the highest score for a given country was selected for each simulation and ranked against the other countries’ best teams to determine medal placements for the simulation. Similar to the weighted individual medal contributions, teams that receive gold are assigned a weight of 3, silver placements are assigned a weight of 2, bronze placements are assigned a weight of 1, and anything else is assigned a weight of 0. The average of a team’s placement is their expected medal contribution.\newline
-\text{ }\text{ }\text{ }\text{ } For men’s, the other qualifying teams include Canada, China, Germany, Great Britain, Italy, Japan, Spain, Switzerland, Netherlands, Turkey, and Ukraine. For women’s, the other qualifying teams include Australia, Brazil, Canada, China, France, Great Britain, Italy, Japan, Netherlands , Romania, and South Korea.$^12$ All these teams had at least five athletes qualify under our initial threshold criteria except for the men’s Netherlands team which only had four athletes qualify under our criteria. After further research on the historic performance of the Netherlands men’s team, we believed that they are not in contention for a team all-around medal and therefore removed their team from the team simulations.$^13$
+\text{ }\text{ }\text{ }\text{ } To obtain the weighted team medal contributions, we first filtered for the countries that qualified for a full team. Then, from the individual event simulations, we selected the top three athletes in each apparatus per country to generate a group of top-performing women and men. From this group, we created all possible combinations of 5 athletes from the groups of top performers per country. This left us with all of the possible teams for all of the qualified countries given our criteria. Following the team all-around rules and using the top three scores for each event, we generated all of the scores for each team.$^{11}$ The team with the highest score for a given country was selected for each simulation and ranked against the other countries’ best teams to determine medal placements for the simulation. Similar to the weighted individual medal contributions, teams that receive gold are assigned a weight of 3, silver placements are assigned a weight of 2, bronze placements are assigned a weight of 1, and anything else is assigned a weight of 0. The average of a team’s placement is their expected medal contribution.\newline
+\text{ }\text{ }\text{ }\text{ } For men’s, the other qualifying teams include Canada, China, Germany, Great Britain, Italy, Japan, Spain, Switzerland, Netherlands, Turkey, and Ukraine. For women’s, the other qualifying teams include Australia, Brazil, Canada, China, France, Great Britain, Italy, Japan, Netherlands , Romania, and South Korea.$^{12}$ All these teams had at least five athletes qualify under our initial threshold criteria except for the men’s Netherlands team which only had four athletes qualify under our criteria. After further research on the historic performance of the Netherlands men’s team, we believed that they are not in contention for a team all-around medal and therefore removed their team from the team simulations.$^{13}$
 
 **_Assumptions:_**
 
-\text{ }\text{ }\text{ }\text{ } We applied a series of assumptions to reduce noise in the data, computational demand, and simplify the selection process. Firstly, we decided to establish a performance cutoff for the competitors inputted into the simulation function. We removed any athlete who has not placed in the top 5 for any competition in the 2022-2023 seasons, as we assume that their either lack of data from the recent seasons or their relatively sub-par performance would essentially eliminate their possibility for qualifying for the Olympics. This criteria is supported by the 2020 Team USA artistic gymnastics team selections as all members of the selected teams had placed in the top 5 of a competition from 2019 to 2020. This criteria allows for flexibility as even if a gymnast is a “specialist”, their top 5 strong performance in a singular event will be sufficient for including them in the data set. \newline
-\text{ }\text{ }\text{ }\text{ } In the selection of our team, we also assume that these gymnasts will be performing at their optimal condition. In our selection process, we have also removed some athletes which have either announced their retirement or have suffered a recent significant injury. One notable gymnast who was removed from the data set due to this criteria is Suni Lee. At her peak performance, gymnastics fans believe she’s a strong contender on both uneven bars and balance beam.$^14$ However, in April 2023, she announced that she was withdrawing from collegiate gymnastics and had been diagnosed with an incurable kidney disease. The uncertainties surrounding her disease and its progression over the next year would potentially make her chance of performing well volatile, so we could not confidently place her in our recommendation given her medical condition unknowns. For the rest of the athletes, we assume that gymnasts will be able to participate in multiple events throughout the Olympics competition and will also not get hurt or injured from now until the Olympics. \newline
-\text{ }\text{ }\text{ }\text{ } In the simulation of results, we grouped all historic vault scores, either from team or the first or second round of individual vaults, all into a common vault category, unifying labels such as “VT1” and “VT2” into simply “VT”. We also applied the assumption that a gymnast’s performance in each round - qualifying, final, or all-around final - would all follow a similar kernel density distribution and therefore can be aggregated into one cumulative apparatus category.
+\text{ }\text{ }\text{ }\text{ } We applied a series of assumptions to reduce noise in the data, computational demand, and simplify the selection process. Firstly, we decided to establish a performance cutoff for the competitors inputted into the simulation function. We removed any athlete who has not placed in the top 5 for any competition in the 2022-2023 seasons, as we assumed that their lack of data from the recent seasons or their relatively sub-par performance indicated that they likely would not make an Olympic team.  This criteria is supported by the 2020 Team USA artistic gymnastics team selections as all members of the selected teams had placed in the top 5 of a competition from 2019 to 2020. This criteria allows for flexibility as even if a gymnast is a “specialist”, their top 5 strong performance in a singular event will be sufficient for including them in the data set. However, individual athletes who already qualified for the 2024 Olympics were not bound to this cutoff.$^{12}$  \newline
+\text{ }\text{ }\text{ }\text{ } In the selection of our team, we also assume that these gymnasts will be performing at their optimal condition. In our selection process, we have also removed some athletes which have either announced their retirement or have suffered a recent significant injury. One notable gymnast who was removed from the data set due to this criteria is Suni Lee. At her peak performance, gymnastics fans believe she is a strong contender on both uneven bars and balance beam.$^{14}$ However, in April 2023, she announced that she was withdrawing from collegiate gymnastics and had been diagnosed with an incurable kidney disease. The uncertainties surrounding her disease and its progression over the next year would potentially make her chance of performing well volatile, so we could not confidently place her in our recommendation given her medical condition unknowns. For the rest of the athletes, we assume that gymnasts will be able to participate in multiple events throughout the Olympics competition and will also not get hurt or injured from now until the Olympics. \newline
+\text{ }\text{ }\text{ }\text{ } In the simulation of results, we grouped all historic vault scores, either from team or the first or second round of individual vaults, all into a common vault category, unifying labels such as “VT1” and “VT2” into simply “VT”. We also applied the assumption that a gymnast’s performance in each round — qualifying, final, all-around qualifying, all-around final, team qualifying, and team final — would all follow a similar kernel density distribution and therefore can be aggregated into one cumulative apparatus category. To test the assumption of similar scores by round, we inputted all data from our constrained data set to conduct three-way ANOVA tests by athlete, round stage (final or qualifying), round type (all around, individual, or team), and all interactions with score as the response. We used a significance level of 1.25% for women and 0.83% for men to give each test a Type I error rate of 5% with Bonferroni’s correction.$^{15}$\newline
+\text{ }\text{ }\text{ }\text{ } For both men and women, the effect of athlete on score was unsurprisingly a significant effect (p-value: <0.001), controlling for all else. For women, only the balance beam apparatus showed sufficient evidence for a difference in score by round type (team, all around, individual) with a p-value of 0.011, controlling for all else.  For men,  the interaction between athlete and round type was significant for the floor apparatus (p-value: <0.001). This finding supports the notion that the effect of round type on floor scores is contingent on the athlete or vice versa. Given the overwhelming insignificant outcomes for the round stage and round type main effects along with their interactions at our specified significance levels, we moved forward with aggregating all of the results for each apparatus. The figures below show the average score for each apparatus by round for the top scorers to further demonstrate similarities across rounds. (See Appendix - Figure 2, 3)
 
 
 
@@ -73,7 +74,10 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 \newpage
 ## V. Appendix
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=4.8, fig.height=3.6, fig.cap="*Above is an example of the KDE density estimation for a specific athlete-apparatus combination based on scores from the 2022-2023 seasons, using our fine-tuned \\texttt{KernSmooth::bkde()} function. The red dots represent the scores from the data set, and the blue line estimates the underlying distribution, using the Gaussian family as a parameter.*"}
+**Figure 1.** Below is an example of the KDE density estimation for a specific athlete-apparatus combination based on scores from the 2022-2023 seasons, using our fine-tuned `KernSmooth::bkde()` function. The red dots represent the scores from the data set, and the blue line estimates the underlying distribution, using the Gaussian family as a parameter.\newline
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=4.8, fig.height=3.6}
 ## THIS CODE CHUNK IS JUST TO SHOW FIGURE 1
 library(tidyverse)
 library(data.table)
@@ -249,6 +253,104 @@ ggplot() +
 
 ```
 
+\vspace{20mm} 
+
+**Figure 2. ** Below is a table summary of the p-values for Three-way ANOVA for women, where each row represents a particular apparatus. "Round", as written in the table below, is short for Round Stage (final vs. qual); "Type" is short for Round Type (team, all-around, individual); The symbol 'x' indicates an interaction term. As expected, every test showed a significant relationship between athlete and score, controlling all else, indicating that at least one athlete has a different score than all the others for each apparatus. (Significance level of 0.0125 was set to give a Type I error rate of 5% with Bonferroni's correction)
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# THIS IS FOR FIGURE 2 = women ANOVA
+women <- read.csv("filesForWriteup/active_restricted_women_2023.csv")
+
+# adding round stage and type
+women <- women %>%
+  mutate(Round = tolower(Round),
+         RoundStage = case_when(stringr::str_like(Round,'%final%') ~ "final",
+                           stringr::str_like(Round,'%qual%') ~ "qual"),
+         RoundType = case_when(stringr::str_like(Round,'%team%') ~ "team",
+                           stringr::str_like(Round,'%aa%') ~ "all around",
+                           .default = "individual"))
+
+
+bb_women <- women %>%
+  filter(stringr::str_like(Apparatus,'BB%'))
+summary_bb_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = bb_women))
+#summary_bb_women
+
+ub_women <- women %>%
+  filter(stringr::str_like(Apparatus,'UB%'))
+summary_ub_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = ub_women))
+#summary_ub_women
+
+fx_women <- women %>%
+  filter(stringr::str_like(Apparatus,'FX%'))
+summary_fx_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = fx_women))
+#summary_fx_women
+
+vt_women <- women %>%
+  filter(stringr::str_like(Apparatus,'VT%'))
+summary_vt_women <- summary(aov(Score ~ FullName + RoundStage + RoundType + FullName*RoundType + FullName*RoundStage + RoundStage*RoundType, data = vt_women))
+#summary_vt_women
+
+
+
+library(knitr)
+library(dplyr)
+library(purrr)
+
+women_anova_summary <- data.frame(
+  Apparatus = c("Balance Beam", "Uneven Bars", "Floor Exercises", "Vault"),
+  Athlete = c(summary_bb_women[[1]][["Pr(>F)"]][1],summary_ub_women[[1]][["Pr(>F)"]][1],summary_fx_women[[1]][["Pr(>F)"]][1],summary_vt_women[[1]][["Pr(>F)"]][1]),
+  `Round Stage (final vs. qual)` = c(summary_bb_women[[1]][["Pr(>F)"]][2],summary_ub_women[[1]][["Pr(>F)"]][2],summary_fx_women[[1]][["Pr(>F)"]][2],summary_vt_women[[1]][["Pr(>F)"]][2]),
+  `Round Type (team, all around, individual)` = c(summary_bb_women[[1]][["Pr(>F)"]][3],summary_ub_women[[1]][["Pr(>F)"]][3],summary_fx_women[[1]][["Pr(>F)"]][3],summary_vt_women[[1]][["Pr(>F)"]][3]),
+  `Athlete and Round Stage Interaction` = c(summary_bb_women[[1]][["Pr(>F)"]][5],summary_ub_women[[1]][["Pr(>F)"]][5],summary_fx_women[[1]][["Pr(>F)"]][5],summary_vt_women[[1]][["Pr(>F)"]][5]),
+  `Athlete and Round Type Interaction` = c(summary_bb_women[[1]][["Pr(>F)"]][4],summary_ub_women[[1]][["Pr(>F)"]][4],summary_fx_women[[1]][["Pr(>F)"]][4],summary_vt_women[[1]][["Pr(>F)"]][4]),
+  `Round Stage and Round Type Interaction` = c(summary_bb_women[[1]][["Pr(>F)"]][6],summary_ub_women[[1]][["Pr(>F)"]][6],summary_fx_women[[1]][["Pr(>F)"]][6],summary_vt_women[[1]][["Pr(>F)"]][6])
+)
+
+
+
+format_p_values <- function(p_value) {
+  # Round to the third decimal
+  rounded_p <- round(p_value, 3)
+  
+  # Format to always show three decimal places
+  formatted_p <- sprintf("%.3f", rounded_p)
+  
+  # Apply conditions
+  if (rounded_p < 0.001) {
+    return("<0.001*")
+  } else if (rounded_p >= 0.001 & rounded_p < 0.0125) {
+    return(paste0(formatted_p, "*"))
+  } else {
+    return(formatted_p)
+  }
+}
+
+
+
+women_anova_summary <- women_anova_summary %>%
+  mutate(across(-Apparatus, ~map_chr(.x, format_p_values)))
+
+
+
+kable(women_anova_summary, 
+      col.names = c("Apparatus", 
+                    "Athlete", 
+                    "Stage", 
+                    "Type", 
+                    "Athlete x Stage", 
+                    "Athlete x Type", 
+                    "Stage x Type"))
+
+
+# "Round Stage means (final vs. qual), Round Type means (team, all around, individual), and "x" indicates interaction term
+
+
+
+```
+
+\newpage
+**Figure 3. ** men ANOVA
+
 
 
 \newpage
@@ -267,3 +369,4 @@ ggplot() +
 12. "Who Qualified to Paris 2024?". The Gymternet. 2023. [https://thegymter.net/2023/10/09/who-qualified-to-paris-2024/](https://thegymter.net/2023/10/09/who-qualified-to-paris-2024/)
 13. "Worlds Team Preview #8 - The Netherlands". Reddit, r/Gymnastics. 2023. [https://www.reddit.com/r/Gymnastics/comments/16nqb9r/worlds_team_preview_8_the_netherlands/](https://www.reddit.com/r/Gymnastics/comments/16nqb9r/worlds_team_preview_8_the_netherlands/)
 14. "Olympic gymnastics champion Suni Lee began pointing to 2024 long ago. It could be a difficult road". AP News. 2023. [https://apnews.com/article/sunisa-lee-paris-olympics-gymnastics-95c3857ec9338170792baca56ffe6c07](https://apnews.com/article/sunisa-lee-paris-olympics-gymnastics-95c3857ec9338170792baca56ffe6c07)
+15. "ANOVA and the Bonferroni Correction". Towards Data Science. 2021. [https://towardsdatascience.com/anova-vs-bonferroni-correction-c8573936a64e?gi=ffb12a01219d](https://towardsdatascience.com/anova-vs-bonferroni-correction-c8573936a64e?gi=ffb12a01219d)
