@@ -8,7 +8,7 @@ title: |
   | Optimizing USA’s Artistic Gymnastics Team Selection Strategy
 author: "Emily Zhao, Elyse McFalls, Young Jun, Evan Kim"
 geometry: "left=1.8cm,right=1.8cm,top=1.8cm,bottom=1.8cm"
-fontsize: 11pt
+fontsize: 10.5pt
 date: "2023-11-20"
 output:
   pdf_document:
@@ -226,7 +226,7 @@ highlightCellBlueMenIndividual <- function(value, specified_values) {
 
 
 # Apply the function to all cells in the dataframe
-highlightYellowMenIndividual <- c("0.669", "0.206", "0.006", "0.457", "0.388", "0.329", "0.033", "0.585", "0.042", "0.296", "0.257", "0.264", "0.064", "0.152", "0.698", "0.375", "0.308")
+highlightYellowMenIndividual <- c("0.669", "0.206", "0.006", "0.457", "0.388", "0.329", "0.033", "0.585", "0.042", "0.296", "0.257", "0.264", "0.064", "0.152", "0.698", "0.375", "0.308", "0.194", "0.189", "0.137")
 
 highlightBlueMenIndividual <- c("0.035", "0.135", "0.119", "0.012", "0.169")
 
@@ -256,10 +256,53 @@ kable(menIndividualResultsSummary,
       row.names = FALSE)
 
 ```
-_Figure 8: Top 7 U.S. Mens’ Simulated Weighted Individual Medal Scores by Event_\newline
+_Figure 8: Top 13 U.S. Mens’ Simulated Weighted Individual Medal Scores by Event_\newline
+
+
+\text{ }\text{ }\text{ }\text{ } Considering the Top 10 men by apparatus and country, it is evident that Japan and China are leaders in this sport with China holding the all Top 3 weighted medal scores in SR and Japan and China holding 6 out of 10 top weighted medal scores in HB. (See Appendix, Figure 9) This result tracks with previous discussion of men’s gymnastics.$^{16}$ On the other hand, the US materializes as a contender for only a few apparatuses. Highest chances of placing are for parallel bars with Curran Phillips (PB: 0.585) and pommel horse with Stephen Nedoroscik (PH: 0.698). Even so, given the low weighted medal scores for US athletes across the events (All U.S. weighted medal scores are <1), our chances of medaling in most events are limited. \newline
+
+
+**_Team Event - Top USA Men_**
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+menTeamResultsSummary <- read.csv("filesForWriteup/men_top3_USA_teams.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+
+kable(menTeamResultsSummary, 
+      col.names = c("", 
+                    "Team", 
+                    "Avg. Score", 
+                    "Occurrences", 
+                    "Avg. Weighted Medal Score"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+
+```
+_Figure 10: Top 3 Men’s Team Configurations and Average Score ordered by number of times selected as highest ranked U.S. team followed by the average score when the team was picked as the best._\newline
+
+\text{ }\text{ }\text{ }\text{ } The same calculations for finding the best women’s team event combination was also used for the men’s team event. Surprisingly, the best U.S. men’s team ranked 3rd in 65.1% of the simulations, followed by second (23.7%), first (6.8%), and fourth (4.4%). If we expect this result to reflect reality, then the 2024 Olympics may be the first time the U.S. men’s gymnastic team wins a major team medal at an international event since 2014.$^{17}$ Moreover, unlike with the women, the best U.S. team for men was more varied. There were 921 unique teams that reigned supreme over the others in their given simulation. The consistently best U.S. team, consisting of Paul Juda, Brody Malone, Fred Richard, Donnell Whittenburg, and Asher Hong, only came up four times. Clearly, there is more interchangeability when it comes to crafting the best men’s team, making it a harder task. \newline
+\text{ }\text{ }\text{ }\text{ } Brody Malone and Fred Richard are chosen for all of the top 3 teams based on our criteria. Considering the individual and all around performances of these two athletes, the results of the team event simulations are quite interesting. While Malone was expected to win the most individual medals, making it no surprise that he is included in the top teams, Richard was one of the least likely gymnasts to take home multiple individual awards. This result may indicate that Richard is more of a generalist as opposed to a specialist, making him more of an asset in the team competition. He also may be a more volatile competitor, performing really well at times and really poorly at others. Other common names include Paul Juda, Yul Moladeur, and Asher Hong. Again, despite not ranking the highest in our individual weighted medal contribution simulations, these athletes also appear to be proficient in more apparatuses compared to their peers.\newline
+
+**_Reconciling Conflicting Individual Event Team Configurations and Team Event Configurations_**
+\text{ }\text{ }\text{ }\text{ } When finding the best men’s teams using the best combination of the individual events and the team event, we generated conflicting results. There was no overlap between the best 3 teams for highest total individual scores across events and the best 3 teams for highest team event scores. In fact, the top 3 combinations for the individual events were never selected as the best U.S. team for the team event in any simulation. This result indicates that while these combinations of players are optimized for winning individual awards, they do not lend well to winning at the team event. (See Appendix, Figure 11) \newline
+\text{ }\text{ }\text{ }\text{ } Athlete-wise, the best individual event combinations all included Stephen Nedoroscik, a player who specializes in pommel horse but otherwise is not a contender for any other apparatus.$^{18}$ These combinations also all include Phillip Curran, a player known for his expertise on the parallel bars but, again, is not a huge competitor in any other competition.$^{19}$ This result confirms the previous assumption that these combinations place more emphasis on individual success, particularly on specific apparatuses, as opposed to team success. Brody Malone is the only player consistently chosen for the team event and best individual combinations. This finding is unsurprising given his relatively high average weighted medal score for almost every apparatus.\newline
+\text{ }\text{ }\text{ }\text{ } Due to the ambiguous results we got from the best team event combinations and the best individual event combinations, we decided to find the sum of the average weighted individual scores for the best team event combinations. The results show that the best total expected medal score comes from the team with Brody Malone, Fred Richard, Yul Moladuer, Donnell Whittenburg, and Asher Hong. Compared to the best team combination for the individual events -- Brody Malone, Khoi Young, Curran Phillips, Stephen Nedoroscik, and Colt Walker -- this team is less likely to win awards for parallel bar and pommel horse. This team’s largest advantage is its higher likelihood to win the team event over the best individual event combination team.(See Appendix, Figure 12) \newline
 
 
 ## IV. Discussion
+
+**_Weighted Individual Medal Contributions:_**\newline
+\text{ }\text{ }\text{ }\text{ } 
+
+
 **_Limitations:_**
 
 **_Extensions:_**
@@ -652,6 +695,71 @@ kable(men_anova_summary,
 
 **Figure 5. ** women top ten
 
+
+**Figure 9. ** women top ten
+
+
+**Figure 11. ** Top 3 Men’s Team Configurations from Individual Event Weighted Medal Score Optimization. In the Team event simulation, these teams never emerged as the filtered best US team. (TEMS: Total Expected Medal Score)\newline
+```{r echo=FALSE}
+appendixFigure11 <- read.csv("filesForWriteup/appendixFigure11.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+
+kable(appendixFigure11, 
+      col.names = c("Team Combination", 
+                    "HB", 
+                    "FX", 
+                    "PB", 
+                    "PH",
+                    "SR",
+                    "VT",
+                    "AA",
+                    "Team",
+                    "TEMS"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+```
+
+\vspace{20mm} 
+
+
+**Figure 12. ** Top 3 Men’s Team Configurations from Team Event Weighted Medal Score Optimization. (TEMS: Total Expected Medal Score)\newline
+```{r echo=FALSE}
+appendixFigure12 <- read.csv("filesForWriteup/appendixFigure12.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+
+kable(appendixFigure11, 
+      col.names = c("Team Combination", 
+                    "HB", 
+                    "FX", 
+                    "PB", 
+                    "PH",
+                    "SR",
+                    "VT",
+                    "AA",
+                    "Team",
+                    "TEMS"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+```
+
+
+
 \newpage
 ## VI. Sources Cited
 1. "Poll: Gymnastics Is America’s Most Highly Anticipated Olympic Sport". SGB Media. 2021. [https://sgbonline.com/poll-gymnastics-is-americans-most-highly-anticipated-olympic-sport/](https://sgbonline.com/poll-gymnastics-is-americans-most-highly-anticipated-olympic-sport/)
@@ -669,3 +777,7 @@ kable(men_anova_summary,
 13. "Worlds Team Preview #8 - The Netherlands". Reddit, r/Gymnastics. 2023. [https://www.reddit.com/r/Gymnastics/comments/16nqb9r/worlds_team_preview_8_the_netherlands/](https://www.reddit.com/r/Gymnastics/comments/16nqb9r/worlds_team_preview_8_the_netherlands/)
 14. "Olympic gymnastics champion Suni Lee began pointing to 2024 long ago. It could be a difficult road". AP News. 2023. [https://apnews.com/article/sunisa-lee-paris-olympics-gymnastics-95c3857ec9338170792baca56ffe6c07](https://apnews.com/article/sunisa-lee-paris-olympics-gymnastics-95c3857ec9338170792baca56ffe6c07)
 15. "ANOVA and the Bonferroni Correction". Towards Data Science. 2021. [https://towardsdatascience.com/anova-vs-bonferroni-correction-c8573936a64e?gi=ffb12a01219d](https://towardsdatascience.com/anova-vs-bonferroni-correction-c8573936a64e?gi=ffb12a01219d)
+16. "Preview: Top Men’s Storylines for the 2023 World Championships". Inside Gymnastics Magazine. 2023. [https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/](https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/)
+17. "Asher Hong is youngest U.S. men’s all-around gymnastics champion in 34 years". NBC Sports. 2023. [https://www.nbcsports.com/olympics/news/asher-hong-gymnastics-nationals](https://www.nbcsports.com/olympics/news/asher-hong-gymnastics-nationals)
+18. "Is there room for a world gymnastics champion on the world championships team?". NBC Sports. 2022. [https://www.nbcsports.com/olympics/news/stephen-nedoroscik-gymnastics-pommel-horse-world-championships](https://www.nbcsports.com/olympics/news/stephen-nedoroscik-gymnastics-pommel-horse-world-championships)
+19. "https://gymnastics-now.com/curran-phillips-and-the-pursuit-of-mastery/". Gymnastics Now. 2023. [https://gymnastics-now.com/curran-phillips-and-the-pursuit-of-mastery/](https://gymnastics-now.com/curran-phillips-and-the-pursuit-of-mastery/)
