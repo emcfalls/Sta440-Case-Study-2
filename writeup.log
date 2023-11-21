@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.8)  20 NOV 2023 23:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.8)  20 NOV 2023 23:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -427,7 +427,7 @@ File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
 )
 
 LaTeX Warning: Unused global option(s):
-    [10.5pt].
+    [10.49pt].
 
 (./writeup.aux)
 \openout1 = `writeup.aux'.
@@ -498,15 +498,15 @@ e
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(51.21504pt, 511.86491pt, 51.21504pt)
-* v-part:(T,H,B)=(51.21504pt, 692.5399pt, 51.21504pt)
+* h-part:(L,W,R)=(48.36958pt, 517.55583pt, 48.36958pt)
+* v-part:(T,H,B)=(48.36958pt, 698.23082pt, 48.36958pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
-* \textwidth=511.86491pt
-* \textheight=692.5399pt
-* \oddsidemargin=-21.05495pt
-* \evensidemargin=-21.05495pt
-* \topmargin=-58.05495pt
+* \textwidth=517.55583pt
+* \textheight=698.23082pt
+* \oddsidemargin=-23.9004pt
+* \evensidemargin=-23.9004pt
+* \topmargin=-60.9004pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=10.0pt
@@ -566,13 +566,13 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 100.
+(Font)              <10> on input line 102.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 100.
+(Font)              <7> on input line 102.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 100.
+(Font)              <5> on input line 102.
 
-Underfull \hbox (badness 10000) in paragraph at lines 98--144
+Underfull \hbox (badness 10000) in paragraph at lines 100--145
 
  []
 
@@ -585,126 +585,142 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 {/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
 al/texlive/2023/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/202
 3/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}] [2] [3]
-Underfull \hbox (badness 10000) in paragraph at lines 381--407
+Underfull \hbox (badness 10000) in paragraph at lines 383--409
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 424--425
+Underfull \hbox (badness 10000) in paragraph at lines 428--438
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 426--436
+Underfull \hbox (badness 10000) in paragraph at lines 441--451
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 439--449
+Underfull \hbox (badness 10000) in paragraph at lines 463--464
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 465--490
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 461--462
+Underfull \hbox (badness 10000) in paragraph at lines 507--522
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 463--488
+Underfull \hbox (badness 10000) in paragraph at lines 546--547
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 500--501
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 504--519
+Underfull \hbox (badness 10000) in paragraph at lines 548--560
 
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 543--544
+Underfull \hbox (badness 10000) in paragraph at lines 575--576
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 545--557
+Underfull \hbox (badness 10000) in paragraph at lines 577--605
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 572--573
+Underfull \hbox (badness 10000) in paragraph at lines 607--641
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 574--602
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 604--638
+Underfull \hbox (badness 10000) in paragraph at lines 648--704
 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 643--700
+Underfull \hbox (badness 10000) in paragraph at lines 706--763
 
  []
 
 [7{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}]
-Underfull \hbox (badness 10000) in paragraph at lines 702--736
+Underfull \hbox (badness 10000) in paragraph at lines 764--815
 
  []
 
-[8]
-Underfull \hbox (badness 10000) in paragraph at lines 746--752
+
+Underfull \hbox (badness 10000) in paragraph at lines 816--846
 
  []
 
-<writeup_files/figure-latex/unnamed-chunk-6-1.pdf, id=54, 346.29375pt x 259.971
+[8] [9]
+Underfull \hbox (badness 10000) in paragraph at lines 852--858
+
+ []
+
+<writeup_files/figure-latex/unnamed-chunk-6-1.pdf, id=59, 346.29375pt x 259.971
 25pt>
 File: writeup_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (type pdf)
 <use writeup_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: writeup_files/figure-latex/unnamed-chunk-6-1.pdf  used
- on input line 753.
+ on input line 859.
 (pdftex.def)             Requested size: 346.2929pt x 259.97061pt.
-[9 <./writeup_files/figure-latex/unnamed-chunk-6-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 861--865
+[10 <./writeup_files/figure-latex/unnamed-chunk-6-1.pdf>] [11]
+<writeup_files/figure-latex/unnamed-chunk-9-1.pdf, id=78, 578.16pt x 722.7pt>
+File: writeup_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type pdf)
+<use writeup_files/figure-latex/unnamed-chunk-9-1.pdf>
+Package pdftex.def Info: writeup_files/figure-latex/unnamed-chunk-9-1.pdf  used
+ on input line 967.
+(pdftex.def)             Requested size: 517.5779pt x 646.97238pt.
+[12 <./writeup_files/figure-latex/unnamed-chunk-9-1.pdf>]
+<writeup_files/figure-latex/unnamed-chunk-10-1.pdf, id=88, 519.9425pt x 779.913
+76pt>
+File: writeup_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf)
+
+<use writeup_files/figure-latex/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: writeup_files/figure-latex/unnamed-chunk-10-1.pdf  use
+d on input line 973.
+(pdftex.def)             Requested size: 465.5083pt x 698.26245pt.
+[13] [14 <./writeup_files/figure-latex/unnamed-chunk-10-1.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 977--981
 
  []
 
 
-Overfull \hbox (41.63478pt too wide) in paragraph at lines 866--875
+Overfull \hbox (35.94386pt too wide) in paragraph at lines 982--991
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 878--881
+Underfull \hbox (badness 10000) in paragraph at lines 994--997
 
  []
 
 
-Overfull \hbox (41.63478pt too wide) in paragraph at lines 882--891
+Overfull \hbox (35.94386pt too wide) in paragraph at lines 998--1007
 [][] 
  []
 
-[10] [11] (./writeup.aux)
+[15] [16] [17] (./writeup.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-08-29>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 13979 strings out of 474934
- 217830 string characters out of 5759818
- 1985807 words of memory out of 5000000
- 35109 multiletter control sequences out of 15000+600000
- 613058 words of font info for 145 fonts, out of 8000000 for 9000
+ 14009 strings out of 474934
+ 218748 string characters out of 5759818
+ 1992807 words of memory out of 5000000
+ 35123 multiletter control sequences out of 15000+600000
+ 613000 words of font info for 144 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 77i,8n,81p,1004b,445s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 77i,8n,81p,1004b,595s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/lo
 cal/texlive/2023/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texliv
 e/2023/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb></usr/local/texlive/2023/te
@@ -713,10 +729,10 @@ nts/type1/public/lm/lmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/p
 ublic/lm/lmr12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lm
 r7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lmri10.pfb></u
 sr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on writeup.pdf (11 pages, 263047 bytes).
+Output written on writeup.pdf (17 pages, 294281 bytes).
 PDF statistics:
- 226 PDF objects out of 1000 (max. 8388607)
- 191 compressed objects within 2 object streams
- 53 named destinations out of 1000 (max. 500000)
- 26678 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 299 PDF objects out of 1000 (max. 8388607)
+ 252 compressed objects within 3 object streams
+ 71 named destinations out of 1000 (max. 500000)
+ 26688 words of extra memory for PDF output out of 29859 (max. 10000000)
 

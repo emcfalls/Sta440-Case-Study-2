@@ -1,14 +1,14 @@
 ---
 header-includes:
   - \usepackage{titling}
-  - \pretitle{\vspace{-1.2cm}\begin{center}\Large}
+  - \pretitle{\vspace{-1.77cm}\begin{center}\Large}
   - \posttitle{\end{center}}
 title: |
   | Somersaulting to Gold:
   | Optimizing USA’s Artistic Gymnastics Team Selection Strategy
 author: "Emily Zhao, Elyse McFalls, Young Jun, Evan Kim"
-geometry: "left=1.8cm,right=1.8cm,top=1.8cm,bottom=1.8cm"
-fontsize: 10.5pt
+geometry: "left=1.7cm,right=1.7cm,top=1.7cm,bottom=1.7cm"
+fontsize: 10.49pt
 date: "2023-11-20"
 output:
   pdf_document:
@@ -19,29 +19,26 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 ```
-
+\vspace{-5mm} 
 ## I. Introduction
 
 \text{ }\text{ }\text{ }\text{ } Gymnastics has swiftly risen to become one of America's cherished pastimes, with recent polls revealing it to be the most anticipated Olympic event among Americans.$^1$ This heightened enthusiasm is largely attributed to the historical success the US has enjoyed in the Olympics, particularly in women's artistic gymnastics. Dominant performances by teams like the Final Five in 2016 and athletes like Simone Biles (2011 - current) have brought immense prominence to the sport and its athletes.$^2$ While the US men's artistic gymnastics team may not be as dominant, they have consistently secured top-five placements in team events at the Olympics and have bolstered decorated athletes like Khoi Young (2018 - current) in recent years.$^3$\newline
-\text{ }\text{ }\text{ }\text{ } We expect that millions of Americans are anticipating the gymnastics events at the 2024 Olympic Games in Paris, France.$^4$ This anticipation is coupled with the expectation of US dominance at the Olympics, mirroring the success we have seen in the past. One may ask then: How can we ensure that the US reigns supreme? The answer lies in assembling formidable teams capable of winning the most medals.\newline
-\text{ }\text{ }\text{ }\text{ } Historically, US Olympic team rosters are shaped by the results of the US Olympic Team Trials. The trials will be hosted in June, 2024, for this upcoming cycle.$^5$ Here, each invited athlete's performance determines their spot on the team. Athletes are required to complete all apparatuses twice (4 for women, 6 for men), and scores from each event (8 for women, 12 for men) are combined to generate a final score. The selection committee then uses a combination of the competition results and the teams’ needs to decide on the final rosters. In the last Olympic cycle, the top two performers for women and the top performer for men at the trials secured automatic spots, while the remaining slots were determined by the selection committee.$^6$ Given this meticulous process, it will be some time before the US Olympic gymnastics teams are unveiled, and even longer before we can assess how they will perform on the big stage. The selection committee also faces the arduous task of determining the optimal team makeup. This season, the challenge is particularly difficult for the women's team given the abundance of strong candidates.$^7$\newline
+\text{ }\text{ }\text{ }\text{ } We expect that millions of Americans are anticipating the gymnastics events at the 2024 Olympic Games in Paris, France.$^4$ This anticipation is coupled with the expectation of US dominance at the Olympics, mirroring the success we have seen in the past. One may ask then: How can we ensure that the US reigns supreme? The answer lies in assembling formidable teams capable of winning the most medals. Historically, US Olympic team rosters are shaped by the results of the US Olympic Team Trials. The trials will be hosted in June, 2024, for this upcoming cycle.$^5$ Here, each invited athlete's performance determines their spot on the team. Athletes are required to complete all apparatuses twice (4 for women, 6 for men), and scores from each event (8 for women, 12 for men) are combined to generate a final score. The selection committee then uses a combination of the competition results and the teams’ needs to decide on the final rosters. In the last Olympic cycle, the top two performers for women and the top performer for men at the trials secured automatic spots, while the remaining slots were determined by the selection committee.$^6$ Given this meticulous process, it will be some time before the US Olympic gymnastics teams are unveiled, and even longer before we can assess how they will perform on the big stage. The selection committee also faces the arduous task of determining the optimal team makeup. This season, the challenge is particularly difficult for the women's team given the abundance of strong candidates.$^7$\newline
 \text{ }\text{ }\text{ }\text{ } In this paper, we present a simulation-based approach to determine the best US Olympic men and women’s gymnastic teams for the 2024 Paris Olympics. Our method utilizes historical data on each athlete’s performances to simulate pseudo-Olympic data to see how well the US will fare under different team makeups. We imagine that our algorithmic approach would be useful supplementary material for the selection committee to consider when finalizing the roster. Moreover, the results of these simulations may also be enjoyed by fans of the sport who are interested in gaining some insight into what to expect from the Olympics given the athletes’ past scores.\newline
 
-
+\vspace{-3mm} 
 ## II. Methodology 
 **_Data Collection:_**
 
-\text{ }\text{ }\text{ }\text{ } We were originally provided two data sets from UCSAS: the 2020 Tokyo Olympics women's results and the 2022-2023 season's men and women's results from various competitions. Given the dynamic nature of gymnastics, where athletes' careers are typically short and marked by rapid changes, the period between two Olympic cycles is crucial. It often sees the retirement of established gymnasts and the rise of new talents, significantly altering the sport's competitive hierarchy. (Atikovic et al., 2017)$^8$ Therefore, we have elected to only consider the 2022-2023 season's results as relevant data as it more accurately reflects the current competitive landscape and athlete performance trends. In addition, via web scraping and research, we were able to add athletes, both US and non-US based, that were not in the provided data set but are worth considering in our simulations.\newline
-\text{ }\text{ }\text{ }\text{ } Any scores that were missing or recorded as “0” were dropped from the input data for the simulation as we assumed the athlete had chosen not to compete in the event. We also extensively cleaned the data for inconsistencies, mis-typed, and changed names for each athlete, while also checking for athletes who switched country allegiances. 
+\text{ }\text{ }\text{ }\text{ } We were originally provided two data sets from UCSAS: the 2020 Tokyo Olympics women's results and the 2022-2023 season's men and women's results from various competitions. Given the dynamic nature of gymnastics, where athletes' careers are typically short and marked by rapid changes, the period between two Olympic cycles is crucial. It often sees the retirement of established gymnasts and the rise of new talents, significantly altering the sport's competitive hierarchy. (Atikovic et al., 2017)$^8$ Therefore, we have elected to only consider the 2022-2023 season's results as relevant data as it more accurately reflects the current competitive landscape and athlete performance trends. In addition, via web scraping and research, we were able to add athletes, both US and non-US based, that were not in the provided data set but are worth considering in our simulations. Any scores that were marked as “0” or missing were excluded, assuming non-participation in events. We also extensively cleaned the data for inconsistencies, mistyped, and changed names for each athlete, while also checking for athletes who switched country allegiances.  
 
 **_Motivation for Kernel Density Estimation (KDE):_**
 
-\text{ }\text{ }\text{ }\text{ } Our refined data set shows the distribution of scores for each athlete-apparatus combination over the most recent two years. This observation suggests that each combination possesses a unique, true underlying distribution of scores, justifying the use of density estimation. Our method of choice is Kernel Density Estimation (KDE), as opposed to piece-wise histogram density estimation, given the near-continuous nature of gymnastics scores. It offers a significant advantage by centering a smooth kernel function at each data point and aggregating these to form an overall density estimate.\newline
-\text{ }\text{ }\text{ }\text{ } While there are over twenty packages in R that assist with density estimation, varying in both theoretical backdrop and computational performance, we employ the `KernSmooth::bkde()` function, renowned for its speed, accuracy, and robust maintenance. Developed by Matt Wand and Brian Ripley in 2010, `KernSmooth::bkde()` implements the linear binning technique, which distributes data mass between grid points for enhanced accuracy by utilizing "weighted bin counts instead of individual data points". (Deng et al., 2011)$^9$
+\text{ }\text{ }\text{ }\text{ } Our refined data set shows the distribution of scores for each athlete-apparatus combination over the most recent two years. This observation suggests that each combination possesses a unique, true underlying distribution of scores, justifying the use of density estimation. Our method of choice is Kernel Density Estimation (KDE), as opposed to piece-wise histogram density estimation, given the near-continuous nature of gymnastics scores. It offers a significant advantage by centering a smooth kernel function at each data point and aggregating these to form an overall density estimate. While there are over twenty packages in R that assist with density estimation, varying in both theoretical backdrop and computational performance, we employ the `KernSmooth::bkde()` function, renowned for its speed, accuracy, and robust maintenance. Developed by Matt Wand and Brian Ripley in 2010, `KernSmooth::bkde()` implements the linear binning technique, which distributes data mass between grid points for enhanced accuracy by utilizing "weighted bin counts instead of individual data points". (Deng et al., 2011)$^9$
 
 **_Developing the Simulation:_**
 
-\text{ }\text{ }\text{ }\text{ } For the purpose of our analysis, we have fine-tuned the `KernSmooth::bkde()` function to our data set's specific characteristics. We selected the Gaussian kernel for its efficacy in creating a smooth, continuous approximation of the underlying score distributions, while deliberately forgoing the scale normalization which is typically associated with canonical kernels to maintain the natural scale of gymnastics scores.$^{10}$ Also, the `bandwidth` is set as 0.25 all throughout, which yields the optimal empirical balance between over-smoothing and under-smoothing for our aggregated data set. (See Appendix, Figure 1) \newline
+\text{ }\text{ }\text{ }\text{ } For the purpose of our analysis, we have fine-tuned the `KernSmooth::bkde()` function to our data set's specific characteristics. We selected the Gaussian kernel for its efficacy in creating a smooth, continuous approximation of the underlying score distributions, while deliberately forgoing the scale normalization which is typically associated with canonical kernels to maintain the natural scale of gymnastics scores.$^{10}$ Also, the `bandwidth` is set as 0.25 all throughout, which yields the optimal empirical balance between over-smoothing and under-smoothing for our aggregated data set. (See Appendix, Fig. 1) \newline
 \text{ }\text{ }\text{ }\text{ } Furthermore, for the range of scores we should estimate for each athlete-apparatus combination, we incorporated a `nugget` metric to allow extra variability for athlete-apparatus combinations with fewer than four observations. For example, if the minimum score for an athlete-apparatus combination is initially 4.3, and the nugget adjustment brings it down to 2.3, we re-calibrate the lower limit of the range from 4.3 to 2.3 before proceeding with the kernel density estimation, while ensuring that the lower limit never reaches below 0, a logical baseline for gymnastics scores. This facet provides a buffer that accommodates the potential for higher variability in sparser data. Our methodology is grounded in the principle that past performance can be a predictor of future results, but with a recognition of the stochastic nature of athletic performance. The nugget is calibrated using the standard deviation of all scores for a given apparatus, rewarding consistent high-level performance over time rather than exceptional one-off performances.\newline
 \text{ }\text{ }\text{ }\text{ } Incorporating our fine-tuned `KernSmooth` function with our own simulation algorithm, we conducted a total of 1,000 iterations for the following: 4 women’s individual apparatuses — Balance Beam (BB), Floor Exercise (FX), Uneven Bars (UB), Vault (VT) — and 6 men’s individual apparatuses — Horizontal Bar (HB), Floor Exercise (FX), Parallel Bars (PB), Pommel Horse (PH), Still Rings (SR), and Vault (VT). By conducting a total of 1,000 iterations of simulated Olympic events separately for both men and women, we generated a robust collection of data sets reflecting the potential range of scores for each athlete-apparatus combination, assuming all athletes compete in the events they have historic data for. The aggregation of these results facilitated a comprehensive analysis of the top performers for each apparatus and potential team compositions for both the US and other team-qualifying countries. 
 
@@ -61,10 +58,10 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 \text{ }\text{ }\text{ }\text{ } We applied a series of assumptions to reduce noise in the data, computational demand, and simplify the selection process. Firstly, we decided to establish a performance cutoff for the competitors inputted into the simulation function. We removed any athlete who has not placed in the top 5 for any competition in the 2022-2023 seasons, as we assumed that their lack of data from the recent seasons or their relatively sub-par performance indicated that they likely would not make an Olympic team.  This criteria is supported by the 2020 Team USA artistic gymnastics team selections as all members of the selected teams had placed in the top 5 of a competition from 2019 to 2020. This criteria allows for flexibility as even if a gymnast is a “specialist”, their top 5 strong performance in a singular event will be sufficient for including them in the data set. However, individual athletes who already qualified for the 2024 Olympics were not bound to this cutoff.$^{12}$  \newline
 \text{ }\text{ }\text{ }\text{ } In the selection of our team, we also assume that these gymnasts will be performing at their optimal condition. In our selection process, we have also removed some athletes which have either announced their retirement or have suffered a recent significant injury. One notable gymnast who was removed from the data set due to this criteria is Suni Lee. At her peak performance, gymnastics fans believe she is a strong contender on both uneven bars and balance beam.$^{14}$ However, in April 2023, she announced that she was withdrawing from collegiate gymnastics and had been diagnosed with an incurable kidney disease. The uncertainties surrounding her disease and its progression over the next year would potentially make her chance of performing well volatile, so we could not confidently place her in our recommendation given her medical condition unknowns. For the rest of the athletes, we assume that gymnasts will be able to participate in multiple events throughout the Olympics competition and will also not get hurt or injured from now until the Olympics. \newline
 \text{ }\text{ }\text{ }\text{ } In the simulation of results, we grouped all historic vault scores, either from team or the first or second round of individual vaults, all into a common vault category, unifying labels such as “VT1” and “VT2” into simply “VT”. We also applied the assumption that a gymnast’s performance in each round — qualifying, final, all-around qualifying, all-around final, team qualifying, and team final — would all follow a similar kernel density distribution and therefore can be aggregated into one cumulative apparatus category. To test the assumption of similar scores by round, we inputted all data from our constrained data set to conduct three-way ANOVA tests by athlete, round stage (final or qualifying), round type (all around, individual, or team), and all interactions with score as the response. We used a significance level of 1.25% for women and 0.83% for men to give each test a Type I error rate of 5% with Bonferroni’s correction.$^{15}$\newline
-\text{ }\text{ }\text{ }\text{ } For both men and women, the effect of athlete on score was unsurprisingly a significant effect (p-value: <0.001), controlling for all else. For women, only the balance beam apparatus showed sufficient evidence for a difference in score by round type (team, all around, individual) with a p-value of 0.011, controlling for all else.  For men,  the interaction between athlete and round type was significant for the floor apparatus (p-value: <0.001). This finding supports the notion that the effect of round type on floor scores is contingent on the athlete or vice versa. Given the overwhelming insignificant outcomes for the round stage and round type main effects along with their interactions at our specified significance levels, we moved forward with aggregating all of the results for each apparatus. The figures below show the average score for each apparatus by round for the top scorers to further demonstrate similarities across rounds. (See Appendix - Figure 2, 3)
+\text{ }\text{ }\text{ }\text{ } For both men and women, the effect of athlete on score was unsurprisingly a significant effect (p-value: <0.001), controlling for all else. For women, only the balance beam apparatus showed sufficient evidence for a difference in score by round type (team, all around, individual) with a p-value of 0.011, controlling for all else.  For men,  the interaction between athlete and round type was significant for the floor apparatus (p-value: <0.001). This finding supports the notion that the effect of round type on floor scores is contingent on the athlete or vice versa. Given the overwhelming insignificant outcomes for the round stage and round type main effects along with their interactions at our specified significance levels, we moved forward with aggregating all of the results for each apparatus. The figures below show the average score for each apparatus by round for the top scorers to further demonstrate similarities across rounds. (See Appendix - Fig. 2, 3)
 
 
-
+\vspace{-1mm} 
 ## III. Results
 **_Individual Events - Top USA Women_**
 
@@ -129,9 +126,9 @@ kable(womenIndividualResultsSummary,
 
 ```
 _Figure 4: Top 7 US Female Gymnasts’ Simulated Weighted Individual Medal Scores by Event_\newline
+\vspace{-2mm} 
 
-
-\text{ }\text{ }\text{ }\text{ } Relative to our international competitors, the US has a varying number of gymnasts in the Top 10 weighted medal scores (BB: 3, FX: 6, UB: 2, VT: 6, AA: 6). Broadly, the US team has more strong competitors for FX, VT, and AA while other countries, such as China, Algeria, and Brazil, have stronger competitors in BB and UB. UB is the only event where the US claimed none of the Top 3 weighted medal scores. In terms of determining the strongest individual non-US competitor, Brazil’s Rebeca Andrade obtains one of the Top 3 weighted medal scores in three events - FX, VT, and AA. (See Appendix, Figure 5)\newline
+\text{ }\text{ }\text{ }\text{ } Relative to our international competitors, the US has a varying number of gymnasts in the Top 10 weighted medal scores (BB: 3, FX: 6, UB: 2, VT: 6, AA: 6). Broadly, the US team has more strong competitors for FX, VT, and AA while other countries, such as China, Algeria, and Brazil, have stronger competitors in BB and UB. UB is the only event where the US claimed none of the Top 3 weighted medal scores. In terms of determining the strongest individual non-US competitor, Brazil’s Rebeca Andrade obtains one of the Top 3 weighted medal scores in three events - FX, VT, and AA. (See Appendix, Fig. 5)\newline
 
 
 
@@ -191,12 +188,11 @@ kable(womenTeamConfigurations,
 
 ```
 _Figure 7: Top 3 Women’s Team Configurations from Individual Event Weighted Medal Optimization. (ETW: Expected Total Weighted)_\newline
-
+\vspace{-2mm} 
 
 **_Individual Events - Top USA Men_**
 
-\text{ }\text{ }\text{ }\text{ } A total of 194 male athletes were each simulated 6,000 times to generate 1,000 performances in each of the six apparatus events for men. After finding the top 3 US athletes for each apparatus by weighted medal score, we created an aggregated group of 13 athletes. In the table below, each event column has three yellow-highlighted cells, indicating the athletes with the top 3 medal scores, and one blue-highlighted cell, indicating the fourth highest medal score. Brody Malone has a top 3 weighted medal score in four events (HB: 0.669, FX: 0.206, SR: 0.006, AA: 0.456) and one fourth place weighted medal score (PH: 0.035). For the rest of the gymnasts, they either achieved one or two top 3 weighted medal score placements. \newline
-\text{ }\text{ }\text{ }\text{ } From the sum of weighted medal scores across events, assuming each athlete competes in all events, Malone (1.468), Khoi Young (0.834), Curran Phillips (0.733), and Stephen Nedoroscik (0.698) have total scores above 0.5.\newline
+\text{ }\text{ }\text{ }\text{ } A total of 194 male athletes were each simulated 6,000 times to generate 1,000 performances in each of the six apparatus events for men. After finding the top 3 US athletes for each apparatus by weighted medal score, we created an aggregated group of 13 athletes. In the table below, each event column has three yellow-highlighted cells, indicating the athletes with the top 3 medal scores, and one blue-highlighted cell, indicating the fourth highest medal score. Brody Malone has a top 3 weighted medal score in four events (HB: 0.669, FX: 0.206, SR: 0.006, AA: 0.456) and one fourth place weighted medal score (PH: 0.035). For the rest of the gymnasts, they either achieved one or two top 3 weighted medal score placements. From the sum of weighted medal scores across events, assuming each athlete competes in all events, Malone (1.468), Khoi Young (0.834), Curran Phillips (0.733), and Stephen Nedoroscik (0.698) have total scores above 0.5.\newline
 
 ```{r, echo=FALSE}
 menIndividualResultsSummary <- read.csv("filesForWriteup/individualMenResultsSummary.csv", fileEncoding = "ISO-8859-1")
@@ -259,7 +255,7 @@ kable(menIndividualResultsSummary,
 _Figure 8: Top 13 U.S. Mens’ Simulated Weighted Individual Medal Scores by Event_\newline
 
 
-\text{ }\text{ }\text{ }\text{ } Considering the Top 10 men by apparatus and country, it is evident that Japan and China are leaders in this sport with China holding the all Top 3 weighted medal scores in SR and Japan and China holding 6 out of 10 top weighted medal scores in HB. (See Appendix, Figure 9) This result tracks with previous discussion of men’s gymnastics.$^{16}$ On the other hand, the US materializes as a contender for only a few apparatuses. Highest chances of placing are for parallel bars with Curran Phillips (PB: 0.585) and pommel horse with Stephen Nedoroscik (PH: 0.698). Even so, given the low weighted medal scores for US athletes across the events (All U.S. weighted medal scores are <1), our chances of medaling in most events are limited. \newline
+\text{ }\text{ }\text{ }\text{ } Considering the Top 10 men by apparatus and country, it is evident that Japan and China are leaders in this sport with China holding the all Top 3 weighted medal scores in SR and Japan and China holding 6 out of 10 top weighted medal scores in HB. (See Appendix, Fig. 9) This result tracks with previous discussion of men’s gymnastics.$^{16}$ On the other hand, the US materializes as a contender for only a few apparatuses. Highest chances of placing are for parallel bars with Curran Phillips (PB: 0.585) and pommel horse with Stephen Nedoroscik (PH: 0.698). Even so, given the low weighted medal scores for US athletes across the events (All U.S. weighted medal scores are <1), our chances of medaling in most events are limited. \newline
 
 
 **_Team Event - Top USA Men_**
@@ -291,29 +287,34 @@ _Figure 10: Top 3 Men’s Team Configurations and Average Score ordered by numbe
 \text{ }\text{ }\text{ }\text{ } The same calculations for finding the best women’s team event combination was also used for the men’s team event. Surprisingly, the best U.S. men’s team ranked 3rd in 65.1% of the simulations, followed by second (23.7%), first (6.8%), and fourth (4.4%). If we expect this result to reflect reality, then the 2024 Olympics may be the first time the U.S. men’s gymnastic team wins a major team medal at an international event since 2014.$^{17}$ Moreover, unlike with the women, the best U.S. team for men was more varied. There were 921 unique teams that reigned supreme over the others in their given simulation. The consistently best U.S. team, consisting of Paul Juda, Brody Malone, Fred Richard, Donnell Whittenburg, and Asher Hong, only came up four times. Clearly, there is more interchangeability when it comes to crafting the best men’s team, making it a harder task. \newline
 \text{ }\text{ }\text{ }\text{ } Brody Malone and Fred Richard are chosen for all of the top 3 teams based on our criteria. Considering the individual and all around performances of these two athletes, the results of the team event simulations are quite interesting. While Malone was expected to win the most individual medals, making it no surprise that he is included in the top teams, Richard was one of the least likely gymnasts to take home multiple individual awards. This result may indicate that Richard is more of a generalist as opposed to a specialist, making him more of an asset in the team competition. He also may be a more volatile competitor, performing really well at times and really poorly at others. Other common names include Paul Juda, Yul Moladeur, and Asher Hong. Again, despite not ranking the highest in our individual weighted medal contribution simulations, these athletes also appear to be proficient in more apparatuses compared to their peers.\newline
 
-**_Reconciling Conflicting Individual Event Team Configurations and Team Event Configurations_**
-\text{ }\text{ }\text{ }\text{ } When finding the best men’s teams using the best combination of the individual events and the team event, we generated conflicting results. There was no overlap between the best 3 teams for highest total individual scores across events and the best 3 teams for highest team event scores. In fact, the top 3 combinations for the individual events were never selected as the best U.S. team for the team event in any simulation. This result indicates that while these combinations of players are optimized for winning individual awards, they do not lend well to winning at the team event. (See Appendix, Figure 11) \newline
-\text{ }\text{ }\text{ }\text{ } Athlete-wise, the best individual event combinations all included Stephen Nedoroscik, a player who specializes in pommel horse but otherwise is not a contender for any other apparatus.$^{18}$ These combinations also all include Phillip Curran, a player known for his expertise on the parallel bars but, again, is not a huge competitor in any other competition.$^{19}$ This result confirms the previous assumption that these combinations place more emphasis on individual success, particularly on specific apparatuses, as opposed to team success. Brody Malone is the only player consistently chosen for the team event and best individual combinations. This finding is unsurprising given his relatively high average weighted medal score for almost every apparatus.\newline
+**_Reconciling Conflicting Individual Event Team Configurations and Team Event Configurations_**\newline
+\text{ }\text{ }\text{ }\text{ } When finding the best men’s teams using the best combination of the individual events and the team event, we generated conflicting results. There was no overlap between the best 3 teams for highest total individual scores across events and the best 3 teams for highest team event scores. In fact, the top 3 combinations for the individual events were never selected as the best U.S. team for the team event in any simulation. This result indicates that while these combinations of players are optimized for winning individual awards, they do not lend well to winning at the team event. (See Appendix, Figure 11) Athlete-wise, the best individual event combinations all included Stephen Nedoroscik, a player who specializes in pommel horse but otherwise is not a contender for any other apparatus.$^{18}$ These combinations also all include Phillip Curran, a player known for his expertise on the parallel bars but, again, is not a huge competitor in any other competition.$^{19}$ This result confirms the previous assumption that these combinations place more emphasis on individual success, particularly on specific apparatuses, as opposed to team success. Brody Malone is the only player consistently chosen for the team event and best individual combinations. This finding is unsurprising given his relatively high average weighted medal score for almost every apparatus.\newline
 \text{ }\text{ }\text{ }\text{ } Due to the ambiguous results we got from the best team event combinations and the best individual event combinations, we decided to find the sum of the average weighted individual scores for the best team event combinations. The results show that the best total expected medal score comes from the team with Brody Malone, Fred Richard, Yul Moladuer, Donnell Whittenburg, and Asher Hong. Compared to the best team combination for the individual events -- Brody Malone, Khoi Young, Curran Phillips, Stephen Nedoroscik, and Colt Walker -- this team is less likely to win awards for parallel bar and pommel horse. This team’s largest advantage is its higher likelihood to win the team event over the best individual event combination team.(See Appendix, Figure 12) \newline
 
-
+\vspace{-3mm} 
 ## IV. Discussion
 
 **_Analysis of Women’s optimal team calculations and Corroboration with previous literature:_**\newline
 \text{ }\text{ }\text{ }\text{ } Given her already-record breaking career with 6 World all-around titles, 23 gold medals from Worlds, and 7 Olympic medals, Simone Biles is almost guaranteed to be joining the Olympic team. Her simulations recorded the highest average medal contribution in vault, beam, and floor and the third highest average medal contribution in uneven bars. As a successful and experienced all-arounder, her expertise and leadership are not expressed quantitatively but will be invaluable for the team.\newline
 \text{ }\text{ }\text{ }\text{ } Shilese Jones also consistently emerged on all top-scoring teams with consistency across events being one of her greatest advantages. As the all-around bronze medalist at World’s (2023) and all-around silver medalist at Nationals (2023), she has also shown excellence particularly in uneven bars. In the US’ relatively sparse field of strong uneven bars competitors (with only her and Miller in the Top 10 rankings), her command of the uneven bars will be a major asset for the team. Commentators speculate that Biles and Jones “look like locks to make the Paris squad”.$^{20}$\newline
-\text{ }\text{ }\text{ }\text{ } In terms of specialists to add to the team, there are multiple strong contenders. For balanced beam, the US gymnasts with similar scores to Biles is Konnor McClain, the former national All-Around Gold medalist (2022). In the simulation, China posted the strongest competitors with young upstarts, Ran Wu and Yaqin Zhou.$^{21,22}$ In floor exercise, five US gymnasts apart from Biles are ranked in the Top 10 in medal scores, with Kaliya Lincoln as the second-highest scorer. Kaliya Lincoln recently demonstrated her prowess with a gold on floor exercise at the Pan-American games (2023). Their biggest competitors are Rebeca Andrade from Brazil, an Olympic veteran. Uneven bars is the only event in which a U.S. athlete does not make the top 3 rankings for medal scores, but Jones and Zoe Miller have shown strong uneven bars performances historically.$^{23,24}$ In the vault event, 6 American gymnasts make the list with Biles and Olympic veteran Jade Carey taking the top 2 spots. Their biggest competitor is Andrade, who was the 2021 and 2023 World champion on the vault.\newline
-\text{ }\text{ }\text{ }\text{ } From examining the distribution of medal scores for the top 10 competitors in each event, we could also extrapolate how lopsided the events will be. For instance, In floor and vault, there appear to be clear front runners with Biles likely taking gold in floor and Biles and Andrade competing head-to-head in vault. The competition appears more even in balance beam with the Chinese and Americans posting similar average medal scores. In uneven bars, Algeria’s Kaylia Nemour shows some advantage in scores, but two of China’s gymnasts also showed impressive results. In worlds, China’s Qiu Qiyuan won gold in uneven bars (2023). The selection committee could take into account the landscape and relative dominance of competitor countries to determine which events to “stack” gymnasts in.\newline
+\text{ }\text{ }\text{ }\text{ } In terms of specialists to add to the team, there are multiple strong contenders. For balanced beam, the US gymnasts with similar scores to Biles is Konnor McClain, the former national All-Around Gold medalist (2022). In the simulation, China posted the strongest competitors with young upstarts, Ran Wu and Yaqin Zhou.$^{21,22}$ In floor exercise, five US gymnasts apart from Biles are ranked in the Top 10 in medal scores, with Kaliya Lincoln as the second-highest scorer. Kaliya Lincoln recently demonstrated her prowess with a gold on floor exercise at the Pan-American games (2023). Their biggest competitors are Rebeca Andrade from Brazil, an Olympic veteran. Uneven bars is the only event in which a U.S. athlete does not make the top 3 rankings for medal scores, but Jones and Zoe Miller have shown strong uneven bars performances historically.$^{23,24}$ In the vault event, 6 American gymnasts make the list with Biles and Olympic veteran Jade Carey taking the top 2 spots. Their biggest competitor is Andrade, who was the 2021 and 2023 World champion on the vault. From examining the distribution of medal scores for the top 10 competitors in each event, we could also extrapolate how lopsided the events will be. For instance, In floor and vault, there appear to be clear front runners with Biles likely taking gold in floor and Biles and Andrade competing head-to-head in vault. The competition appears more even in balance beam with the Chinese and Americans posting similar average medal scores. In uneven bars, Algeria’s Kaylia Nemour shows some advantage in scores, but two of China’s gymnasts also showed impressive results. In worlds, China’s Qiu Qiyuan won gold in uneven bars (2023). The selection committee could take into account the landscape and relative dominance of competitor countries to determine which events to “stack” gymnasts in.\newline
 \text{ }\text{ }\text{ }\text{ } Thus, if the selection team is maximizing for overall highest weighted medal count, they should definitely ensure that Simone Biles, Jade Carey, Shilese Jones, and Konnor McClain are on the selected team. For the fifth selection, they should determine which score they hope to optimize. If they hope to optimize their uneven bars medals, then Zoe Miller would be the best fifth choice. If they hope to optimize for floor exercise medals, then Kaliya Lincoln is a better fifth option. Both uneven bars and floor exercise have dominant competitors from other countries that will surely be in medal contention, so this choice should also be based on these two athletes’ improvement trajectory in their respective event.\newline
 
 
 **_Analysis of Men’s optimal team calculations and Corroboration with previous literature:_**\newline
 \text{ }\text{ }\text{ }\text{ } Crafting the best men’s team proved to be a more difficult undertaking as there are way more athletes in contention and a wider variety of specialists and generalists. Without a doubt, the best team, given our results, would include Brody Malone. His historic scores show that he does well in almost every apparatus, winning the U.S. all-around title in 2021 and 2022. He also is especially talented on horizontal bar, taking home the 2022 World title. However, our simulations do not take into account his recent leg surgery, which we will discuss the implications of later.$^{25}$ Nevertheless, assuming that his historic scores would be reflective of his 2024 Olympic performance, Malone certainly deserves a roster spot on the U.S. team. \newline
 \text{ }\text{ }\text{ }\text{ } The following four spots should be selected to maximize our opportunities to obtain multiple medals from individual apparatus and all-around events. Unfortunately, we simply are not dominant in individual events. The strongest contenders for these events come from Japan, like Daiki Hokimoto in horizontal bars, and China, like Zhang Boheng. Current discourse on the men’s side does not indicate that these stars show any signs of lessening their dominance in the months leading to the 2024 Olympics.$^{26}$ With our low chance of winning an individual award, we then switch to the team event where we actually predict a high probability of placing in the top 3. Not only does this event carry a higher guarantee of a win, but it also has the potential to mark a shift in how the U.S. men’s gymnastic’s team is viewed by onlookers. As noted by an article from the Associated Press, the individual pockets of success experienced by the men’s team has not done much to propel the sport. This lack of attention has had serious consequences for how men’s gymnastics is funded and supported at the collegiate and professional levels.$^{27}$ The U.S. men’s team placing in the team event at the olympics, which again would  be first time since 2014,  may carry more meaning with it than the number of medals we may expect by optimizing for individual performances. Therefore, with all considered, we decided to optimize our team for the team event.\newline
+\text{ }\text{ }\text{ }\text{ } By optimizing in this way, the last four spots would go to Fred Richard, Yul Moladuer, Donnell Whittenburg, and Asher Hong. Most of these athletes have showcased their ability to do well in all of the apparatuses. Fred Richard secured the third position in the all-around event during the 2023 Gymnastics World Championships. Meanwhile, Asher Hong claimed the top spot in the all-around event at the 2023 US Gymnastics Championships, and Yul Moladeur achieved first place in the all-around event at the 2023 Pan-American Championships.$^{28,29,30}$ This team also has a good mix of apparatus specialists. When discussing what talents he could add to the U.S. team, Donnell Whittenburg remarked “We need rings and vault, those are my events”.$^{31}$ Asher Wong can be considered a specialist at vault as well, being able to pull off one of the hardest moves there is -- a full twisting double Tsukahara.$^{32}$ Not to mention, Fred Richard is also the current NCAA horizontal and parallel bar champion and Yul Moladeur took home gold for floor in the 2023 Pan-American championships.$^{33,34}$ Moreover, this team carries some experience with the addition of Donnell Whittenburg and Yul Moldauer, who have been competing on the world stage since 2014 and 2017 respectively.$^{35,36}$ This leadership is especially needed given the men’s team’s tendency to underperform on the big stage.$^{37}$ All of these players make a great complement to Malone, and position the U.S. in the best position to make a statement at the 2024 Olympics. 	\newline
 
-**_Limitations:_**
+**_Limitations:_**\newline
+\text{ }\text{ }\text{ }\text{ } In regards to the data,  we found that while information provided by UCSAS contained most major gymnastic events from 2022-2023, one major category of events not represented in the data were NCAA collegiate competitions. Many gymnasts included in our constrained data set — including Zoe Miller, Colt Walker, Jordan Chiles, Blake Sun, and Ian Skirkey — have competed collegiately and therefore did not have their data fully represented. With these fewer data points, the kernel density distributions generated for these athletes may be less accurate. More broadly, limited historical data was an issue for most gymnasts in our dataset, limiting the accuracy of the kernel density estimates. Moreover, notable limitations of our algorithmic approach include the assumptions made. For instance, we assumed that an athlete’s scores are independent of the round stage (final vs. qualifying), the round type (all around, team, or individual apparatus), the scope of the competition, the order of the competition, and how many apparatuses the athlete had competed in prior (i.e., fatigue). (Atikovic et al., 2017)$^{38}$ Specifically, as seen by the results of the ANOVA, the independence assumption for round type and stage does not hold for all apparatuses. The kernel densities are also calculated so that all results throughout 2022-2023 have equal weight in determining the distribution. However, in many situations athletes from either the U.S or other countries may improve as the Olympics draws closer, and our simulation does not consider these improvement trends. In our team event score simulations, we found the best-performing US team for each simulation and then found their respective ranking. However, this removes the information we generated on the other well-performing US teams that may have also had a chance to medal if they replaced the best-performing U.S. team. Thus, our calculations of the team event weighted medal scores do not comprehensively use all data simulated from the events to determine the performance of every U.S. team configuration but only the best-performing team in each simulation. \newline
+\text{ }\text{ }\text{ }\text{ } Based on these limitations, our individual apparatus selections, which were the basis of our simulations, may be inconsistent with widespread expectations and current circumstances. For instance, Jordan Chiles, who is a notable gymnast, is missing from our top-performing women’s gymnasts aggregated list from top U.S women’s gymnasts’ simulated Weighted Individual Medal Scores by Event (See Figure 4). Her bronze medal at the Pan-American Games (Oct. 21-25, 2023) was not accounted for in  the data, and she also earned silver in vault and floor in the World Championships (2022). Her inconsistency in the more recent competitions likely increased the variance in her simulated scores and reduced her average medal contribution scores.$^39$ On the other side of considerations, we may have incorrectly classified Brody Malone as being capable and healthy for competition as he recently had  a third leg surgery in July, 2023. While he has stated that he intends to return to practice in April 2024, in preparation for the Olympic trials, his condition and level of performance remain  uncertain. However, removing him from the dataset would have made the generated men’s teams significantly more volatile. \newline
 
-**_Extensions:_**
+
+**_Extensions and Further Work:_**\newline
+\text{ }\text{ }\text{ }\text{ } There are many ways our work can be extended to provide more robust and realistic simulation results. Firstly, we would extend this work by addressing the limitations mentioned earlier -- namely the effect of recency, competition scope, and fatigue on scores. The first two limitations could be reconciled through weighting the scores by recency and competition scope. This addition would allow us to account for an athlete’s performance trend and place more emphasis on results coming from harder competitions with more concentrated talent, like the Olympics. Fatigue could be accounted for with a parameter that controlled how many events an athlete is expected to compete in. Furthermore, this work could be extended by adding an algorithm that could find the optimal alternate for a given team. This addition would be particularly useful to selection committees as gymnastics is a high-injury sport, and it is not guaranteed that everyone selected for team U.S. will be healthy enough to compete. Finally, with more time, we would like to validate our simulation methodology by using the same algorithms to predict past competitions, such as the 2023 World Gymnastics Championships. This procedure would ideally encourage more confidence in our current results and help improve upon their accuracy.\newline
+\text{ }\text{ }\text{ }\text{ } Overall, our results aim to advise the USA Gymnastics selection committee with the complex task of selecting the women’s and men’s teams for the 2024 Paris Olympics. Our recommended teams are algorithmically optimized for the highest medal contributions, given the scaled “importance” of each medal type. After cross-referencing our results with current literature and predictions for the team selections and with further research on the selected athletes, we are confident in their combined talent, strength, artistry, leadership, and grit — all qualities critical to win gold. \newline
+
 
 
 \newpage
@@ -700,13 +701,318 @@ kable(men_anova_summary,
 
 ```
 
-
-**Figure 5. ** women top ten
-
-
-**Figure 9. ** women top ten
+\newpage
+**Figure 5. ** Top 10 Simulated Weighted Medal Scores for Each Apparatus by Country\newline
+```{r echo=FALSE, fig.width = 8, fig.height = 10}
 
 
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  
+  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  return(result)
+}
+
+separate_columns <- function(data) {
+  
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- mutate_at(data, vars(starts_with("SimulationResults")), transform_values)
+
+  result_data$avg_result <- rowMeans(select(result_data, starts_with("SimulationResults")))
+
+  return(result_data)
+}
+
+aBB_column_data <- read.csv("EZ Simulation Exports/aBB_column_data.csv")
+aFX_column_data <- read.csv("EZ Simulation Exports/aFX_column_data.csv")
+aUB_column_data <- read.csv("EZ Simulation Exports/aUB_column_data.csv")
+aVT_column_data <- read.csv("EZ Simulation Exports/aVT_column_data.csv")
+
+
+## RUN ONLY ONCE TO SWITCH THE ORDER OF THE NAMES
+aBB_column_data$FullName <- sapply(strsplit(aBB_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+aFX_column_data$FullName <- sapply(strsplit(aFX_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+aUB_column_data$FullName <- sapply(strsplit(aUB_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+aVT_column_data$FullName <- sapply(strsplit(aVT_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+
+
+# find the top 10 athletes for each event
+
+aBB_top10 <- separate_columns(aBB_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+
+aFX_top10 <- separate_columns(aFX_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+aUB_top10 <- separate_columns(aUB_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+    arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+aVT_top10 <- separate_columns(aVT_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+    arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+
+aAA_top10 <- read.csv("EZ Simulation Exports/Women_All_Around_Top.csv") %>% 
+  slice(1:10)
+
+
+
+aBB_top10 <- aBB_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aBB_top10))) 
+
+aBB_top10_chart <-ggplot(aBB_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
+  geom_col() +
+#  scale_x_continuous(limits=c(0, 3), breaks = c(0, 1, 2, 3), labels = c("", "Bronze", "Silver", "Gold")) + 
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Balance Beam", x = "Average Medal Score", y = "", fill = "Top 3 Average Scores") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free')+
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+
+aFX_top10 <- aFX_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aFX_top10))) 
+
+aFX_top10_chart <-ggplot(aFX_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Floor Exercise", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+
+aUB_top10 <- aUB_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aUB_top10)))
+
+aUB_top10_chart <- ggplot(aUB_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Uneven Bars", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+
+aVT_top10 <- aVT_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aVT_top10)))
+
+aVT_top10_chart <- ggplot(aVT_top10, aes(y= reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "Vault", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+aAA_top10 <- aAA_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(aAA_top10)))
+
+
+aAA_top10_chart <- ggplot(aAA_top10, aes(y= reorder(FullName, avg_result_allAround), x = avg_result_allAround, fill = top_3)) +
+  theme(axis.title.y=element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits=c(0, 3)) +
+  labs(title = "All-Around", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country))~., scales = "free", space='free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+
+
+
+library(ggplot2)
+library(patchwork)
+combined <- aBB_top10_chart + aFX_top10_chart + aUB_top10_chart + aVT_top10_chart + aAA_top10_chart & theme(legend.position = "bottom")
+
+FINAL_VIS_WOMEN <- combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Simulated Weighted Medal Scores by Apparatus',theme=theme(plot.title=element_text(hjust=0.5))) + plot_layout(ncol = 2)
+
+print(FINAL_VIS_WOMEN)
+```
+
+
+\newpage
+**Figure 9. ** Top 10 Men by Apparatus and Country (on next page)\newline
+```{r echo=FALSE, fig.width = 7.2, fig.height = 10.8}
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  
+  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  return(result)
+}
+
+separate_columns <- function(data) {
+  
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- mutate_at(data, vars(starts_with("SimulationResults")), transform_values)
+
+  result_data$avg_result <- rowMeans(select(result_data, starts_with("SimulationResults")))
+
+  return(result_data)
+}
+
+
+
+# For mHB
+mHB_column_data <- read.csv("EZ Simulation Exports/mHB_column_data.csv")
+mHB_column_data$FullName <- sapply(strsplit(mHB_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+# For mFX
+mFX_column_data <- read.csv("EZ Simulation Exports/mFX_column_data.csv")
+mFX_column_data$FullName <- sapply(strsplit(mFX_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+# For mPB
+mPB_column_data <- read.csv("EZ Simulation Exports/mPB_column_data.csv")
+mPB_column_data$FullName <- sapply(strsplit(mPB_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+# For mPH
+mPH_column_data <- read.csv("EZ Simulation Exports/mPH_column_data.csv")
+mPH_column_data$FullName <- sapply(strsplit(mPH_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+# For mSR
+mSR_column_data <- read.csv("EZ Simulation Exports/mSR_column_data.csv")
+mSR_column_data$FullName <- sapply(strsplit(mSR_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+# For mVT
+mVT_column_data <- read.csv("EZ Simulation Exports/mVT_column_data.csv")
+mVT_column_data$FullName <- sapply(strsplit(mVT_column_data$FullName, " "), function(x) paste(rev(x), collapse = " "))
+
+# For mHB
+mHB_top10 <- separate_columns(mHB_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+mHB_top10 <- mHB_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mHB_top10)))
+
+# For mFX
+mFX_top10 <- separate_columns(mFX_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+mFX_top10 <- mFX_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mFX_top10)))
+
+# For mPB
+mPB_top10 <- separate_columns(mPB_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+mPB_top10 <- mPB_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mPB_top10)))
+
+# For mPH
+mPH_top10 <- separate_columns(mPH_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+mPH_top10 <- mPH_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mPH_top10)))
+
+# For mSR
+mSR_top10 <- separate_columns(mSR_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+mSR_top10 <- mSR_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mSR_top10)))
+
+# For mVT
+mVT_top10 <- separate_columns(mVT_column_data) %>% 
+  select(FullName, Apparatus, Country, avg_result) %>% 
+  arrange(desc(avg_result)) %>% 
+  slice(1:10)
+
+mVT_top10 <- mVT_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mVT_top10)))
+
+mAA_top10 <- read.csv("EZ Simulation Exports/Men_All_Around_Top.csv") %>% 
+  slice(1:10)
+mAA_top10 <- mAA_top10 %>% 
+  mutate(top_3 = rep(c("Top 3", "Top 3", "Top 3", rep(NA, 7)), length.out = nrow(mAA_top10)))
+
+
+
+# Assuming mHB_top10 is the data frame for Men's Horizontal Bar apparatus
+mHB_top10_chart <- ggplot(mHB_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Horizontal Bar", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+mFX_top10_chart <- ggplot(mFX_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Floor Exercise", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+mPB_top10_chart <- ggplot(mPB_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Parallel Bars", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+mPH_top10_chart <- ggplot(mPH_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Pommel Horse", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+mSR_top10_chart <- ggplot(mSR_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Still Rings", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+mVT_top10_chart <- ggplot(mVT_top10, aes(y = reorder(FullName, avg_result), x = avg_result, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "Vault", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+mAA_top10_chart <- ggplot(mAA_top10, aes(y = reorder(FullName, avg_result_allAround), x = avg_result_allAround, fill = top_3)) +
+  theme(axis.title.y = element_blank()) + 
+  geom_col() +
+  scale_x_continuous(limits = c(0, 3)) +
+  labs(title = "All-Around", x = "Average Medal Score") +
+  facet_grid(factor(Country, unique(Country)) ~ ., scales = "free", space = 'free') +
+  scale_fill_discrete(name = "Ranking", labels = c("Top 3", "Top 4-10th"))
+
+
+combined <- mHB_top10_chart + mFX_top10_chart + mPB_top10_chart + mPH_top10_chart + mSR_top10_chart + mVT_top10_chart + mAA_top10_chart & theme(legend.position = "bottom")
+
+combined + plot_layout(guides = "collect") + plot_annotation('Top 10 Men by Apparatus and Country',theme=theme(plot.title=element_text(hjust=0.5))) + plot_layout(ncol = 2)
+
+```
+
+
+
+\newpage
 **Figure 11. ** Top 3 Men’s Team Configurations from Individual Event Weighted Medal Score Optimization. In the Team event simulation, these teams never emerged as the filtered best US team. (TEMS: Total Expected Medal Score)\newline
 ```{r echo=FALSE}
 appendixFigure11 <- read.csv("filesForWriteup/appendixFigure11.csv", fileEncoding = "ISO-8859-1")
@@ -797,3 +1103,15 @@ kable(appendixFigure11,
 25. "Brody Malone eyes spring 2024 return to gymnastics from leg surgeries". NBC Sports. 2023. [https://www.nbcsports.com/olympics/news/brody-malone-gymnastics-injury-comeback](https://www.nbcsports.com/olympics/news/brody-malone-gymnastics-injury-comeback)
 26. "Preview: Top Men’s Storylines for the 2023 World Championships". Inside Gymnastics Magazine. 2023. [https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/](https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/)
 27. "The U.S. men’s gymnastics program is running in place. The answer is easy. Getting there is not". AP News. 2023. [https://apnews.com/article/gymnastics-paris-olympics-1a7e791d35b7636e8d96800151d8fac8](https://apnews.com/article/gymnastics-paris-olympics-1a7e791d35b7636e8d96800151d8fac8)
+28. "Takeaways from gymnastics worlds: Looking ahead to the 2024 Olympics". ESPN. 2023. [https://www.espn.com/olympics/gymnastics/story/_/id/38603995/2023-gymnastics-worlds-results-2024-olympics-predictions](https://www.espn.com/olympics/gymnastics/story/_/id/38603995/2023-gymnastics-worlds-results-2024-olympics-predictions)
+29. "Hong Wins Title, Nine Named To National Team". Stanford Medicine. 2023. [https://gostanford.com/news/2023/8/26/mens-gymnastics-hong-wins-title-five-named-to-national-team.aspx](https://gostanford.com/news/2023/8/26/mens-gymnastics-hong-wins-title-five-named-to-national-team.aspx)
+30. "Yul Moldauer". Wikipedia. [https://en.wikipedia.org/wiki/Yul_Moldauer](https://en.wikipedia.org/wiki/Yul_Moldauer)
+31. "Donnell Whittenburg, still chasing an Olympic spot, in hunt at nationals". The Washington Post. 2022. [https://www.washingtonpost.com/sports/olympics/2022/08/18/us-gymnastics-mens-championships/](https://www.washingtonpost.com/sports/olympics/2022/08/18/us-gymnastics-mens-championships/)
+32. "Asher Hong is youngest U.S. men’s all-around gymnastics champion in 34 years". NBC Sports. 2023. [https://www.nbcsports.com/olympics/news/asher-hong-gymnastics-nationals](https://www.nbcsports.com/olympics/news/asher-hong-gymnastics-nationals)
+33. "Preview: Top Men’s Storylines for the 2023 World Championships". Inside Gymnastics Magazine. 2023. [https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/](https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/)
+34. "Yul Moldauer". Wikipedia. [https://en.wikipedia.org/wiki/Yul_Moldauer](https://en.wikipedia.org/wiki/Yul_Moldauer)
+35. "Donnell Whittenburg". Wikipedia. [https://en.wikipedia.org/wiki/Donnell_Whittenburg](https://en.wikipedia.org/wiki/Donnell_Whittenburg)
+36. "Yul Moldauer". Wikipedia. [https://en.wikipedia.org/wiki/Yul_Moldauer](https://en.wikipedia.org/wiki/Yul_Moldauer)
+37. "Preview: Top Men’s Storylines for the 2023 World Championships". Inside Gymnastics Magazine. 2023. [https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/](https://www.insidegymnastics.com/news-features/top-mens-storylines-for-the-2023-world-championships/)
+38. Buckner, S., Bacon, N., Bishop, P. "Recovery in Level 7-10 Women's USA Artistic Gymnastics". National Library of Medicine. 2017. [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5609667/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5609667/)
+39. "Jordan Chiles struggles through rough second night of gymnastics Nationals". Youtube, NBC Sports. 2023. [https://www.youtube.com/watch?v=Fl4-nM-iPp4](https://www.youtube.com/watch?v=Fl4-nM-iPp4)
