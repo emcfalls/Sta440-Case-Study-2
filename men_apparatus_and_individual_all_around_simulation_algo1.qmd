@@ -607,6 +607,7 @@ separate_columns <- function(data, list_column_name, num_columns) {
   
   return(result_data)
 }
+
 ```
 
 
@@ -903,3 +904,148 @@ write.csv(m_result_df, file = "simluation_results_young/men_Total_Weighted_Medal
 ```
 
 
+
+
+
+## INDIVIDUAL EVENTS - MEDIAN
+
+```{r}
+library(matrixStats)
+library(dplyr)
+```
+
+
+```{r}
+
+## helper function to transform scores into relevant medals
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  return(result)
+}
+
+separate_columns_median <- function(data, list_column_name, num_columns) {
+  # Create empty data frame to store the separated columns
+  result_matrix <- matrix(NA, nrow = nrow(data), ncol = num_columns)
+  colnames(result_matrix) <- paste(list_column_name, seq_len(num_columns), sep = "_")
+  
+  # Loop through each row and separate the nested list into columns
+  for (i in seq_len(nrow(data))) {
+    nested_list <- data[[list_column_name]][i]
+    
+    # checking if list is empty (numeric(0))
+    if (is.na(data[["mean"]][i])){
+      result_matrix[i, ] <- 0
+    }
+    
+    else {
+      # Assign the values to the corresponding columns in the result matrix
+      result_matrix[i, ] <- unlist(nested_list)
+    }
+    
+  }
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- cbind(data[, -which(names(data) == list_column_name)], result_matrix)
+  result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
+  # 
+  result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
+  # 
+  # median(c_across(where(is.numeric)), na.rm=TRUE)
+  
+  return(result_data)
+}
+
+```
+
+
+
+
+
+
+
+```{r}
+
+## calculating the top three potential people in each individual event 
+
+
+mHB_separated_data_median <- separate_columns_median(mHB, "SimulationResults",1000) %>% 
+  rowwise() %>% 
+  mutate(row_median = median(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, avg_result, mean, Apparatus, row_median)
+  select(FullName, row_median)
+
+
+mHB_Top_Three_median <- mHB_separated_data %>%
+  filter(Country == "USA") %>%
+  arrange(desc(avg_result)) %>%
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
+  slice(1:10)
+
+
+mFX_separated_data_median <- separate_columns_median(mFX, "SimulationResults", 1000) %>% 
+  rowwise() %>% 
+  select(-c(FullName, Country, Apparatus, mean)) %>% 
+  mutate(row_median = median(c_across(is.numeric), na.rm=TRUE)) %>% 
+  select(row_median)
+  select(FullName, row_median)
+  
+  
+mFX_Top_Three <- mFX_separated_data %>%
+  filter(Country == "USA") %>%
+  arrange(desc(avg_result)) %>%
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
+  slice(1:10)
+
+
+
+mPB_separated_data <- separate_columns_median(mPB, "SimulationResults", 1000)
+
+mPB_Top_Three <- mPB_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+
+
+mPH_separated_data <- separate_columns_median(mPH, "SimulationResults", 1000)
+
+mPH_Top_Three <- mPH_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+
+
+mSR_separated_data <- separate_columns_median(mSR, "SimulationResults", 1000)
+
+mSR_Top_Three <- mSR_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+
+
+mVT_separated_data <- separate_columns_median(mVT, "SimulationResults", 1000)
+
+mVT_Top_Three <- mVT_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>% 
+  slice(1:10)
+
+
+
+mAllAround_separated_data <- separate_columns_median(mAllAround, "SimulationResults", 1000)
+
+mAllAround_Top_Three <- mAllAround_separated_data %>% 
+  filter(Country == "USA") %>% 
+  arrange(desc(avg_result)) %>% 
+  select(Country, FullName, mean, avg_result, Apparatus) %>%
+  slice(1:10)
+
+
+```
