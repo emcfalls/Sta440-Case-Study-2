@@ -947,8 +947,8 @@ library(dplyr)
 
 ## helper function to transform scores into relevant medals
 transform_values <- function(column) {
-  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
-  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+  result <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  # result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
   return(result)
 }
 
@@ -993,7 +993,144 @@ separate_columns_median <- function(data, list_column_name, num_columns) {
 aBB_separated_data_median <- separate_columns_median(aBB, "SimulationResults",1000) %>% 
   rowwise() %>% 
   mutate(row_median = median(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
-  select(Country, FullName, avg_result, mean, Apparatus, row_median)
+    mutate(row_sd = sd(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, avg_result, mean, Apparatus, row_median, row_sd)
+
+aBB_Top_Three <- aBB_separated_data_median %>% 
+  filter(Country == "USA") %>%
+  arrange(row_median) %>%
+  select(Country, FullName, mean, row_median, row_sd, Apparatus) %>%
+  slice(1:10)
+
+
+aFX_separated_data_median <- separate_columns_median(aFX, "SimulationResults",1000) %>% 
+  rowwise() %>% 
+  mutate(row_median = median(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+    mutate(row_sd = sd(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, avg_result, mean, Apparatus, row_median, row_sd)
+
+aFX_Top_Three <- aFX_separated_data_median %>% 
+  filter(Country == "USA") %>%
+  arrange(row_median) %>%
+  select(Country, FullName, mean, row_median, row_sd, Apparatus) %>%
+  slice(1:10)
+
+
+aUB_separated_data_median <- separate_columns_median(aUB, "SimulationResults",1000) %>% 
+  rowwise() %>% 
+  mutate(row_median = median(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+    mutate(row_sd = sd(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, avg_result, mean, Apparatus, row_median, row_sd)
+
+
+
+aUB_Top_Three <- aUB_separated_data_median %>% 
+  filter(Country == "USA") %>%
+  arrange(row_median) %>%
+  select(Country, FullName, mean, row_median, row_sd, Apparatus) %>%
+  slice(1:10)
+
+aVT_separated_data_median <- separate_columns_median(aVT, "SimulationResults",1000) %>% 
+  rowwise() %>% 
+  mutate(row_median = median(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+    mutate(row_sd = sd(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, avg_result, mean, Apparatus, row_median, row_sd)
+
+
+
+aVT_Top_Three <- aVT_separated_data_median %>% 
+  filter(Country == "USA") %>%
+  arrange(row_median) %>%
+  select(Country, FullName, mean, row_median, row_sd, Apparatus) %>%
+  slice(1:10)
+```
+
+
+
+```{r}
+# Using left_join to ensure all names are included from each dataframe.
+
+merged_df <- aBB %>%
+  left_join(aUB, by = "FullName") %>%
+  left_join(aFX, by = "FullName") %>%
+  left_join(aVT, by = "FullName")
+
+# Rename the SimulationResults columns to avoid name clashes
+names(merged_df)[names(merged_df) == 'SimulationResults.x'] <- 'SimulationResultsBB'
+names(merged_df)[names(merged_df) == 'SimulationResults.y'] <- 'SimulationResultsUB'
+names(merged_df)[names(merged_df) == 'SimulationResults.x.x'] <- 'SimulationResultsFX'
+names(merged_df)[names(merged_df) == 'SimulationResults.y.y'] <- 'SimulationResultsVT'
+
+# create a new SimulationResults column which is a list of sums of corresponding elements.
+
+# Function to sum the elements of the simulation results
+sum_simulation_results <- function(bb, ub, fx, vt) {
+  mapply(sum, bb, ub, fx, vt) # Sum corresponding elements
+}
+
+# Apply the function to each row using rowwise and then mutate to create the new column
+merged_df <- merged_df %>%
+  rowwise() %>%
+  mutate(BB = list(SimulationResultsBB), UB = list(SimulationResultsUB), FX = list(SimulationResultsFX), VT = list(SimulationResultsVT))
+
+# Create the final dataframe with required columns
+aAllAround <- merged_df %>%
+  select(Country = Country.x, FullName, BB, UB, FX, VT) %>% 
+  filter(!all(sapply(BB, function(x) all(x == 0)))) %>% 
+    filter(!all(sapply(UB, function(x) all(x == 0)))) %>% 
+    filter(!all(sapply(FX, function(x) all(x == 0)))) %>% 
+    filter(!all(sapply(VT, function(x) all(x == 0))))
+
+calculate_all_around <- function(data) {
+  # Use rowwise to apply the function to each row
+  AllAround <- data %>%
+    rowwise() %>%
+    mutate(
+      # Use purrr::pmap_dbl to sum the nth element of each list column
+      AllAround = list(pmap_dbl(list(BB, UB, FX, VT), ~sum(c(...))))
+    )
+  
+  return(AllAround)
+}
+
+aAllAround1 <- calculate_all_around(aAllAround) 
+
+aAllAround1 <- aAllAround1 %>% 
+  unnest_wider(AllAround, names_sep = "_")
+  
+
+## helper function to transform scores into relevant medals
+transform_values <- function(column) {
+  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  return(ranks)
+}
+
+separate_columns <- function(data, list_column_name, num_columns) {
+  
+  # Bind the result matrix with the original data frame, excluding the original list column
+  result_data <- mutate_at(data, vars(starts_with(list_column_name)), transform_values)
+  
+  result_data$avg_result_allAround <- rowMeans(select(result_data, starts_with(list_column_name)))
+
+  return(result_data)
+}
+
+
+
 
 ```
 
+```{r}
+aAllAround_median<- separate_columns(aAllAround1, "AllAround", 1000) %>% 
+      rowwise() %>% 
+  mutate(row_median = median(c_across(AllAround_1:AllAround_1000), na.rm=TRUE)) %>% 
+    mutate(row_sd = sd(c_across(AllAround_1:AllAround_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, row_median, row_sd)
+
+aAllAround_Top_Three <- aAllAround_median %>% 
+  filter (Country == "USA") %>% 
+  select(Country, FullName, row_median, row_sd) %>% 
+  arrange(row_median) %>% 
+  slice(1:35)
+
+```

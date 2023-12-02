@@ -919,8 +919,8 @@ library(dplyr)
 
 ## helper function to transform scores into relevant medals
 transform_values <- function(column) {
-  ranks <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
-  result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
+ result <- min_rank(-column)  # Rank in descending order, ties are handled so that people with the same score are given the same medal 
+  # result <- ifelse(ranks == 1, 3, ifelse(ranks == 2, 2, ifelse(ranks == 3, 1, 0)))
   return(result)
 }
 
@@ -950,6 +950,7 @@ separate_columns_median <- function(data, list_column_name, num_columns) {
   result_data <- mutate_at(result_data, vars(starts_with(list_column_name)), transform_values)
   # 
   result_data$avg_result <- rowMeans(select(result_data, starts_with(list_column_name)))
+  
   # 
   # median(c_across(where(is.numeric)), na.rm=TRUE)
   
@@ -972,13 +973,14 @@ separate_columns_median <- function(data, list_column_name, num_columns) {
 mHB_separated_data_median <- separate_columns_median(mHB, "SimulationResults",1000) %>% 
   rowwise() %>% 
   mutate(row_median = median(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
-  select(Country, FullName, avg_result, mean, Apparatus, row_median)
-  select(FullName, row_median)
+    mutate(row_sd = sd(c_across(SimulationResults_1:SimulationResults_1000), na.rm=TRUE)) %>% 
+  select(Country, FullName, avg_result, mean, Apparatus, row_median, row_sd)
+
 
 
 mHB_Top_Three_median <- mHB_separated_data %>%
   filter(Country == "USA") %>%
-  arrange(desc(avg_result)) %>%
+  arrange(desc(row_median)) %>%
   select(Country, FullName, mean, avg_result, Apparatus) %>%
   slice(1:10)
 
