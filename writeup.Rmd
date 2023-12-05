@@ -1108,11 +1108,11 @@ highlightYellowMenIndividual13 <- c("5 (27.03)",	"45 (51.34)", "39 (25.19)", "7 
 highlightBlueMenIndividual13 <- c("33 (33.21)", "50 (49.81)", "40.5 (42.91)", "23 (20.67)", "25 (31.50)")
 
 
-appendixFigure13[, 1:(ncol(appendixFigure13) - 1)] <- as.data.frame(lapply(appendixFigure13[, 1:(ncol(appendixFigure13) - 1)], function(column) {
+appendixFigure13[, 1:(ncol(appendixFigure13))] <- as.data.frame(lapply(appendixFigure13[, 1:(ncol(appendixFigure13))], function(column) {
   sapply(column, highlightCellYellowMenIndividual13, specified_values = highlightYellowMenIndividual13)
 }))
 
-appendixFigure13[, 1:(ncol(appendixFigure13) - 1)] <- as.data.frame(lapply(appendixFigure13[, 1:(ncol(appendixFigure13) - 1)], function(column) {
+appendixFigure13[, 1:(ncol(appendixFigure13))] <- as.data.frame(lapply(appendixFigure13[, 1:(ncol(appendixFigure13))], function(column) {
   sapply(column, highlightCellBlueMenIndividual13, specified_values = highlightBlueMenIndividual13)
 }))
 
@@ -1132,12 +1132,66 @@ kable(appendixFigure13,
       row.names = FALSE)
 
 ```
-```
+
 
 \vspace{20mm} 
 
 **Figure 14. ** Median Rank and Variance of Top Female Gymnasts for each individual event\newline
+```{r echo=FALSE}
+appendixFigure14 <- read.csv("filesForWriteup/appendixFigure14.csv", fileEncoding = "ISO-8859-1")
 
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+highlightCellYellowMenIndividual14 <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customyellow}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+highlightCellBlueMenIndividual14 <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customblue}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+
+
+# Apply the function to all cells in the dataframe
+highlightYellowMenIndividual14 <- c("2 (2.51)", "1 (0.85)", "14 (9.32)", "2 (2.98)", "1 (0.20)", "6 (18.71)", "9 (8.94)", "4 (6.10)", "9 (17.26)", "4 (8.86)", "3 (4.10)", "4 (4.30)", "26 (31.50)", "6 (9.08)", "11 (51.37)")
+
+highlightBlueMenIndividual14 <- c("32 (36.51)", "11.5 (23.89)", "9 (8.34)", "22 (31.09)", "11 (11.18)")
+
+
+appendixFigure14[, 1:(ncol(appendixFigure14))] <- as.data.frame(lapply(appendixFigure14[, 1:(ncol(appendixFigure14))], function(column) {
+  sapply(column, highlightCellYellowMenIndividual14, specified_values = highlightYellowMenIndividual14)
+}))
+
+appendixFigure14[, 1:(ncol(appendixFigure14))] <- as.data.frame(lapply(appendixFigure14[, 1:(ncol(appendixFigure14))], function(column) {
+  sapply(column, highlightCellBlueMenIndividual14, specified_values = highlightBlueMenIndividual14)
+}))
+
+# Generate the table with kable for LaTeX output
+kable(appendixFigure14, 
+      col.names = c("Athlete", 
+                    "BB", 
+                    "FX", 
+                    "UB", 
+                    "VT", 
+                    "AA"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+
+```
 
 
 
