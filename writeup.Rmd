@@ -1055,7 +1055,7 @@ library(dplyr)
 library(purrr)
 
 
-kable(appendixFigure11, 
+kable(appendixFigure12, 
       col.names = c("Team Combination", 
                     "HB", 
                     "FX", 
@@ -1071,6 +1071,73 @@ kable(appendixFigure11,
       booktabs = TRUE,
       row.names = FALSE)
 ```
+
+\vspace{20mm} 
+
+**Figure 13. ** Median Rank and Variance of Top Male Gymnasts for each individual event\newline
+```{r echo=FALSE}
+appendixFigure13 <- read.csv("filesForWriteup/appendixFigure13.csv", fileEncoding = "ISO-8859-1")
+
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(purrr)
+
+highlightCellYellowMenIndividual13 <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customyellow}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+highlightCellBlueMenIndividual13 <- function(value, specified_values) {
+  if (as.character(value) %in% specified_values) { # Ensure comparison is character to character
+    return(sprintf("\\cellcolor{customblue}{%s}", value)) # LaTeX command to color the cell
+  } else {
+    return(value)
+  }
+}
+
+
+
+# Apply the function to all cells in the dataframe
+highlightYellowMenIndividual13 <- c("5 (27.03)",	"45 (51.34)", "39 (25.19)", "7 (8.86)", "17 (13.94)", "19 (24.42)", "49 (39.11)", "13 (38.93)", "23 (21.06)", "34 (37.53)", "11 (12.05)", "16 (22.03)", "14 (8.96)", "25 (39.68)", "8 (25.32)", "13 (33.92)", "14 (59.21)", "17 (47.28)", "20 (50.58)", "15 (17.30)")
+
+highlightBlueMenIndividual13 <- c("33 (33.21)", "50 (49.81)", "40.5 (42.91)", "23 (20.67)", "25 (31.50)")
+
+
+appendixFigure13[, 1:(ncol(appendixFigure13) - 1)] <- as.data.frame(lapply(appendixFigure13[, 1:(ncol(appendixFigure13) - 1)], function(column) {
+  sapply(column, highlightCellYellowMenIndividual13, specified_values = highlightYellowMenIndividual13)
+}))
+
+appendixFigure13[, 1:(ncol(appendixFigure13) - 1)] <- as.data.frame(lapply(appendixFigure13[, 1:(ncol(appendixFigure13) - 1)], function(column) {
+  sapply(column, highlightCellBlueMenIndividual13, specified_values = highlightBlueMenIndividual13)
+}))
+
+# Generate the table with kable for LaTeX output
+kable(appendixFigure13, 
+      col.names = c("Athlete", 
+                    "HB", 
+                    "FX", 
+                    "PB", 
+                    "PH", 
+                    "SR", 
+                    "VT",
+                    "AA"),
+      format = "latex",
+      escape = FALSE,
+      booktabs = TRUE,
+      row.names = FALSE)
+
+```
+```
+
+\vspace{20mm} 
+
+**Figure 14. ** Median Rank and Variance of Top Female Gymnasts for each individual event\newline
+
 
 
 

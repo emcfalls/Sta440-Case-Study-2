@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.8)  20 NOV 2023 23:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.8)  4 DEC 2023 20:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -703,8 +703,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 994--997
  []
 
 
-Overfull \hbox (35.94386pt too wide) in paragraph at lines 998--1007
+Overfull \hbox (29.61052pt too wide) in paragraph at lines 998--1007
 [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1010--1012
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1039--1041
+
  []
 
 [15] [16] [17] (./writeup.aux)
@@ -729,7 +739,7 @@ nts/type1/public/lm/lmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/p
 ublic/lm/lmr12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lm
 r7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lmri10.pfb></u
 sr/local/texlive/2023/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on writeup.pdf (17 pages, 294281 bytes).
+Output written on writeup.pdf (17 pages, 295927 bytes).
 PDF statistics:
  299 PDF objects out of 1000 (max. 8388607)
  252 compressed objects within 3 object streams
